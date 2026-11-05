@@ -2,6 +2,7 @@
 from . import telegram_sender
 from . import expense_category
 from . import owner_box
+from . import owner_app
 from . import receipt
 from . import pos_cash_move
 from . import pos_session

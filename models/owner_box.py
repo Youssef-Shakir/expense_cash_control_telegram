@@ -298,7 +298,8 @@ class OwnerBox(models.Model):
             'payment_mode': 'paid',
             'journal_id': self.journal_id.id,
             'company_id': self.company_id.id,
-            'notes': _('Paid by %s from his cash (Telegram).', self.name),
+            'notes': _('Paid by %(owner)s from his cash (%(channel)s).', owner=self.name,
+                       channel=_('Owner App') if source == 'app' else _('Telegram')),
         })
         receipt = self.env['ecc.receipt'].sudo().with_company(self.company_id).create({
             'company_id': self.company_id.id,
@@ -418,7 +419,8 @@ class OwnerBox(models.Model):
 
     @api.model
     def _cron_owner_statements(self):
-        for box in self.search([('is_linked', '=', True), ('statement_frequency', '!=', 'none')]):
+        for box in self.search(['|', ('is_linked', '=', True), ('app_user_id', '!=', False),
+                                ('statement_frequency', '!=', 'none')]):
             period = box._statement_due(fields.Date.context_today(box))
             if not period:
                 continue

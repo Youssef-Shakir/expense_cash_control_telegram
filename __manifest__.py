@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Expenses & Cash Control - Telegram Receipts',
-    'version': '18.0.2.1.0',
+    'version': '18.0.3.0.0',
     'category': 'Accounting/Expenses',
     'summary': 'Staff send bill photos to the DoniaLink Telegram bot; the accountant reviews them in Odoo',
     'description': """
@@ -23,6 +23,11 @@ Owner cash box (phase 2): each owner / partner collects the cash of closed
 POS sessions, records expenses, "took for me" and deposits from a private chat
 with the bot; his balance is computed by Odoo, weekly or monthly statements
 to confirm, differences explained by the accountant.
+
+Owner App (installable web app, /ecc/owner/app): the same owner cash box in a
+phone app - balance, collect sessions, expenses with photos, took for me,
+deposits, count my cash, history and statements. Works alongside the bot;
+the accountant gives access with "Owner App Access" (a free portal login).
 
 Session Review gains "Cash-outs without receipt" and "Receipts not matched";
 each POS can require both to be zero before "Mark as Reviewed".
@@ -46,6 +51,7 @@ Developed by Yousif Shakir - Donialink | تطوير يوسف شاكر
         'data/ir_cron_data.xml',
         'wizard/receipt_question_wizard_views.xml',
         'wizard/owner_collection_return_views.xml',
+        'wizard/owner_app_access_views.xml',
         'views/telegram_sender_views.xml',
         'views/receipt_views.xml',
         'views/pos_cash_move_views.xml',

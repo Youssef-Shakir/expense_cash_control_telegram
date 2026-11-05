@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ecc_owner_app_access_form" model="ir.ui.view">
+        <field name="name">ecc.owner.app.access.form</field>
+        <field name="model">ecc.owner.app.access</field>
+        <field name="arch" type="xml">
+            <form string="Owner App Access">
+                <div class="alert alert-info" role="alert">
+                    The owner opens <field name="app_url" readonly="1" class="d-inline fw-bold" widget="url"/> on
+                    his phone, logs in, then "Add to Home screen" / "Install app". Telegram keeps working too.
+                </div>
+                <group>
+                    <field name="box_id"/>
+                    <field name="mode" widget="radio"/>
+                    <field name="user_id" invisible="mode != 'existing'" required="mode == 'existing'"
+                           options="{'no_create': True}"/>
+                    <field name="name" invisible="mode != 'new'"/>
+                    <field name="login" invisible="mode != 'new'" required="mode == 'new'"
+                           placeholder="07xx xxx xxxx or name@mail.com"/>
+                    <field name="password" invisible="mode != 'new'" required="mode == 'new'" password="True"/>
+                    <field name="lang" invisible="mode != 'new'"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Give Access" class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

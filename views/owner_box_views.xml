@@ -9,13 +9,17 @@
             <kanban>
                 <field name="currency_id"/>
                 <field name="is_linked"/>
+                <field name="app_user_id"/>
                 <field name="balance"/>
                 <templates>
                     <t t-name="card">
                         <div class="d-flex justify-content-between align-items-start">
                             <field name="name" class="fw-bold fs-5"/>
-                            <span t-if="record.is_linked.raw_value" class="badge text-bg-success"><i class="fa fa-telegram" title="Linked"/> Linked</span>
-                            <span t-else="" class="badge text-bg-secondary">Not linked</span>
+                            <span>
+                                <span t-if="record.app_user_id.raw_value" class="badge text-bg-primary me-1"><i class="fa fa-mobile" title="Owner App"/> App</span>
+                                <span t-if="record.is_linked.raw_value" class="badge text-bg-success"><i class="fa fa-telegram" title="Linked"/> Linked</span>
+                                <span t-elif="!record.app_user_id.raw_value" class="badge text-bg-secondary">Not linked</span>
+                            </span>
                         </div>
                         <div class="text-muted small"><field name="company_id"/></div>
                         <div class="fs-3 my-2" t-att-class="record.balance.raw_value &lt; 0 ? 'text-danger' : ''">
@@ -62,6 +66,10 @@
                             invisible="is_linked or not id" icon="fa-telegram"/>
                     <button name="action_send_statement" type="object" string="Send Statement Now"
                             invisible="not is_linked"/>
+                    <button name="action_app_access" type="object" string="Owner App Access" icon="fa-mobile"
+                            invisible="not id or app_user_id"/>
+                    <button name="action_revoke_app" type="object" string="Remove App Access"
+                            invisible="not app_user_id" confirm="The owner will no longer open this box in the app."/>
                     <button name="action_unlink_telegram" type="object" string="Unlink Telegram"
                             invisible="not is_linked and not link_code"
                             confirm="The owner will no longer be able to use the bot for this box."/>
@@ -112,6 +120,10 @@
                             <field name="pos_config_ids" widget="many2many_tags" placeholder="All POS of the company"/>
                             <field name="collect_from"/>
                             <field name="notify_session_close"/>
+                        </group>
+                        <group string="Owner App">
+                            <field name="app_user_id" readonly="1"/>
+                            <field name="app_url" widget="url" invisible="not app_user_id"/>
                         </group>
                         <group string="Telegram">
                             <field name="is_linked"/>

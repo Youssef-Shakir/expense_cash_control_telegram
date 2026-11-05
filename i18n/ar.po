@@ -1,0 +1,133 @@
+# Arabic translation of the owner app messages (expense_cash_control_telegram).
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+
+#. module: expense_cash_control_telegram
+msgid "Please log in."
+msgstr "يرجى تسجيل الدخول."
+
+#. module: expense_cash_control_telegram
+msgid "Not allowed."
+msgstr "غير مسموح."
+
+#. module: expense_cash_control_telegram
+msgid "Already saved. Refresh to see it."
+msgstr "محفوظ مسبقاً. حدّث الصفحة لرؤيته."
+
+#. module: expense_cash_control_telegram
+msgid "Invalid request."
+msgstr "طلب غير صالح."
+
+#. module: expense_cash_control_telegram
+msgid "Choose a cash box."
+msgstr "اختر الصندوق."
+
+#. module: expense_cash_control_telegram
+msgid "This cash box is not yours."
+msgstr "هذا الصندوق ليس لك."
+
+#. module: expense_cash_control_telegram
+msgid "Enter a valid amount."
+msgstr "اكتب مبلغاً صحيحاً."
+
+#. module: expense_cash_control_telegram
+msgid "The amount must be positive."
+msgstr "يجب أن يكون المبلغ أكبر من صفر."
+
+#. module: expense_cash_control_telegram
+msgid "The amount cannot be negative."
+msgstr "لا يمكن أن يكون المبلغ سالباً."
+
+#. module: expense_cash_control_telegram
+msgid "Open the Odoo login page once to choose the database."
+msgstr "افتح صفحة دخول أودو مرة واحدة لاختيار قاعدة البيانات."
+
+#. module: expense_cash_control_telegram
+msgid "Wrong login or password."
+msgstr "اسم المستخدم أو كلمة المرور خاطئة."
+
+#. module: expense_cash_control_telegram
+msgid "Two-factor login is on for this user: log in from the Odoo page."
+msgstr "التحقق بخطوتين مفعّل لهذا المستخدم: سجّل الدخول من صفحة أودو."
+
+#. module: expense_cash_control_telegram
+msgid "No cash box is linked to this login. Ask the accountant."
+msgstr "لا يوجد صندوق مرتبط بهذا المستخدم. راجع المحاسب."
+
+#. module: expense_cash_control_telegram
+msgid "Session not found."
+msgstr "الجلسة غير موجودة."
+
+#. module: expense_cash_control_telegram
+msgid "Choose a category."
+msgstr "اختر الفئة."
+
+#. module: expense_cash_control_telegram
+msgid "A photo could not be read. Take it again."
+msgstr "تعذّر قراءة الصورة. التقطها مرة أخرى."
+
+#. module: expense_cash_control_telegram
+msgid "A photo is too large."
+msgstr "الصورة كبيرة جداً."
+
+#. module: expense_cash_control_telegram
+msgid "Only photos can be attached."
+msgstr "يمكن إرفاق الصور فقط."
+
+#. module: expense_cash_control_telegram
+msgid "Choose bank or till."
+msgstr "اختر البنك أو صندوق الكاشير."
+
+#. module: expense_cash_control_telegram
+msgid "Statement not found."
+msgstr "الكشف غير موجود."
+
+#. module: expense_cash_control_telegram
+msgid "This statement was already answered."
+msgstr "تم الرد على هذا الكشف مسبقاً."
+
+#. module: expense_cash_control_telegram
+#, python-format
+msgid "Session %s cannot be collected into this box."
+msgstr "لا يمكن استلام الجلسة %s في هذا الصندوق."
+
+#. module: expense_cash_control_telegram
+#, python-format
+msgid "Session %s was already collected."
+msgstr "تم استلام الجلسة %s مسبقاً."
+
+#. module: expense_cash_control_telegram
+#, python-format
+msgid "Session %(session)s has only %(left)s left to collect."
+msgstr "بقي في الجلسة %(session)s مبلغ %(left)s فقط للاستلام."
+
+#. module: expense_cash_control_telegram
+#, python-format
+msgid "The category \"%s\" has no account."
+msgstr "الفئة \"%s\" ليس لها حساب. راجع المحاسب."
+
+#. module: expense_cash_control_telegram
+#, python-format
+msgid "No till is set on the cash box of %s."
+msgstr "لا يوجد صندوق كاشير محدد لصندوق %s."
+
+#. module: expense_cash_control_telegram
+msgid "Set the internal transfer account of the company first (Accounting settings)."
+msgstr "يجب على المحاسب تحديد حساب التحويل الداخلي أولاً."
+
+#. module: expense_cash_control_telegram
+msgid "Owner Cash Box"
+msgstr "صندوق المالك"
+
+#. module: expense_cash_control_telegram
+msgid "Cash Box"
+msgstr "صندوقي"
+
+#. module: expense_cash_control_telegram
+msgid "Collect POS cash, record expenses and see your balance."
+msgstr "استلم نقد الكاشير، سجّل المصاريف، واطّلع على رصيدك."

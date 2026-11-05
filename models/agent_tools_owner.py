@@ -8,7 +8,7 @@ is left, missing till...) returns error "refused" with a message to show the own
 import base64
 import binascii
 
-from odoo import api, fields, models
+from odoo import api, models
 from odoo.exceptions import UserError
 
 from odoo.addons.donialink_agent.models.agent_registry import ACCESS_WRITE, ToolError, agent_tool
@@ -44,22 +44,7 @@ class AgentTools(models.AbstractModel):
 
     @api.model
     def _owner_card(self, box, **extra):
-        box.invalidate_recordset(['balance', 'uncollected_session_count', 'uncollected_amount'])
-        currency = box.currency_id
-        card = {
-            'box_id': box.id,
-            'owner': box.name,
-            'company_id': box.company_id.id,
-            'company': box.company_id.name,
-            'currency': currency.name,
-            'balance': box.balance,
-            'balance_text': currency.format(box.balance),
-            'business_owes_owner': -box.balance if box.balance < 0 else 0.0,
-            'uncollected_sessions': box.uncollected_session_count,
-            'uncollected_amount': box.uncollected_amount,
-            'till_available': bool(box.till_journal_id),
-            'text': box._card_text(),
-        }
+        card = box._api_card()
         card.update(extra)
         return card
 
@@ -121,19 +106,7 @@ class AgentTools(models.AbstractModel):
     )
     def _tool_owner_sessions(self, box_id, telegram_user_id, limit=10):
         box = self._owner_box(box_id, telegram_user_id)
-        currency = box.currency_id
-        sessions = []
-        for session in box._uncollected_sessions()[:limit]:
-            stop = fields.Datetime.context_timestamp(session, session.stop_at) if session.stop_at else None
-            sessions.append({
-                'session_id': session.id,
-                'name': session.name,
-                'pos': session.config_id.name,
-                'closed_at': stop.strftime('%Y-%m-%d %H:%M') if stop else None,
-                'amount': session.owner_remaining_amount,
-                'amount_text': currency.format(session.owner_remaining_amount),
-                'state': session.owner_collection_state,
-            })
+        sessions = box._api_sessions(limit)
         return {'sessions': sessions}
 
     @agent_tool(
@@ -166,12 +139,7 @@ class AgentTools(models.AbstractModel):
     )
     def _tool_owner_categories(self, box_id, telegram_user_id):
         box = self._owner_box(box_id, telegram_user_id)
-        Category = self.env['expense.category'].sudo()
-        domain = [('company_id', 'in', [False, box.company_id.id]), ('owner_box_id', '=', False),
-                  ('account_id', '!=', False)]
-        categories = Category.search(domain + [('owner_expense', '=', True)], order='sequence, name') \
-            or Category.search(domain, order='sequence, name')
-        return {'categories': [{'id': c.id, 'name': c.name} for c in categories]}
+        return {'categories': box._api_categories()}
 
     @agent_tool(
         name='owner_expense', title='Owner expense', title_ar='مصروف المالك',
@@ -198,8 +166,8 @@ class AgentTools(models.AbstractModel):
     def _tool_owner_expense(self, box_id, telegram_user_id, amount, category_id, note=None, chat_id=None,
                             message_id=None, photos=()):
         box = self._owner_box(box_id, telegram_user_id)
-        category = self.env['expense.category'].sudo().browse(category_id).exists()
-        if not category or category.company_id not in (box.company_id, self.env['res.company']):
+        category = box._api_category(category_id)
+        if not category:
             raise ToolError('not_found', f'No category {category_id}', status=404)
         decoded = []
         for photo in photos or ():
@@ -256,16 +224,7 @@ class AgentTools(models.AbstractModel):
     )
     def _tool_owner_moves(self, box_id, telegram_user_id, limit=10):
         box = self._owner_box(box_id, telegram_user_id)
-        moves = self.env['ecc.owner.move'].sudo().search(
-            [('box_id', '=', box.id), ('state', '=', 'posted')], limit=limit)
-        running = box.balance
-        rows, lines = [], []
-        for move in moves:
-            rows.append({'date': fields.Datetime.to_string(move.date), 'type': move.kind,
-                         'type_label': move._kind_label(), 'description': move.name, 'amount': move.amount,
-                         'balance_after': running})
-            lines.append(move._bot_line(running))
-            running -= move.amount
+        rows, lines = box._api_moves(limit)
         return {'moves': rows, 'balance': box.balance, 'text': '\n'.join(lines) or 'No movements yet.'}
 
     @agent_tool(
