@@ -4,7 +4,7 @@ from datetime import timedelta
 from unittest.mock import patch
 
 from odoo import fields
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 from odoo.tests import Form, tagged
 
 from odoo.addons.donialink_agent.models.agent_registry import ToolError
@@ -131,6 +131,52 @@ class TestOwnerBox(ExpenseCashCommon):
         self.assertEqual(self.box.balance, 70000.0)
         self.assertEqual(self.box.move_ids.source, 'pos')
         self.assertEqual(session.owner_collection_state, 'collected', 'The 10,000 left is the float')
+
+    def test_return_collection_by_mistake(self):
+        session = self._closed_session(100000.0)
+        self._tool('owner_collect', session_id=session.id)
+        move = self.box.move_ids
+        self.assertEqual(self.box.balance, 100000.0)
+        with self.assertRaises(UserError):
+            move._return_to_till('  ')
+        wizard = self.env['ecc.owner.collection.return'].with_context(
+            **move.action_return_cash()['context']).create({'reason': 'Wrong partner'})
+        self.assertEqual(wizard.journal_id, session.cash_journal_id)
+        wizard.action_confirm()
+        self.assertEqual(move.state, 'returned')
+        self.assertEqual(move.return_statement_line_id.amount, 100000.0, 'The cash is back in the till')
+        self.assertEqual(move.return_statement_line_id.journal_id, session.cash_journal_id)
+        self.assertEqual(self.box.balance, 0.0)
+        self.assertEqual(self.box.account_balance, 0.0, 'Books and box agree')
+        self.assertEqual(session.owner_collection_state, 'none')
+        self.assertEqual(session.owner_remaining_amount, 100000.0, 'The session can be collected again')
+        with self.assertRaises(UserError):
+            move._return_to_till('twice')
+        self._tool('owner_collect', session_id=session.id)
+        self.assertEqual(self.box.balance, 100000.0)
+
+    def test_return_pos_cash_out_collection(self):
+        self.config.use_cash_categories = True
+        session = self._closed_session(80000.0, cash_out_category=self.box.collection_category_id, cash_out=70000.0)
+        move = self.box.move_ids
+        move._return_to_till('Cashier picked the owner category by mistake')
+        self.assertEqual(self.box.balance, 0.0)
+        self.assertEqual(self.box.account_balance, 0.0)
+        self.assertEqual(session.owner_remaining_amount, 80000.0, 'Float + the returned cash')
+        with self.assertRaises(UserError):
+            move.cash_move_id.action_reset()
+
+    def test_return_only_for_accountant(self):
+        session = self._closed_session(30000.0)
+        self._tool('owner_collect', session_id=session.id)
+        move = self.box.move_ids
+        user = self.env['res.users'].create({
+            'name': 'ECC Clerk', 'login': 'ecc_clerk_return',
+            'groups_id': [(6, 0, [self.env.ref('expense_cash_control.group_expense_user').id,
+                                  self.env.ref('base.group_user').id])],
+        })
+        with self.assertRaises(AccessError):
+            move.with_user(user).action_return_cash()
 
     def test_expense_review_and_reject(self):
         categories = self._tool('owner_categories')['categories']

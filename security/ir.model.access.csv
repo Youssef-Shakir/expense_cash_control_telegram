@@ -16,3 +16,4 @@ access_ecc_owner_difference_user,ecc.owner.difference.user,model_ecc_owner_diffe
 access_ecc_owner_difference_manager,ecc.owner.difference.manager,model_ecc_owner_difference,expense_cash_control.group_expense_manager,1,1,1,0
 access_ecc_owner_statement_user,ecc.owner.statement.user,model_ecc_owner_statement,expense_cash_control.group_expense_user,1,0,0,0
 access_ecc_owner_statement_manager,ecc.owner.statement.manager,model_ecc_owner_statement,expense_cash_control.group_expense_manager,1,1,1,0
+access_ecc_owner_collection_return_manager,ecc.owner.collection.return.manager,model_ecc_owner_collection_return,expense_cash_control.group_expense_manager,1,1,1,1

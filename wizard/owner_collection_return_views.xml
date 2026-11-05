@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ecc_owner_collection_return_form" model="ir.ui.view">
+        <field name="name">ecc.owner.collection.return.form</field>
+        <field name="model">ecc.owner.collection.return</field>
+        <field name="arch" type="xml">
+            <form string="Return Collected Cash">
+                <div class="alert alert-warning" role="alert">
+                    The cash goes back from the owner box to the till, the owner's balance drops by this amount
+                    and the session can be collected again. The collection stays in the history as "Returned to Till".
+                </div>
+                <group>
+                    <group>
+                        <field name="move_id"/>
+                        <field name="box_id"/>
+                        <field name="session_id" invisible="not session_id"/>
+                    </group>
+                    <group>
+                        <field name="amount"/>
+                        <field name="journal_id"/>
+                        <field name="currency_id" invisible="1"/>
+                    </group>
+                </group>
+                <group>
+                    <field name="reason" placeholder="e.g. Collected into the wrong partner's box"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Return to Till" class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

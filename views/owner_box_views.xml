@@ -123,7 +123,7 @@
                     <notebook>
                         <page string="Last Movements" name="moves">
                             <field name="move_ids" readonly="1" context="{'active_test': False}">
-                                <list limit="20" decoration-muted="state == 'cancelled'">
+                                <list limit="20" decoration-muted="state in ('cancelled', 'returned')">
                                     <field name="date"/>
                                     <field name="kind" widget="badge" decoration-success="kind == 'collect'"
                                            decoration-danger="kind == 'expense'" decoration-warning="kind == 'drawing'"
@@ -133,6 +133,10 @@
                                     <field name="amount" sum="Balance"/>
                                     <field name="state" optional="hide"/>
                                     <field name="currency_id" column_invisible="True"/>
+                                    <button name="action_return_cash" type="object" string="Return to Till"
+                                            icon="fa-undo" class="btn-link text-danger"
+                                            groups="expense_cash_control.group_expense_manager"
+                                            invisible="kind != 'collect' or state != 'posted'"/>
                                 </list>
                             </field>
                         </page>
@@ -162,7 +166,7 @@
         <field name="name">ecc.owner.move.list</field>
         <field name="model">ecc.owner.move</field>
         <field name="arch" type="xml">
-            <list create="false" decoration-muted="state == 'cancelled'">
+            <list create="false" decoration-muted="state in ('cancelled', 'returned')">
                 <field name="date"/>
                 <field name="box_id"/>
                 <field name="kind" widget="badge" decoration-success="kind == 'collect'"
@@ -175,6 +179,9 @@
                 <field name="state" optional="hide"/>
                 <button name="action_open_entry" type="object" icon="fa-book" title="Journal Entry"
                         invisible="not account_move_id"/>
+                <button name="action_return_cash" type="object" string="Return to Till" icon="fa-undo"
+                        class="btn-link text-danger" groups="expense_cash_control.group_expense_manager"
+                        invisible="kind != 'collect' or state != 'posted'"/>
                 <field name="account_move_id" column_invisible="True"/>
                 <field name="currency_id" column_invisible="True"/>
             </list>
@@ -185,6 +192,12 @@
         <field name="model">ecc.owner.move</field>
         <field name="arch" type="xml">
             <form create="false" edit="false">
+                <header>
+                    <button name="action_return_cash" type="object" string="Return to Till" class="btn-secondary"
+                            groups="expense_cash_control.group_expense_manager"
+                            invisible="kind != 'collect' or state != 'posted'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="posted"/>
+                </header>
                 <sheet>
                     <group>
                         <group>
@@ -193,7 +206,6 @@
                             <field name="kind"/>
                             <field name="name"/>
                             <field name="amount"/>
-                            <field name="state"/>
                         </group>
                         <group>
                             <field name="source"/>
@@ -204,6 +216,17 @@
                             <field name="receipt_id" invisible="not receipt_id"/>
                             <field name="deposit_target" invisible="kind != 'deposit'"/>
                             <field name="account_move_id"/>
+                        </group>
+                    </group>
+                    <group string="Returned to Till" invisible="state != 'returned'">
+                        <group>
+                            <field name="return_reason"/>
+                            <field name="return_date"/>
+                            <field name="return_user_id"/>
+                        </group>
+                        <group>
+                            <field name="return_journal_id"/>
+                            <field name="return_move_id"/>
                         </group>
                     </group>
                     <field name="currency_id" invisible="1"/>
@@ -220,6 +243,7 @@
                 <field name="name"/>
                 <field name="session_id"/>
                 <filter name="posted" string="Posted" domain="[('state', '=', 'posted')]"/>
+                <filter name="returned" string="Returned to Till" domain="[('state', '=', 'returned')]"/>
                 <separator/>
                 <filter name="collect" string="Collected" domain="[('kind', '=', 'collect')]"/>
                 <filter name="expense" string="Expenses" domain="[('kind', '=', 'expense')]"/>

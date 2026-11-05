@@ -20,8 +20,8 @@ import pytz
 from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models, modules, Command, _
-from odoo.exceptions import UserError
-from odoo.tools import float_compare, float_is_zero
+from odoo.exceptions import AccessError, UserError
+from odoo.tools import clean_context, float_compare, float_is_zero
 
 WEEKDAYS = [('0', 'Monday'), ('1', 'Tuesday'), ('2', 'Wednesday'), ('3', 'Thursday'),
             ('4', 'Friday'), ('5', 'Saturday'), ('6', 'Sunday')]
@@ -553,8 +553,8 @@ class OwnerMove(models.Model):
     ], string='Type', required=True, index=True)
     name = fields.Char('Description', required=True)
     amount = fields.Monetary('Amount', required=True, help='Effect on the balance: + in, − out.')
-    state = fields.Selection([('posted', 'Posted'), ('cancelled', 'Cancelled')], default='posted',
-                             required=True, index=True)
+    state = fields.Selection([('posted', 'Posted'), ('cancelled', 'Cancelled'), ('returned', 'Returned to Till')],
+                             default='posted', required=True, index=True)
     source = fields.Selection([('telegram', 'Telegram'), ('pos', 'POS'), ('odoo', 'Odoo')], default='odoo')
     deposit_target = fields.Selection([('bank', 'Bank'), ('till', 'Till')])
     session_id = fields.Many2one('pos.session', string='POS Session', index='btree_not_null', ondelete='set null')
@@ -566,11 +566,70 @@ class OwnerMove(models.Model):
     receipt_id = fields.Many2one('ecc.receipt', string='Receipt', ondelete='set null')
     difference_id = fields.Many2one('ecc.owner.difference', ondelete='cascade')
     account_move_id = fields.Many2one('account.move', string='Journal Entry', ondelete='set null')
+    # a collection taken by mistake, put back in the till by the accountant (Odoo only, never from the bot)
+    return_reason = fields.Char('Return Reason', readonly=True, copy=False)
+    return_date = fields.Datetime('Returned On', readonly=True, copy=False)
+    return_user_id = fields.Many2one('res.users', string='Returned By', readonly=True, copy=False)
+    return_journal_id = fields.Many2one('account.journal', string='Returned To', readonly=True, copy=False)
+    return_statement_line_id = fields.Many2one('account.bank.statement.line', string='Return Line',
+                                               readonly=True, copy=False, ondelete='set null')
+    return_move_id = fields.Many2one(related='return_statement_line_id.move_id', string='Return Entry')
 
     def action_open_entry(self):
         self.ensure_one()
         return {'type': 'ir.actions.act_window', 'res_model': 'account.move', 'res_id': self.account_move_id.id,
                 'views': [(False, 'form')]}
+
+    def action_return_cash(self):
+        """Opens the wizard: the accountant puts a collection made by mistake back in the till."""
+        self.ensure_one()
+        self._check_returnable()
+        return {
+            'type': 'ir.actions.act_window', 'name': _('Return Collected Cash'),
+            'res_model': 'ecc.owner.collection.return', 'view_mode': 'form', 'target': 'new',
+            'context': {'default_move_id': self.id},
+        }
+
+    def _check_returnable(self):
+        if not self.env.user.has_group('expense_cash_control.group_expense_manager'):
+            raise AccessError(_('Only the accountant (Expenses manager) can return collected cash.'))
+        for move in self:
+            if move.kind != 'collect' or move.state != 'posted':
+                raise UserError(_('Only a posted collection can be returned (%s).', move.name))
+            if not (move.session_id.cash_journal_id or move.box_id.till_journal_id):
+                raise UserError(_('No till to return the cash of %s to.', move.name))
+
+    def _return_to_till(self, reason):
+        """Cancel a collection taken by mistake: the cash goes back from the owner box to the till of its
+        session, the box balance drops and the session can be collected again. Kept for the audit trail."""
+        self._check_returnable()
+        reason = (reason or '').strip()
+        if not reason:
+            raise UserError(_('Write why the cash is returned.'))
+        # the wizard's default_move_id must not reach the statement line (it has its own move_id)
+        for move in self.sudo().with_context(clean_context(self.env.context)):
+            box = move.box_id
+            journal = move.session_id.cash_journal_id or box.till_journal_id
+            label = _('Return of %(name)s', name=move.name)
+            st_line = box._till_statement_line(journal, move.amount, label)
+            move.write({
+                'state': 'returned',
+                'return_reason': reason,
+                'return_date': fields.Datetime.now(),
+                'return_user_id': self.env.uid,
+                'return_journal_id': journal.id,
+                'return_statement_line_id': st_line.id,
+            })
+            # a partial-collection difference that came from this collection is no longer true
+            move.session_id.owner_difference_ids.filtered(
+                lambda d: d.state == 'pending' and d.kind == 'collection').write({'state': 'cancelled'})
+            note = _('%(amount)s collected by mistake (%(name)s) returned to %(journal)s by %(user)s: %(reason)s',
+                     amount=move.currency_id.format(move.amount), name=move.name, journal=journal.display_name,
+                     user=self.env.user.name, reason=reason)
+            box.message_post(body=note)
+            if move.session_id:
+                move.session_id.message_post(body=note)
+        return True
 
     def _kind_label(self):
         return dict(self._fields['kind']._description_selection(self.env))[self.kind]

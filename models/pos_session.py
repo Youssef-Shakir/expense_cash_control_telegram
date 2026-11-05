@@ -51,7 +51,10 @@ class PosSession(models.Model):
             from_safe = sum(moves.filtered(lambda m: not m.cash_move_id).mapped('amount'))
             settled = sum(session.owner_difference_ids.filtered(
                 lambda d: d.state == 'done' and d.kind == 'collection').mapped('amount'))
-            remaining = session.cash_register_balance_end_real - from_safe - settled \
+            # a POS Cash Out returned to the till by the accountant is cash to collect again
+            returned = sum(session.owner_move_ids.filtered(
+                lambda m: m.state == 'returned' and m.kind == 'collect' and m.cash_move_id).mapped('amount'))
+            remaining = session.cash_register_balance_end_real + returned - from_safe - settled \
                 if session.state == 'closed' else 0.0
             if moves.filtered('cash_move_id'):
                 # collected at closing with a POS Cash Out: what stays in the drawer is the float

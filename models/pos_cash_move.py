@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models, _
+from odoo.exceptions import UserError
 
 
 class PosCashMove(models.Model):
@@ -26,6 +27,9 @@ class PosCashMove(models.Model):
         return result
 
     def action_reset(self):
+        if self.owner_move_ids.filtered(lambda m: m.state == 'returned'):
+            raise UserError(_('This cash-out was returned to the till from the owner box; it cannot be '
+                              'classified again.'))
         result = super().action_reset()
         self._sync_owner_collection()
         return result
@@ -35,6 +39,8 @@ class PosCashMove(models.Model):
         for move in self:
             box = move.category_id.owner_box_id if move.state == 'classified' and move.move_type == 'out' else False
             current = move.owner_move_ids.filtered(lambda m: m.state == 'posted')
+            if move.owner_move_ids.filtered(lambda m: m.state == 'returned'):
+                continue   # returned to the till by the accountant: never collected again from here
             if box and not current:
                 box._add_move('collect', move.amount_abs,
                               _('Owner collection %(session)s – %(owner)s', session=move.session_id.name or '',

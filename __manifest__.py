@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Expenses & Cash Control - Telegram Receipts',
-    'version': '18.0.2.0.1',
+    'version': '18.0.2.1.0',
     'category': 'Accounting/Expenses',
     'summary': 'Staff send bill photos to the DoniaLink Telegram bot; the accountant reviews them in Odoo',
     'description': """
@@ -45,6 +45,7 @@ Developed by Yousif Shakir - Donialink | تطوير يوسف شاكر
         'data/ir_sequence_data.xml',
         'data/ir_cron_data.xml',
         'wizard/receipt_question_wizard_views.xml',
+        'wizard/owner_collection_return_views.xml',
         'views/telegram_sender_views.xml',
         'views/receipt_views.xml',
         'views/pos_cash_move_views.xml',
