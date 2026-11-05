@@ -19,7 +19,7 @@ from datetime import datetime, time, timedelta
 import pytz
 from dateutil.relativedelta import relativedelta
 
-from odoo import api, fields, models, Command, _
+from odoo import api, fields, models, modules, Command, _
 from odoo.exceptions import UserError
 from odoo.tools import float_compare, float_is_zero
 
@@ -420,9 +420,17 @@ class OwnerBox(models.Model):
     def _cron_owner_statements(self):
         for box in self.search([('is_linked', '=', True), ('statement_frequency', '!=', 'none')]):
             period = box._statement_due(fields.Date.context_today(box))
-            if period:
-                box._create_statement(*period)._send()
-                self.env.cr.commit()
+            if not period:
+                continue
+            statement = box._create_statement(*period)
+            try:
+                statement._send()
+            except UserError as e:
+                # one box the platform refuses (not linked there, bot off) must not stop the others;
+                # the statement stays "Not Sent" and can be sent again from Odoo
+                statement.message_post(body=_('Not sent: %s', e.args[0] if e.args else e))
+            if not modules.module.current_test:
+                self.env.cr.commit()   # each box's statement is kept even if a later one fails
 
     # ------------------------------------------------------------------
     # Telegram
@@ -713,8 +721,13 @@ class OwnerStatement(models.Model):
 
     def _send(self):
         for statement in self:
-            statement.box_id._platform_send('statement', statement._text(), {'statement_id': statement.id})
-            statement.state = 'sent'
+            answer = statement.box_id._platform_send('statement', statement._text(),
+                                                     {'statement_id': statement.id}) or {}
+            if answer.get('delivered'):
+                statement.state = 'sent'
+            else:
+                statement.message_post(body=_('The DoniaLink bot could not deliver the statement: %s',
+                                              answer.get('message') or _('owner not reachable')))
 
     def action_send(self):
         self._send()

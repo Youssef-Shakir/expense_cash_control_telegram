@@ -219,6 +219,16 @@ class TestOwnerBox(ExpenseCashCommon):
         first = fields.Date.from_string('2026-12-01')
         self.assertEqual(self.box._statement_due(first)[1], fields.Date.from_string('2026-11-30'))
 
+    def test_statement_not_delivered(self):
+        self.platform.return_value = {'ok': True, 'delivered': False, 'message': 'blocked the bot'}
+        self.box.action_send_statement()
+        self.assertEqual(self.box.statement_ids[:1].state, 'draft', 'Only a delivered statement waits for the owner')
+        self.platform.side_effect = UserError('not_linked')
+        self.box.statement_frequency = 'weekly'
+        with patch.object(type(self.box), '_statement_due', lambda box, today: (today, today)):
+            self.env['ecc.owner.box']._cron_owner_statements()   # no exception
+        self.assertEqual(self.box.statement_ids[:1].state, 'draft')
+
     def test_amount_must_be_positive(self):
         with self.assertRaises(ToolError):
             self._tool('owner_took', amount=0.0)
