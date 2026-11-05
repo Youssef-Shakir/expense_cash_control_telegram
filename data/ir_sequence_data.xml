@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_ecc_receipt" model="ir.sequence">
+        <field name="name">Telegram Receipt</field>
+        <field name="code">ecc.receipt</field>
+        <field name="prefix">R-</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

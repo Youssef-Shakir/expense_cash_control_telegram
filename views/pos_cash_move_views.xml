@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pos_cash_move_list_receipts" model="ir.ui.view">
+        <field name="name">pos.cash.move.list.receipts</field>
+        <field name="model">pos.cash.move</field>
+        <field name="inherit_id" ref="expense_cash_control.view_pos_cash_move_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="before">
+                <field name="receipt_count" string="Receipts" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_pos_cash_move_form_receipts" model="ir.ui.view">
+        <field name="name">pos.cash.move.form.receipts</field>
+        <field name="model">pos.cash.move</field>
+        <field name="inherit_id" ref="expense_cash_control.view_pos_cash_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_receipts" type="object" class="oe_stat_button" icon="fa-camera"
+                        invisible="not receipt_count">
+                    <field name="receipt_count" widget="statinfo" string="Receipts"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

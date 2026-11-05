@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_ecc_receipt" name="Receipts" parent="expense_cash_control.menu_cash_difference_parent"
+              action="action_ecc_receipt" sequence="35"/>
+    <menuitem id="menu_ecc_telegram_sender" name="Telegram Senders"
+              parent="expense_cash_control.menu_expense_express_config"
+              action="action_ecc_telegram_sender" sequence="30"/>
+</odoo>

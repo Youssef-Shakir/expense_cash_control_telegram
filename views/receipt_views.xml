@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_ecc_receipt_form" model="ir.ui.view">
+        <field name="name">ecc.receipt.form</field>
+        <field name="model">ecc.receipt</field>
+        <field name="arch" type="xml">
+            <form string="Receipt" create="false">
+                <header>
+                    <button name="action_create_bill" type="object" string="Create Bill" class="btn-primary"
+                            invisible="state != 'to_review' or paid_by == 'cashier'"
+                            help="Record it as an expense to pay later (vendor bill) with the photo."/>
+                    <button name="action_create_bill" type="object" string="Create Bill"
+                            invisible="state != 'to_review' or paid_by != 'cashier'"/>
+                    <button name="action_match_cash_move" type="object" string="Match Cash-Out" class="btn-primary"
+                            invisible="state != 'to_review' or not cash_move_id"/>
+                    <button name="action_ask_question" type="object" string="Ask Question" icon="fa-telegram"
+                            invisible="not chat_id"/>
+                    <button name="action_reject" type="object" string="Reject" invisible="state != 'to_review'"/>
+                    <button name="action_mark_duplicate" type="object" string="Duplicate" invisible="state != 'to_review'"/>
+                    <button name="action_reset_to_review" type="object" string="Reset to Review"
+                            invisible="state == 'to_review'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="to_review,processed"/>
+                </header>
+                <div class="alert alert-warning d-flex align-items-center gap-2 mb-0" role="alert"
+                     invisible="not duplicate_of_id or state != 'to_review'">
+                    <i class="fa fa-clone" title="Duplicate"/>
+                    <span>The same picture was already received as</span>
+                    <button name="action_open_duplicate" type="object" class="btn btn-link p-0">
+                        <field name="duplicate_of_id" readonly="1"/>
+                    </button>
+                    <button name="action_mark_duplicate" type="object" string="Mark Duplicate"
+                            class="btn btn-sm btn-warning ms-auto"/>
+                </div>
+                <div class="alert alert-warning d-flex align-items-center gap-2 mb-0" role="alert"
+                     invisible="not amount_mismatch">
+                    <i class="fa fa-exclamation-triangle" title="Amount"/>
+                    <span>The amount of the receipt differs from the recorded cash-out / expense.</span>
+                </div>
+                <div class="alert alert-info d-flex align-items-center gap-2 mb-0" role="status"
+                     invisible="question_state != 'waiting'">
+                    <i class="fa fa-hourglass-half" title="Waiting"/>
+                    <span>Question sent in Telegram, waiting for an answer.</span>
+                </div>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_expense" type="object" class="oe_stat_button" icon="fa-file-text-o"
+                                invisible="not expense_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Expense / Bill</span></div>
+                        </button>
+                    </div>
+                    <field name="image" widget="image" class="oe_avatar" options="{'size': [180, 180]}" readonly="1"
+                           invisible="not image"/>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                        <div class="d-flex flex-wrap gap-3 text-muted">
+                            <span><i class="fa fa-user me-1" title="Sender"/><field name="sender_id" readonly="1" options="{'no_open': True}"/></span>
+                            <span><i class="fa fa-clock-o me-1" title="Sent"/><field name="sent_at" readonly="1"/></span>
+                            <span invisible="not chat_title"><i class="fa fa-telegram me-1" title="Group"/><field name="chat_title" readonly="1"/></span>
+                        </div>
+                    </div>
+                    <group>
+                        <group string="From Telegram">
+                            <field name="paid_by" widget="radio" options="{'horizontal': true}" readonly="state != 'to_review'"/>
+                            <field name="note" readonly="state != 'to_review'" placeholder="No note"/>
+                        </group>
+                        <group string="Review">
+                            <field name="amount" readonly="state != 'to_review'"/>
+                            <field name="category_id" readonly="state != 'to_review'" options="{'no_create': True}"/>
+                            <field name="partner_id" readonly="state != 'to_review'" invisible="paid_by == 'cashier'"/>
+                            <field name="session_id" readonly="state != 'to_review'" options="{'no_create': True}"/>
+                            <field name="cash_move_id" readonly="state != 'to_review'" invisible="paid_by == 'payable' and not cash_move_id"
+                                   options="{'no_create': True}" placeholder="Pick from the suggestions below"/>
+                            <field name="expense_id" invisible="not expense_id"/>
+                            <field name="processed_by_id" invisible="not processed_by_id"/>
+                            <field name="processed_date" invisible="not processed_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Photos" name="photos">
+                            <field name="photo_ids" mode="kanban" readonly="1">
+                                <kanban>
+                                    <field name="id"/>
+                                    <templates>
+                                        <t t-name="card">
+                                            <field name="image" widget="image" options="{'size': [0, 320], 'zoom': true}"/>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+                        </page>
+                        <page string="Match to POS Cash-Out" name="match"
+                              invisible="state != 'to_review' or paid_by == 'payable'">
+                            <p class="text-muted">
+                                Paid by the cashier: the photo is the proof of a POS Cash Out, never a second expense.
+                                Cash-outs of the session open when the photo was sent; the ones without a receipt first.
+                                Choose the category above when the cash-out is not classified yet.
+                            </p>
+                            <field name="suggested_cash_move_ids" readonly="1">
+                                <list create="false" delete="false" decoration-muted="receipt_count &gt; 0">
+                                    <field name="date"/>
+                                    <field name="session_id"/>
+                                    <field name="user_id" widget="many2one_avatar_user"/>
+                                    <field name="name"/>
+                                    <field name="amount_abs" string="Amount"/>
+                                    <field name="category_id"/>
+                                    <field name="state" widget="badge" decoration-warning="state == 'to_classify'"
+                                           decoration-success="state == 'classified'"/>
+                                    <field name="receipt_count" string="Receipts"/>
+                                    <button name="action_match_receipt" type="object" string="Match" icon="fa-link"
+                                            class="btn-link text-success" context="{'ecc_receipt_id': parent.id}"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Questions" name="questions" invisible="not question_ids">
+                            <field name="question_ids" readonly="1">
+                                <list>
+                                    <field name="create_date" string="Asked On"/>
+                                    <field name="user_id"/>
+                                    <field name="text"/>
+                                    <field name="state" widget="badge" decoration-warning="state == 'sent'"
+                                           decoration-success="state == 'answered'"/>
+                                    <field name="answered_by_id"/>
+                                    <field name="answer"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                    <field name="chat_id" invisible="1"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="amount_mismatch" invisible="1"/>
+                    <field name="question_state" invisible="1"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_ecc_receipt_list" model="ir.ui.view">
+        <field name="name">ecc.receipt.list</field>
+        <field name="model">ecc.receipt</field>
+        <field name="arch" type="xml">
+            <list string="Receipts" create="false" decoration-muted="state in ('rejected', 'duplicate')"
+                  decoration-warning="state == 'to_review' and duplicate_of_id">
+                <field name="name"/>
+                <field name="sent_at"/>
+                <field name="sender_id"/>
+                <field name="chat_title" optional="hide"/>
+                <field name="paid_by" widget="badge" decoration-info="paid_by == 'cashier'"
+                       decoration-warning="paid_by == 'payable'"/>
+                <field name="note"/>
+                <field name="amount" sum="Total" optional="show"/>
+                <field name="category_id" optional="show"/>
+                <field name="session_id" optional="show"/>
+                <field name="photo_count" string="Photos" optional="hide"/>
+                <field name="duplicate_of_id" optional="show"/>
+                <field name="question_state" widget="badge" optional="show" decoration-warning="question_state == 'waiting'"
+                       decoration-success="question_state == 'answered'"/>
+                <field name="state" widget="badge" decoration-warning="state == 'to_review'"
+                       decoration-success="state == 'processed'"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="currency_id" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ecc_receipt_kanban" model="ir.ui.view">
+        <field name="name">ecc.receipt.kanban</field>
+        <field name="model">ecc.receipt</field>
+        <field name="arch" type="xml">
+            <kanban create="false" class="o_ecc_receipt_kanban">
+                <field name="state"/>
+                <field name="duplicate_of_id"/>
+                <templates>
+                    <t t-name="card" class="flex-row">
+                        <aside class="o_kanban_aside_full">
+                            <field name="image" widget="image" options="{'size': [96, 96]}" alt="Receipt"/>
+                        </aside>
+                        <main class="ms-2">
+                            <div class="d-flex justify-content-between">
+                                <field name="name" class="fw-bold"/>
+                                <field name="state" widget="badge" decoration-warning="state == 'to_review'"
+                                       decoration-success="state == 'processed'"/>
+                            </div>
+                            <div class="text-muted small"><field name="sender_id"/> · <field name="sent_at"/></div>
+                            <div><field name="paid_by" widget="badge"/> <field name="note"/></div>
+                            <div t-if="record.duplicate_of_id.raw_value" class="text-warning small">
+                                <i class="fa fa-clone" title="Duplicate"/> Possible duplicate
+                            </div>
+                        </main>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_ecc_receipt_search" model="ir.ui.view">
+        <field name="name">ecc.receipt.search</field>
+        <field name="model">ecc.receipt</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="note"/>
+                <field name="sender_id"/>
+                <field name="session_id"/>
+                <filter name="to_review" string="To Review" domain="[('state', '=', 'to_review')]"/>
+                <filter name="processed" string="Processed" domain="[('state', '=', 'processed')]"/>
+                <filter name="closed" string="Rejected / Duplicate" domain="[('state', 'in', ('rejected', 'duplicate'))]"/>
+                <separator/>
+                <filter name="cashier" string="Paid by Cashier" domain="[('paid_by', '=', 'cashier')]"/>
+                <filter name="payable" string="Payable" domain="[('paid_by', '=', 'payable')]"/>
+                <filter name="unspecified" string="Not Specified" domain="[('paid_by', '=', 'unspecified')]"/>
+                <separator/>
+                <filter name="waiting" string="Waiting for Answer" domain="[('question_state', '=', 'waiting')]"/>
+                <filter name="duplicates" string="Possible Duplicates" domain="[('duplicate_of_id', '!=', False)]"/>
+                <separator/>
+                <filter name="filter_sent_at" string="Sent On" date="sent_at"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_paid_by" string="Paid By" context="{'group_by': 'paid_by'}"/>
+                    <filter name="group_sender" string="Sender" context="{'group_by': 'sender_id'}"/>
+                    <filter name="group_day" string="Day" context="{'group_by': 'sent_at:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_ecc_receipt" model="ir.actions.act_window">
+        <field name="name">Receipts</field>
+        <field name="res_model">ecc.receipt</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{'search_default_to_review': 1}</field>
+        <field name="search_view_id" ref="view_ecc_receipt_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No receipt to review</p>
+            <p>Staff post bill photos in their Telegram group; the DoniaLink bot asks who paid and sends them here.
+               Payable: create the bill. Cashier: match it to the POS cash-out it proves.</p>
+        </field>
+    </record>
+
+</odoo>

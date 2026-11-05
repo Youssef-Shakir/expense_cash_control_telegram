@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ecc_receipt_question_wizard_form" model="ir.ui.view">
+        <field name="name">ecc.receipt.question.wizard.form</field>
+        <field name="model">ecc.receipt.question.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Ask a Question">
+                <p class="text-muted">
+                    The DoniaLink bot posts the question in <strong><field name="chat_title" readonly="1" class="d-inline"/></strong>
+                    as a reply under the photo of <field name="receipt_id" readonly="1" class="d-inline"/>.
+                    The answer appears in the receipt's discussion.
+                </p>
+                <field name="text" placeholder="e.g. What is the amount? Which supplier?" nolabel="1"/>
+                <footer>
+                    <button name="action_send" type="object" string="Send" class="btn-primary" icon="fa-paper-plane"/>
+                    <button special="cancel" string="Cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

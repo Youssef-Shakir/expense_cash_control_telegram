@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pos_session_cash_review_form_receipts" model="ir.ui.view">
+        <field name="name">pos.session.cash.review.form.receipts</field>
+        <field name="model">pos.session</field>
+        <field name="inherit_id" ref="expense_cash_control.view_pos_session_cash_review_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('o_ecc_review_cards')]" position="after">
+                <div class="alert alert-warning d-flex align-items-center gap-2" role="status"
+                     invisible="cash_out_without_receipt_count == 0 and receipt_unmatched_count == 0">
+                    <i class="fa fa-camera" title="Receipts"/>
+                    <span>
+                        <field name="cash_out_without_receipt_count" class="fw-bold"/> cash-out(s) without receipt ·
+                        <field name="receipt_unmatched_count" class="fw-bold"/> receipt(s) paid by the cashier not matched.
+                        <span invisible="not cash_out_receipt_required">This POS requires both to be zero before review.</span>
+                    </span>
+                    <button name="action_view_receipts" type="object" string="Receipts" class="btn btn-sm btn-link ms-auto"/>
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='cash_move_ids']/list/field[@name='state']" position="before">
+                <field name="receipt_count" string="Receipts" readonly="1" optional="show"
+                       decoration-danger="move_type == 'out' and receipt_count == 0"/>
+            </xpath>
+            <xpath expr="//page[@name='cash_differences']" position="after">
+                <page string="Receipts" name="receipts" invisible="not receipt_ids">
+                    <field name="receipt_ids" readonly="1">
+                        <list>
+                            <field name="name"/>
+                            <field name="sent_at"/>
+                            <field name="sender_id"/>
+                            <field name="paid_by" widget="badge"/>
+                            <field name="note"/>
+                            <field name="amount"/>
+                            <field name="cash_move_id"/>
+                            <field name="state" widget="badge" decoration-warning="state == 'to_review'"
+                                   decoration-success="state == 'processed'"/>
+                            <field name="currency_id" column_invisible="True"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_pos_session_cash_review_list_receipts" model="ir.ui.view">
+        <field name="name">pos.session.cash.review.list.receipts</field>
+        <field name="model">pos.session</field>
+        <field name="inherit_id" ref="expense_cash_control.view_pos_session_cash_review_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='cash_difference_pending_count']" position="after">
+                <field name="cash_out_without_receipt_count" string="No Receipt" optional="show"/>
+                <field name="receipt_unmatched_count" string="Unmatched Receipts" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

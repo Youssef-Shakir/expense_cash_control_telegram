@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ecc_receipt_user,ecc.receipt.user,model_ecc_receipt,expense_cash_control.group_expense_user,1,0,0,0
+access_ecc_receipt_manager,ecc.receipt.manager,model_ecc_receipt,expense_cash_control.group_expense_manager,1,1,1,1
+access_ecc_receipt_photo_user,ecc.receipt.photo.user,model_ecc_receipt_photo,expense_cash_control.group_expense_user,1,0,0,0
+access_ecc_receipt_photo_manager,ecc.receipt.photo.manager,model_ecc_receipt_photo,expense_cash_control.group_expense_manager,1,1,1,1
+access_ecc_receipt_question_user,ecc.receipt.question.user,model_ecc_receipt_question,expense_cash_control.group_expense_user,1,0,0,0
+access_ecc_receipt_question_manager,ecc.receipt.question.manager,model_ecc_receipt_question,expense_cash_control.group_expense_manager,1,1,1,0
+access_ecc_telegram_sender_user,ecc.telegram.sender.user,model_ecc_telegram_sender,expense_cash_control.group_expense_user,1,0,0,0
+access_ecc_telegram_sender_manager,ecc.telegram.sender.manager,model_ecc_telegram_sender,expense_cash_control.group_expense_manager,1,1,1,1
+access_ecc_receipt_question_wizard_manager,ecc.receipt.question.wizard.manager,model_ecc_receipt_question_wizard,expense_cash_control.group_expense_manager,1,1,1,1

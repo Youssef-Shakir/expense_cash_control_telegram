@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="expense_cash_control.Dashboard" t-inherit-mode="extension">
+        <xpath expr="//button[contains(@t-on-click, 'action_pos_session_cash_review')]" position="after">
+            <button t-attf-class="o_ecc_tile {{d.receipts_to_review ? 'o_ecc_tile_alert' : 'o_ecc_tile_ok'}}"
+                    t-on-click="() => this.open('expense_cash_control_telegram.action_ecc_receipt')">
+                <span class="o_ecc_tile_count" t-esc="d.receipts_to_review"/>
+                <span class="o_ecc_tile_label">Receipts to review</span>
+                <span class="o_ecc_tile_hint">
+                    <t t-if="d.receipts_to_review">Oldest <t t-esc="d.receipts_oldest_days"/> day(s)</t>
+                    <t t-else="">Telegram bill photos</t>
+                    <t t-if="d.receipts_waiting_answer"> · <t t-esc="d.receipts_waiting_answer"/> waiting for an answer</t>
+                </span>
+            </button>
+        </xpath>
+    </t>
+</templates>
