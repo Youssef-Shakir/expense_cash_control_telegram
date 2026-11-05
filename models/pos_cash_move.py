@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 
 
 class PosCashMove(models.Model):
@@ -7,11 +7,42 @@ class PosCashMove(models.Model):
 
     receipt_ids = fields.One2many('ecc.receipt', 'cash_move_id', string='Receipts')
     receipt_count = fields.Integer('Receipt Count', compute='_compute_receipt_count', store=True)
+    owner_move_ids = fields.One2many('ecc.owner.move', 'cash_move_id', string='Owner Collection')
 
     @api.depends('receipt_ids')
     def _compute_receipt_count(self):
         for move in self:
             move.receipt_count = len(move.receipt_ids)
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        moves = super().create(vals_list)
+        moves._sync_owner_collection()
+        return moves
+
+    def action_classify(self):
+        result = super().action_classify()
+        self._sync_owner_collection()
+        return result
+
+    def action_reset(self):
+        result = super().action_reset()
+        self._sync_owner_collection()
+        return result
+
+    def _sync_owner_collection(self):
+        """A Cash Out classified with an owner's collection category moves the cash to his box."""
+        for move in self:
+            box = move.category_id.owner_box_id if move.state == 'classified' and move.move_type == 'out' else False
+            current = move.owner_move_ids.filtered(lambda m: m.state == 'posted')
+            if box and not current:
+                box._add_move('collect', move.amount_abs,
+                              _('Owner collection %(session)s – %(owner)s', session=move.session_id.name or '',
+                                owner=box.name),
+                              source='pos', session_id=move.session_id.id, cash_move_id=move.id,
+                              account_move_id=move.account_move_id.id)
+            elif not box and current:
+                current.write({'state': 'cancelled'})
 
     def action_view_receipts(self):
         self.ensure_one()

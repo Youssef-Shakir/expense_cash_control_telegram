@@ -13,6 +13,7 @@ _logger = logging.getLogger(__name__)
 PAID_BY = [
     ('cashier', 'Cashier'),
     ('payable', 'Payable'),
+    ('owner', 'Owner'),
     ('unspecified', 'Not specified'),
 ]
 
@@ -57,6 +58,8 @@ class Receipt(models.Model):
     note = fields.Text('Note', tracking=True)
 
     sender_id = fields.Many2one('ecc.telegram.sender', string='Sent By', readonly=True, index=True)
+    owner_box_id = fields.Many2one('ecc.owner.box', string='Owner Cash Box', readonly=True, index='btree_not_null',
+                                   ondelete='set null', help='Expense paid by the owner from his cash.')
     sent_at = fields.Datetime('Sent On', required=True, readonly=True, default=fields.Datetime.now, index=True)
     chat_id = fields.Char('Telegram Chat', readonly=True, index=True)
     chat_title = fields.Char('Telegram Group', readonly=True)
@@ -353,8 +356,15 @@ class Receipt(models.Model):
         return values
 
     def _link_purchase_order(self, order):
-        """Called when the purchase order opened from the receipt is saved."""
+        """Called when the purchase order opened from the receipt is saved. An owner expense converted to a
+        purchase order loses its expense: the owner's box is paid by the payment of the PO's bill."""
         self.ensure_one()
+        if self.paid_by == 'owner' and self.expense_id:
+            expense = self.expense_id
+            self.expense_id = False
+            expense.sudo().unlink()
+            self.message_post(body=_('Owner expense replaced by a purchase order: register the payment of its '
+                                     'bill from the journal %s.', self.owner_box_id.journal_id.display_name))
         copies = self._copy_photos(order)
         body = _('Telegram receipt %s.', self._get_html_link())
         if self.note:
@@ -470,13 +480,33 @@ class Receipt(models.Model):
                                      move=self.currency_id.format(move.amount_abs)))
         return True
 
+    def action_mark_reviewed(self):
+        """Owner expense checked (amount, category, vendor fixed on the expense when needed): final."""
+        for receipt in self:
+            receipt._check_to_review()
+            if not receipt.expense_id and not receipt.purchase_order_id:
+                raise UserError(_('Receipt %s has no expense or purchase order yet.', receipt.name))
+        self._close('processed')
+        return True
+
+    def _drop_owner_expense(self):
+        """A rejected / duplicate owner expense is removed: his balance gets the amount back."""
+        for receipt in self.filtered(lambda r: r.paid_by == 'owner' and r.expense_id):
+            expense = receipt.expense_id
+            receipt.expense_id = False
+            receipt.message_post(body=_('Owner expense %s removed: the amount is back in the cash box.',
+                                        expense.display_name))
+            expense.sudo().unlink()
+
     def action_reject(self):
         self._check_to_review()
+        self._drop_owner_expense()
         self._close('rejected')
         return True
 
     def action_mark_duplicate(self):
         self._check_to_review()
+        self._drop_owner_expense()
         self._close('duplicate')
         return True
 

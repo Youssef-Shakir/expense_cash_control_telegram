@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Boxes -->
+    <record id="view_ecc_owner_box_kanban" model="ir.ui.view">
+        <field name="name">ecc.owner.box.kanban</field>
+        <field name="model">ecc.owner.box</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="currency_id"/>
+                <field name="is_linked"/>
+                <field name="balance"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <field name="name" class="fw-bold fs-5"/>
+                            <span t-if="record.is_linked.raw_value" class="badge text-bg-success"><i class="fa fa-telegram" title="Linked"/> Linked</span>
+                            <span t-else="" class="badge text-bg-secondary">Not linked</span>
+                        </div>
+                        <div class="text-muted small"><field name="company_id"/></div>
+                        <div class="fs-3 my-2" t-att-class="record.balance.raw_value &lt; 0 ? 'text-danger' : ''">
+                            <field name="balance" widget="monetary"/>
+                        </div>
+                        <div t-if="record.balance.raw_value &lt; 0" class="small text-danger">The business owes the owner</div>
+                        <div class="d-flex flex-column gap-1 small mt-2">
+                            <a name="action_view_uncollected" type="object"><field name="uncollected_session_count"/> closed session(s) not collected · <field name="uncollected_amount" widget="monetary"/></a>
+                            <a name="action_view_receipts" type="object"><field name="receipt_to_review_count"/> expense(s) waiting for review</a>
+                            <a name="action_view_differences" type="object"><field name="difference_pending_count"/> difference(s) to explain</a>
+                            <span>Last statement: <field name="last_statement_state"/></span>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_ecc_owner_box_list" model="ir.ui.view">
+        <field name="name">ecc.owner.box.list</field>
+        <field name="model">ecc.owner.box</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="journal_id"/>
+                <field name="balance" sum="Total"/>
+                <field name="uncollected_session_count" string="Not Collected"/>
+                <field name="receipt_to_review_count" string="To Review"/>
+                <field name="difference_pending_count" string="Differences"/>
+                <field name="is_linked" widget="boolean"/>
+                <field name="currency_id" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ecc_owner_box_form" model="ir.ui.view">
+        <field name="name">ecc.owner.box.form</field>
+        <field name="model">ecc.owner.box</field>
+        <field name="arch" type="xml">
+            <form string="Owner Cash Box">
+                <header>
+                    <button name="action_generate_link" type="object" string="Telegram Link" class="btn-primary"
+                            invisible="is_linked or not id" icon="fa-telegram"/>
+                    <button name="action_send_statement" type="object" string="Send Statement Now"
+                            invisible="not is_linked"/>
+                    <button name="action_unlink_telegram" type="object" string="Unlink Telegram"
+                            invisible="not is_linked and not link_code"
+                            confirm="The owner will no longer be able to use the bot for this box."/>
+                </header>
+                <div class="alert alert-info mb-0" role="status" invisible="is_linked or not link_code">
+                    Send this link to the owner; he opens it in Telegram once:
+                    <field name="link_url" widget="url" readonly="1" class="d-inline"/>
+                    (code <strong><field name="link_code" readonly="1" class="d-inline"/></strong>)
+                </div>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_moves" type="object" class="oe_stat_button" icon="fa-exchange">
+                            <div class="o_stat_info"><span class="o_stat_text">Movements</span></div>
+                        </button>
+                        <button name="action_view_uncollected" type="object" class="oe_stat_button" icon="fa-desktop">
+                            <field name="uncollected_session_count" widget="statinfo" string="Not Collected"/>
+                        </button>
+                        <button name="action_view_receipts" type="object" class="oe_stat_button" icon="fa-camera">
+                            <field name="receipt_to_review_count" widget="statinfo" string="To Review"/>
+                        </button>
+                        <button name="action_view_differences" type="object" class="oe_stat_button" icon="fa-balance-scale">
+                            <field name="difference_pending_count" widget="statinfo" string="Differences"/>
+                        </button>
+                        <button name="action_view_statements" type="object" class="oe_stat_button" icon="fa-list-alt">
+                            <div class="o_stat_info"><span class="o_stat_text">Statements</span></div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Ali"/></h1>
+                        <h2 invisible="not id">
+                            <field name="balance" widget="monetary" decoration-danger="balance &lt; 0"/>
+                            <small class="text-danger ms-2" invisible="balance &gt;= 0">the business owes the owner</small>
+                        </h2>
+                    </div>
+                    <group>
+                        <group string="Accounting">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="journal_id" invisible="not id"/>
+                            <field name="account_id" invisible="not id"/>
+                            <field name="account_balance" invisible="not id"/>
+                            <field name="drawings_account_id" options="{'no_create': True}"/>
+                            <field name="bank_journal_id" options="{'no_create': True}"/>
+                            <field name="till_journal_id" options="{'no_create': True}"/>
+                        </group>
+                        <group string="POS Collection">
+                            <field name="collection_category_id" invisible="not id"/>
+                            <field name="pos_config_ids" widget="many2many_tags" placeholder="All POS of the company"/>
+                            <field name="collect_from"/>
+                            <field name="notify_session_close"/>
+                        </group>
+                        <group string="Telegram">
+                            <field name="is_linked"/>
+                            <field name="telegram_name" invisible="not is_linked"/>
+                            <field name="statement_frequency"/>
+                            <field name="statement_weekday" invisible="statement_frequency != 'weekly'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Last Movements" name="moves">
+                            <field name="move_ids" readonly="1" context="{'active_test': False}">
+                                <list limit="20" decoration-muted="state == 'cancelled'">
+                                    <field name="date"/>
+                                    <field name="kind" widget="badge" decoration-success="kind == 'collect'"
+                                           decoration-danger="kind == 'expense'" decoration-warning="kind == 'drawing'"
+                                           decoration-info="kind == 'deposit'"/>
+                                    <field name="name"/>
+                                    <field name="source" optional="show"/>
+                                    <field name="amount" sum="Balance"/>
+                                    <field name="state" optional="hide"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                    <field name="link_code" invisible="1"/>
+                    <field name="currency_id" invisible="1"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ecc_owner_box" model="ir.actions.act_window">
+        <field name="name">Owner Cash Boxes</field>
+        <field name="res_model">ecc.owner.box</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create the cash box of an owner</p>
+            <p>Each owner (or partner) gets a cash journal, a POS collection category and a Telegram link.
+               He collects closed sessions, records expenses, withdrawals and deposits from the DoniaLink bot;
+               his balance is computed here.</p>
+        </field>
+    </record>
+
+    <!-- Movements -->
+    <record id="view_ecc_owner_move_list" model="ir.ui.view">
+        <field name="name">ecc.owner.move.list</field>
+        <field name="model">ecc.owner.move</field>
+        <field name="arch" type="xml">
+            <list create="false" decoration-muted="state == 'cancelled'">
+                <field name="date"/>
+                <field name="box_id"/>
+                <field name="kind" widget="badge" decoration-success="kind == 'collect'"
+                       decoration-danger="kind == 'expense'" decoration-warning="kind == 'drawing'"
+                       decoration-info="kind == 'deposit'"/>
+                <field name="name"/>
+                <field name="session_id" optional="show"/>
+                <field name="source" optional="show"/>
+                <field name="amount" sum="Total"/>
+                <field name="state" optional="hide"/>
+                <button name="action_open_entry" type="object" icon="fa-book" title="Journal Entry"
+                        invisible="not account_move_id"/>
+                <field name="account_move_id" column_invisible="True"/>
+                <field name="currency_id" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_ecc_owner_move_form" model="ir.ui.view">
+        <field name="name">ecc.owner.move.form</field>
+        <field name="model">ecc.owner.move</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="box_id"/>
+                            <field name="date"/>
+                            <field name="kind"/>
+                            <field name="name"/>
+                            <field name="amount"/>
+                            <field name="state"/>
+                        </group>
+                        <group>
+                            <field name="source"/>
+                            <field name="session_id" invisible="not session_id"/>
+                            <field name="cash_move_id" invisible="not cash_move_id"/>
+                            <field name="expense_id" invisible="not expense_id"/>
+                            <field name="payment_id" invisible="not payment_id"/>
+                            <field name="receipt_id" invisible="not receipt_id"/>
+                            <field name="deposit_target" invisible="kind != 'deposit'"/>
+                            <field name="account_move_id"/>
+                        </group>
+                    </group>
+                    <field name="currency_id" invisible="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_ecc_owner_move_search" model="ir.ui.view">
+        <field name="name">ecc.owner.move.search</field>
+        <field name="model">ecc.owner.move</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="box_id"/>
+                <field name="name"/>
+                <field name="session_id"/>
+                <filter name="posted" string="Posted" domain="[('state', '=', 'posted')]"/>
+                <separator/>
+                <filter name="collect" string="Collected" domain="[('kind', '=', 'collect')]"/>
+                <filter name="expense" string="Expenses" domain="[('kind', '=', 'expense')]"/>
+                <filter name="drawing" string="Took for Me" domain="[('kind', '=', 'drawing')]"/>
+                <filter name="deposit" string="Deposits" domain="[('kind', '=', 'deposit')]"/>
+                <separator/>
+                <filter name="filter_date" string="Date" date="date"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_box" string="Cash Box" context="{'group_by': 'box_id'}"/>
+                    <filter name="group_kind" string="Type" context="{'group_by': 'kind'}"/>
+                    <filter name="group_day" string="Day" context="{'group_by': 'date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_ecc_owner_move" model="ir.actions.act_window">
+        <field name="name">Owner Movements</field>
+        <field name="res_model">ecc.owner.move</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_posted': 1}</field>
+    </record>
+
+    <!-- Differences -->
+    <record id="view_ecc_owner_difference_list" model="ir.ui.view">
+        <field name="name">ecc.owner.difference.list</field>
+        <field name="model">ecc.owner.difference</field>
+        <field name="arch" type="xml">
+            <list editable="top" create="false" decoration-muted="state != 'pending'">
+                <field name="date" readonly="1"/>
+                <field name="box_id" readonly="1"/>
+                <field name="kind" widget="badge" readonly="1"/>
+                <field name="session_id" readonly="1" optional="show"/>
+                <field name="amount" readonly="1"/>
+                <field name="note" readonly="1" optional="show"/>
+                <field name="resolution" readonly="state != 'pending'"/>
+                <field name="category_id" readonly="state != 'pending'" invisible="resolution != 'loss'"
+                       options="{'no_create': True}"/>
+                <field name="state" widget="badge" decoration-warning="state == 'pending'" decoration-success="state == 'done'"/>
+                <button name="action_resolve" type="object" string="Explain" icon="fa-check"
+                        class="btn-link text-success" invisible="state != 'pending'"/>
+                <button name="action_reset" type="object" string="Reopen" icon="fa-undo" class="btn-link text-muted"
+                        invisible="state != 'done'"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="company_id" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_ecc_owner_difference_search" model="ir.ui.view">
+        <field name="name">ecc.owner.difference.search</field>
+        <field name="model">ecc.owner.difference</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="box_id"/>
+                <field name="session_id"/>
+                <filter name="pending" string="To Explain" domain="[('state', '=', 'pending')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_box" string="Cash Box" context="{'group_by': 'box_id'}"/>
+                    <filter name="group_kind" string="Type" context="{'group_by': 'kind'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_ecc_owner_difference" model="ir.actions.act_window">
+        <field name="name">Owner Differences</field>
+        <field name="res_model">ecc.owner.difference</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'search_default_pending': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nothing to explain</p>
+            <p>Partial collections ("Other amount"), cash counts that do not match and disputed statements appear here.</p>
+        </field>
+    </record>
+
+    <!-- Statements -->
+    <record id="view_ecc_owner_statement_list" model="ir.ui.view">
+        <field name="name">ecc.owner.statement.list</field>
+        <field name="model">ecc.owner.statement</field>
+        <field name="arch" type="xml">
+            <list create="false">
+                <field name="box_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="opening"/>
+                <field name="collected"/>
+                <field name="spent"/>
+                <field name="took"/>
+                <field name="deposited"/>
+                <field name="closing"/>
+                <field name="state" widget="badge" decoration-success="state == 'confirmed'"
+                       decoration-danger="state == 'disputed'" decoration-warning="state == 'sent'"/>
+                <field name="answer_note" optional="show"/>
+                <field name="currency_id" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_ecc_owner_statement_form" model="ir.ui.view">
+        <field name="name">ecc.owner.statement.form</field>
+        <field name="model">ecc.owner.statement</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="false">
+                <header>
+                    <button name="action_send" type="object" string="Send Again" invisible="state in ('confirmed', 'disputed')"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="box_id"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="answered_at"/>
+                            <field name="answer_note"/>
+                        </group>
+                        <group>
+                            <field name="opening"/>
+                            <field name="collected"/>
+                            <field name="spent"/>
+                            <field name="took"/>
+                            <field name="deposited"/>
+                            <field name="adjusted"/>
+                            <field name="closing"/>
+                        </group>
+                    </group>
+                    <field name="currency_id" invisible="1"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_ecc_owner_statement" model="ir.actions.act_window">
+        <field name="name">Owner Statements</field>
+        <field name="res_model">ecc.owner.statement</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Session review: who collected the cash -->
+    <record id="view_pos_session_cash_review_form_owner" model="ir.ui.view">
+        <field name="name">pos.session.cash.review.form.owner</field>
+        <field name="model">pos.session</field>
+        <field name="inherit_id" ref="expense_cash_control.view_pos_session_cash_review_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('o_ecc_review_meta')]" position="inside">
+                <span><i class="fa fa-user-circle" title="Owner collection"/> <field name="owner_collection_text" readonly="1"/></span>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_pos_session_cash_review_list_owner" model="ir.ui.view">
+        <field name="name">pos.session.cash.review.list.owner</field>
+        <field name="model">pos.session</field>
+        <field name="inherit_id" ref="expense_cash_control.view_pos_session_cash_review_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='cash_review_state']" position="before">
+                <field name="owner_collection_state" string="Owner" widget="badge" optional="show"
+                       decoration-success="owner_collection_state == 'collected'"
+                       decoration-warning="owner_collection_state == 'partial'"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Categories: owner expense buttons -->
+    <record id="view_expense_category_form_owner" model="ir.ui.view">
+        <field name="name">expense.category.form.owner</field>
+        <field name="model">expense.category</field>
+        <field name="inherit_id" ref="expense_cash_control.view_expense_category_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='available_in_pos']" position="after">
+                <field name="owner_expense"/>
+                <field name="owner_box_id" invisible="not owner_box_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

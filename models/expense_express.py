@@ -26,3 +26,11 @@ class ExpenseExpress(models.Model):
         if receipt and len(expenses) == 1 and receipt.state == 'to_review' and not receipt.expense_id:
             receipt._link_expense(expenses)
         return expenses
+
+    def write(self, vals):
+        result = super().write(vals)
+        if 'amount' in vals:
+            moves = self.env['ecc.owner.move'].sudo().search([('expense_id', 'in', self.ids)])
+            for move in moves:
+                move.amount = -move.expense_id.amount
+        return result

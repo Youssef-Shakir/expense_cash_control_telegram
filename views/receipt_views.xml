@@ -8,11 +8,17 @@
             <form string="Receipt" create="false">
                 <header>
                     <button name="action_create_purchase_order" type="object" string="Create Purchase Order"
-                            class="btn-primary" invisible="state != 'to_review' or paid_by == 'cashier'"
+                            class="btn-primary" invisible="state != 'to_review' or paid_by in ('cashier', 'owner')"
                             help="New RFQ with the vendor and the photo: add the products and confirm it."/>
                     <button name="action_create_bill" type="object" string="Create Expense"
-                            invisible="state != 'to_review'"
+                            invisible="state != 'to_review' or paid_by == 'owner'"
                             help="For costs that are not stock purchases (repairs, rent...): an expense with a category."/>
+                    <button name="action_mark_reviewed" type="object" string="Mark Reviewed" class="btn-primary"
+                            invisible="state != 'to_review' or paid_by != 'owner'"
+                            help="The owner's expense is checked (fix amount, category or vendor on the expense first)."/>
+                    <button name="action_create_purchase_order" type="object" string="Convert to Purchase Order"
+                            invisible="state != 'to_review' or paid_by != 'owner'"
+                            confirm="The owner's expense is removed and replaced by a purchase order. Register the payment of its bill from the owner's cash journal so his balance goes down again."/>
                     <button name="action_match_cash_move" type="object" string="Match Cash-Out" class="btn-primary"
                             invisible="state != 'to_review' or not cash_move_id"/>
                     <button name="action_ask_question" type="object" string="Ask Question" icon="fa-telegram"
@@ -68,6 +74,7 @@
                         <group string="From Telegram">
                             <field name="paid_by" widget="radio" options="{'horizontal': true}" readonly="state != 'to_review'"/>
                             <field name="note" readonly="state != 'to_review'" placeholder="No note"/>
+                            <field name="owner_box_id" invisible="not owner_box_id"/>
                         </group>
                         <group string="Review">
                             <field name="amount" readonly="state != 'to_review'"/>
@@ -96,7 +103,7 @@
                             </field>
                         </page>
                         <page string="Match to POS Cash-Out" name="match"
-                              invisible="state != 'to_review' or paid_by == 'payable'">
+                              invisible="state != 'to_review' or paid_by in ('payable', 'owner')">
                             <p class="text-muted">
                                 Paid by the cashier: the photo is the proof of a POS Cash Out, never a second expense.
                                 Cash-outs of the session open when the photo was sent; the ones without a receipt first.
@@ -155,7 +162,8 @@
                 <field name="sender_id"/>
                 <field name="chat_title" optional="hide"/>
                 <field name="paid_by" widget="badge" decoration-info="paid_by == 'cashier'"
-                       decoration-warning="paid_by == 'payable'"/>
+                       decoration-warning="paid_by == 'payable'" decoration-success="paid_by == 'owner'"/>
+                <field name="owner_box_id" optional="hide"/>
                 <field name="note"/>
                 <field name="amount" sum="Total" optional="show"/>
                 <field name="category_id" optional="show"/>
@@ -217,6 +225,7 @@
                 <separator/>
                 <filter name="cashier" string="Paid by Cashier" domain="[('paid_by', '=', 'cashier')]"/>
                 <filter name="payable" string="Payable" domain="[('paid_by', '=', 'payable')]"/>
+                <filter name="owner" string="Owner" domain="[('paid_by', '=', 'owner')]"/>
                 <filter name="unspecified" string="Not Specified" domain="[('paid_by', '=', 'unspecified')]"/>
                 <separator/>
                 <filter name="waiting" string="Waiting for Answer" domain="[('question_state', '=', 'waiting')]"/>

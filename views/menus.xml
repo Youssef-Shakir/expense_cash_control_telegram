@@ -5,4 +5,14 @@
     <menuitem id="menu_ecc_telegram_sender" name="Telegram Senders"
               parent="expense_cash_control.menu_expense_express_config"
               action="action_ecc_telegram_sender" sequence="30"/>
+    <menuitem id="menu_ecc_owner_root" name="Owner Cash" parent="expense_cash_control.menu_expense_express_root"
+              groups="expense_cash_control.group_expense_manager" sequence="25"/>
+    <menuitem id="menu_ecc_owner_box" name="Cash Boxes" parent="menu_ecc_owner_root"
+              action="action_ecc_owner_box" sequence="10"/>
+    <menuitem id="menu_ecc_owner_move" name="Movements" parent="menu_ecc_owner_root"
+              action="action_ecc_owner_move" sequence="20"/>
+    <menuitem id="menu_ecc_owner_difference" name="Differences" parent="menu_ecc_owner_root"
+              action="action_ecc_owner_difference" sequence="30"/>
+    <menuitem id="menu_ecc_owner_statement" name="Statements" parent="menu_ecc_owner_root"
+              action="action_ecc_owner_statement" sequence="40"/>
 </odoo>

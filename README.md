@@ -74,6 +74,24 @@ Create the agent key in Odoo (Settings › DoniaLink Agent › agent keys) or wi
 odoo -d DB -u expense_cash_control_telegram --test-enable --test-tags /expense_cash_control_telegram --stop-after-init
 ```
 
-## Next phase
+## Owner cash box (phase 2)
 
-Owner cash box (third bot button `Owner`, private chat) – see `README_OWNER_CASH_BOX.md` in the design notes.
+Menu **Expenses & Cash › Owner Cash** (Cash Boxes, Movements, Differences, Statements).
+
+| | |
+|---|---|
+| Cash box | One per owner **or partner**: its own cash journal ("Owner Cash – Ali"), an Owner Drawings (equity) account, optional deposit bank and till, and a POS category **"Owner collection – Ali"**. |
+| Balance | Sum of the box movements, computed by Odoo: collected − expenses − took for me − deposits ± adjustments. **Negative = the business owes the owner.** The cash account balance is shown next to it for checking. |
+| Collect | (1) At closing: POS **Cash Out** with the "Owner collection – Ali" category → collected automatically (what stays in the drawer is the float). (2) Later from the bot: *Yes, all* / *Other amount*, posted as a cash out of the POS cash journal. A session is collected once and never above its counted cash; *Other amount* opens a difference (left in till / loss / error). Session Review shows *Collected by Ali on …* / *Partially collected* / *Not collected*. |
+| Expense | Photo + amount + category (categories flagged *Owner Expense Button*) → a **Paid Now** expense from his box, at once. It lands in **Receipts** tagged *Owner*: *Mark Reviewed*, fix the expense, *Reject / Duplicate* (the amount goes back to his box) or **Convert to Purchase Order** (the expense is removed; paying the PO's bill from his cash journal lowers the box again). |
+| Took for me | Owner box → Owner Drawings (equity). Never an expense, so profit stays right. |
+| Deposit | Bank: owner box → internal transfer account (match it with the bank statement). Till: cash in of the POS cash journal. |
+| Count my cash | A count different from the balance opens a difference; *Loss / Gain* with a category posts the adjustment. |
+| Statements | Weekly (chosen day) or monthly per box, sent by the bot with ✅ Correct / ⚠️ Not correct; a dispute opens a difference. *Send Statement Now* on the box. |
+| Linking | *Telegram Link* on the box creates a one-time code registered on the platform; the owner opens `t.me/<bot>?start=<code>` once. Only the linked Telegram user can use the box. |
+
+Agent tools (category `owner`): `owner_link`, `owner_boxes`, `owner_card`, `owner_sessions`, `owner_collect`,
+`owner_categories`, `owner_expense`, `owner_took`, `owner_deposit`, `owner_moves`, `owner_count`,
+`owner_statement_answer`. Odoo → platform: `POST /api/agents/telegram/owner-link` and
+`POST /api/agents/telegram/owner` (`kind` = `session_closed` | `statement`).
+The fake bot has `owner …` commands (see `scripts/fake_bot.py --help`).
