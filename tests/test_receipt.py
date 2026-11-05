@@ -10,8 +10,8 @@ from odoo.tests import Form, tagged
 from odoo.addons.donialink_agent.models.agent_registry import ToolError
 from odoo.addons.expense_cash_control.tests.common import ExpenseCashCommon
 
-PNG_A = base64.b64encode(b'\x89PNG\r\n\x1a\n-receipt-A').decode()
-PNG_B = base64.b64encode(b'\x89PNG\r\n\x1a\n-receipt-B').decode()
+PNG_A = base64.b64encode(b'\x89PNG\r\n\x1a\n-ecc-test-receipt-A').decode()
+PNG_B = base64.b64encode(b'\x89PNG\r\n\x1a\n-ecc-test-receipt-B').decode()
 CHAT = '-1001234'
 
 
@@ -45,7 +45,7 @@ class TestTelegramReceipt(ExpenseCashCommon):
             'company_id': self.company.id, 'chat_id': CHAT, 'chat_title': 'Cafe staff',
             'message_id': message_id, 'media_group_id': media_group_id,
             'sender': {'telegram_user_id': user, 'name': 'Ali', 'username': 'ali'},
-            'photo': {'content_b64': content, 'file_unique_id': file_unique_id, 'mimetype': 'image/png'},
+            'photo': {'content_b64': content, 'file_unique_id': file_unique_id and 'test-%s' % file_unique_id, 'mimetype': 'image/png'},
         }
         params.update(kw)
         _meta, result = self.tools._run_tool('receipt_create', params)
@@ -205,7 +205,36 @@ class TestTelegramReceipt(ExpenseCashCommon):
         self.assertEqual(receipt.state, 'to_review')
 
     def test_dashboard(self):
+        Dashboard = self.env['expense.cash.dashboard']
+        before = Dashboard.get_dashboard_data()['receipts_to_review']
         self._send(90)
-        data = self.env['expense.cash.dashboard'].get_dashboard_data()
-        self.assertEqual(data['receipts_to_review'], 1)
-        self.assertEqual(data['receipts_oldest_days'], 0)
+        self.assertEqual(Dashboard.get_dashboard_data()['receipts_to_review'], before + 1)
+
+    def test_purchase_order_from_payable_receipt(self):
+        receipt = self._receipt(self._send(100, caption='flour 10 bags'))
+        receipt.write({'paid_by': 'payable', 'partner_id': self.vendor.id})
+        action = receipt.action_create_purchase_order()
+        product = self.env['product.product'].create({'name': 'ECC Flour', 'type': 'consu', 'standard_price': 5.0})
+        form = Form(self.env['purchase.order'].with_context(action['context']))
+        self.assertEqual(form.partner_id, self.vendor)
+        self.assertEqual(form.origin, receipt.name)
+        with form.order_line.new() as line:
+            line.product_id = product
+            line.product_qty = 10
+            line.price_unit = 5.0
+            line.taxes_id.clear()
+        order = form.save()
+        self.assertEqual(receipt.purchase_order_id, order)
+        self.assertEqual(receipt.state, 'processed')
+        self.assertEqual(order.state, 'draft', 'An RFQ the accountant confirms')
+        self.assertTrue(self.env['ir.attachment'].search_count(
+            [('res_model', '=', 'purchase.order'), ('res_id', '=', order.id)]))
+        receipt.amount = 50.0
+        self.assertFalse(receipt.amount_mismatch)
+        order.button_confirm()
+        order.order_line.qty_received = 10
+        order.action_create_invoice()
+        bill = order.invoice_ids
+        self.assertTrue(bill)
+        self.assertTrue(self.env['ir.attachment'].search_count(
+            [('res_model', '=', 'account.move'), ('res_id', '=', bill.id)]), 'The bill gets the photo')

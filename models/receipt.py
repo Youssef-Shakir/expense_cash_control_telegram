@@ -78,6 +78,8 @@ class Receipt(models.Model):
     # Result
     expense_id = fields.Many2one('expense.express', string='Expense / Bill', readonly=True, copy=False,
                                  index='btree_not_null', ondelete='set null')
+    purchase_order_id = fields.Many2one('purchase.order', string='Purchase Order', readonly=True, copy=False,
+                                        index='btree_not_null', ondelete='set null')
     cash_move_id = fields.Many2one('pos.cash.move', string='POS Cash-Out', copy=False,
                                    index='btree_not_null', ondelete='set null',
                                    domain="[('company_id', '=', company_id), ('move_type', '=', 'out')]")
@@ -124,11 +126,15 @@ class Receipt(models.Model):
         for receipt in self:
             receipt.age_days = (now - receipt.sent_at).days if receipt.sent_at else 0
 
-    @api.depends('amount', 'cash_move_id.amount_abs', 'expense_id.amount', 'currency_id')
+    @api.depends('amount', 'cash_move_id.amount_abs', 'expense_id.amount', 'purchase_order_id.amount_total',
+                 'currency_id')
     def _compute_amount_mismatch(self):
         for receipt in self:
             if receipt.cash_move_id:
                 other = receipt.cash_move_id.amount_abs
+            elif receipt.purchase_order_id:
+                order = receipt.purchase_order_id
+                other = order.amount_total if order.order_line else None
             elif receipt.expense_id:
                 other = receipt.expense_id.amount
             else:
@@ -323,9 +329,58 @@ class Receipt(models.Model):
     def _close(self, state):
         self.write({'state': state, 'processed_by_id': self.env.user.id, 'processed_date': fields.Datetime.now()})
 
+    def action_create_purchase_order(self):
+        """Open a new RFQ prefilled from the receipt (vendor, date, note, photo); the accountant adds the
+        product lines and confirms it. Saving it links it here and copies the photos on it."""
+        self.ensure_one()
+        self._check_to_review()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Purchase Order from %s', self.name),
+            'res_model': 'purchase.order',
+            'views': [(False, 'form')],
+            'target': 'current',
+            'context': {'ecc_receipt_id': self.id},
+        }
+
+    def _purchase_defaults(self):
+        self.ensure_one()
+        values = {'origin': self.name}
+        if self.partner_id:
+            values['partner_id'] = self.partner_id.id
+        if self.sent_at:
+            values['date_order'] = self.sent_at
+        return values
+
+    def _link_purchase_order(self, order):
+        """Called when the purchase order opened from the receipt is saved."""
+        self.ensure_one()
+        copies = self._copy_photos(order)
+        body = _('Telegram receipt %s.', self._get_html_link())
+        if self.note:
+            body = _('Telegram receipt %(ref)s: %(note)s', ref=self._get_html_link(), note=self.note)
+        order.message_post(body=body, attachment_ids=copies.ids)
+        vals = {'purchase_order_id': order.id}
+        if not self.partner_id:
+            vals['partner_id'] = order.partner_id.id
+        self.write(vals)
+        self._close('processed')
+        self.message_post(body=_('Recorded as purchase order %s.', order._get_html_link()))
+
+    def _copy_photos(self, record):
+        copies = self.env['ir.attachment']
+        for photo in self.photo_ids:
+            copies |= photo.attachment_id.sudo().copy({'res_model': record._name, 'res_id': record.id})
+        return copies
+
+    def action_open_purchase_order(self):
+        self.ensure_one()
+        return {'type': 'ir.actions.act_window', 'res_model': 'purchase.order', 'res_id': self.purchase_order_id.id,
+                'views': [(False, 'form')], 'target': 'current'}
+
     def action_create_bill(self):
-        """Open a new expense prefilled from the receipt ("To Pay Later" unless the cashier paid it);
-        saving it links it here and copies the photos on it."""
+        """Open a new expense prefilled from the receipt ("To Pay Later" unless the cashier paid it), for
+        costs that are not stock purchases; saving it links it here and copies the photos on it."""
         self.ensure_one()
         self._check_to_review()
         return {
@@ -358,9 +413,7 @@ class Receipt(models.Model):
     def _link_expense(self, expense):
         """Called when the expense opened from the receipt is saved."""
         self.ensure_one()
-        copies = self.env['ir.attachment']
-        for photo in self.photo_ids:
-            copies |= photo.attachment_id.sudo().copy({'res_model': expense._name, 'res_id': expense.id})
+        copies = self._copy_photos(expense)
         if copies:
             expense.write({'attachment_ids': [(4, a.id) for a in copies]})
         vals = {'expense_id': expense.id}
@@ -401,9 +454,7 @@ class Receipt(models.Model):
                                       'classified yet and is classified with it.', move.name))
                 move.category_id = category
             move.action_classify()
-        copies = self.env['ir.attachment']
-        for photo in self.photo_ids:
-            copies |= photo.attachment_id.sudo().copy({'res_model': move._name, 'res_id': move.id})
+        copies = self._copy_photos(move)
         move.message_post(body=_('Receipt %s attached as proof.', self._get_html_link()),
                           attachment_ids=copies.ids)
         vals = {'cash_move_id': move.id, 'session_id': move.session_id.id}

@@ -18,7 +18,8 @@ Employee ──photo──▶ Telegram group ──▶ DoniaLink Platform (bot) 
 | Area | Behaviour |
 |---|---|
 | Receipts | Reference `R-0153`, photos (an album = one receipt), sender, group, date, *Paid by* (Cashier / Payable / Not specified), note. Status To Review → Processed / Rejected / Duplicate. |
-| Create Bill | Opens a new expense ("To Pay Later" vendor bill) prefilled from the receipt; saving it links it and copies the photos on it. |
+| Create Purchase Order | Main action for *Payable* photos: opens a new RFQ prefilled with the vendor, date and source (`R-0153`); the accountant adds the product lines and confirms. Saving it links it and copies the photos on the order; the vendor bill created from it gets them too. |
+| Create Expense | For costs that are not stock purchases (repairs, rent…): a new expense prefilled from the receipt ("To Pay Later" bill by default). |
 | Match Cash-Out | Suggests the cash-outs of the session open when the photo was sent (without receipt first, closest amount). Matching attaches the photos on the cash-out and, if it is not classified yet, classifies it with the receipt's category. **No second expense** is recorded. An amount difference is shown as a warning. One cash-out can have several receipts. |
 | Ask Question | The bot posts the question in the group as a reply under the photo; the answer comes back in the receipt chatter (status *Waiting for Answer → Answered*). |
 | Duplicates | Same Telegram file (`file_unique_id`, kept when forwarded) or same bytes as an earlier receipt → warning banner + one-click *Mark Duplicate*. Never closed automatically. |
@@ -28,7 +29,7 @@ Employee ──photo──▶ Telegram group ──▶ DoniaLink Platform (bot) 
 
 ## Setup
 
-1. Install **Telegram Reports** (18.0.2.3.0+), **DoniaLink Agent Connector** and this module; connect the
+1. Install **Purchase**, **Telegram Reports** (18.0.2.3.0+), **DoniaLink Agent Connector** and this module; connect the
    database to the DoniaLink Platform (Settings › DoniaLink Agent).
 2. On the platform's **/telegram** page, link the client's staff group, pick its **company** and switch
    **Receipts** on.

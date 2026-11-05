@@ -7,11 +7,12 @@
         <field name="arch" type="xml">
             <form string="Receipt" create="false">
                 <header>
-                    <button name="action_create_bill" type="object" string="Create Bill" class="btn-primary"
-                            invisible="state != 'to_review' or paid_by == 'cashier'"
-                            help="Record it as an expense to pay later (vendor bill) with the photo."/>
-                    <button name="action_create_bill" type="object" string="Create Bill"
-                            invisible="state != 'to_review' or paid_by != 'cashier'"/>
+                    <button name="action_create_purchase_order" type="object" string="Create Purchase Order"
+                            class="btn-primary" invisible="state != 'to_review' or paid_by == 'cashier'"
+                            help="New RFQ with the vendor and the photo: add the products and confirm it."/>
+                    <button name="action_create_bill" type="object" string="Create Expense"
+                            invisible="state != 'to_review'"
+                            help="For costs that are not stock purchases (repairs, rent...): an expense with a category."/>
                     <button name="action_match_cash_move" type="object" string="Match Cash-Out" class="btn-primary"
                             invisible="state != 'to_review' or not cash_move_id"/>
                     <button name="action_ask_question" type="object" string="Ask Question" icon="fa-telegram"
@@ -44,6 +45,10 @@
                 </div>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
+                        <button name="action_open_purchase_order" type="object" class="oe_stat_button"
+                                icon="fa-shopping-cart" invisible="not purchase_order_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Purchase Order</span></div>
+                        </button>
                         <button name="action_open_expense" type="object" class="oe_stat_button" icon="fa-file-text-o"
                                 invisible="not expense_id">
                             <div class="o_stat_info"><span class="o_stat_text">Expense / Bill</span></div>
@@ -71,6 +76,7 @@
                             <field name="session_id" readonly="state != 'to_review'" options="{'no_create': True}"/>
                             <field name="cash_move_id" readonly="state != 'to_review'" invisible="paid_by == 'payable' and not cash_move_id"
                                    options="{'no_create': True}" placeholder="Pick from the suggestions below"/>
+                            <field name="purchase_order_id" invisible="not purchase_order_id"/>
                             <field name="expense_id" invisible="not expense_id"/>
                             <field name="processed_by_id" invisible="not processed_by_id"/>
                             <field name="processed_date" invisible="not processed_date"/>
@@ -235,7 +241,7 @@
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">No receipt to review</p>
             <p>Staff post bill photos in their Telegram group; the DoniaLink bot asks who paid and sends them here.
-               Payable: create the bill. Cashier: match it to the POS cash-out it proves.</p>
+               Payable: create the purchase order. Cashier: match it to the POS cash-out it proves.</p>
         </field>
     </record>
 

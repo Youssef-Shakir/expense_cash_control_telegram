@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Expenses & Cash Control - Telegram Receipts',
-    'version': '18.0.1.0.0',
+    'version': '18.0.1.1.0',
     'category': 'Accounting/Expenses',
     'summary': 'Staff send bill photos to the DoniaLink Telegram bot; the accountant reviews them in Odoo',
     'description': """
@@ -12,7 +12,8 @@ Client staff post bill photos in their Telegram group. The DoniaLink bot
 (run by the DoniaLink Platform) asks who paid it and for a note, then sends
 the photo to this database. The accountant reviews every receipt in one inbox:
 
-* Payable  -> create a "To Pay Later" expense (vendor bill) with the photo
+* Payable  -> create a purchase order (RFQ) prefilled with the vendor and the photo;
+  a "To Pay Later" expense stays available for service costs
 * Cashier  -> match it to the POS cash-out it proves (never a second expense)
 * Ask the sender a question: the bot posts it under the photo, the answer
   comes back in the receipt chatter
@@ -29,6 +30,7 @@ Developed by Yousif Shakir - Donialink | تطوير يوسف شاكر
     'license': 'LGPL-3',
     'depends': [
         'expense_cash_control',
+        'purchase',
         'telegram_reports',
         'donialink_agent',
     ],

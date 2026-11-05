@@ -6,5 +6,6 @@ from . import pos_session
 from . import pos_config
 from . import res_config_settings
 from . import expense_express
+from . import purchase_order
 from . import expense_dashboard
 from . import agent_tools
