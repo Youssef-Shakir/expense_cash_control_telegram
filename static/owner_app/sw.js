@@ -7,6 +7,13 @@ const SHELL = [
     '{{ASSET}}/app.js?v={{VERSION}}',
     '{{ASSET}}/icon-192.png',
     '{{ASSET}}/icon-180.png',
+    '{{ASSET}}/favicon-32.png',
+    '{{ASSET}}/donialink-logo-white.png',
+    '{{ASSET}}/fonts/IBMPlexSansArabic-400.woff2',
+    '{{ASSET}}/fonts/IBMPlexSansArabic-500.woff2',
+    '{{ASSET}}/fonts/IBMPlexSansArabic-600.woff2',
+    '{{ASSET}}/fonts/ReadexPro-500.woff2',
+    '{{ASSET}}/fonts/ReadexPro-600.woff2',
 ];
 
 self.addEventListener('install', (event) => {

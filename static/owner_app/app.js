@@ -46,6 +46,7 @@
             confirm: 'تأكيد', cancel: 'إلغاء', waitingReview: 'قيد المراجعة', closedAt: 'أُغلقت',
             types: { collect: 'استلام', expense: 'مصروف', drawing: 'سحب شخصي', deposit: 'إيداع', adjust: 'تسوية' },
             telegramToo: 'يعمل التطبيق مع بوت تيليجرام: كل ما تسجله هنا يظهر هناك أيضاً.',
+            poweredBy: 'بواسطة', developedBy: 'تطوير', developer: 'يوسف شاكر',
         },
         en: {
             appName: 'Owner Cash Box', login: 'Log in', loginHint: 'Use the login the accountant gave you.',
@@ -86,6 +87,7 @@
             confirm: 'Confirm', cancel: 'Cancel', waitingReview: 'In review', closedAt: 'Closed',
             types: { collect: 'Collected', expense: 'Expense', drawing: 'Took for me', deposit: 'Deposit', adjust: 'Adjustment' },
             telegramToo: 'The app works alongside the Telegram bot: what you record here shows there too.',
+            poweredBy: 'Powered by', developedBy: 'Developed by', developer: 'Yousif Shakir',
         },
     };
 
@@ -225,11 +227,20 @@
         document.title = t('appName');
     }
 
-    function topbar(title, sub, withBack) {
+    const companyLogo = (companyId) => `/web/binary/company_logo${companyId ? `?company=${encodeURIComponent(companyId)}` : ''}`;
+
+    function credit() {
+        return `<footer class="credit"><img src="${esc(assetUrl('donialink-logo-white.png'))}" alt="DoniaLink">
+            ${esc(t('poweredBy'))} <b>DoniaLink</b> · ${esc(t('developedBy'))} <b>${esc(t('developer'))}</b></footer>`;
+    }
+
+    function topbar(title, sub, withBack, logoCompanyId) {
+        const logo = logoCompanyId
+            ? `<img class="company-logo" src="${esc(companyLogo(logoCompanyId))}" alt="" onerror="this.remove()">` : '';
         const left = withBack
             ? `<button class="icon-btn" data-go="home" aria-label="${esc(t('back'))}"><span class="flip">←</span></button>`
             : `<button class="icon-btn" data-act="menu" aria-label="${esc(t('menu'))}">☰</button>`;
-        return `<header class="topbar">${left}<h1>${esc(title)}${sub ? `<span class="sub">${esc(sub)}</span>` : ''}</h1>
+        return `<header class="topbar">${left}${logo}<h1>${esc(title)}${sub ? `<span class="sub">${esc(sub)}</span>` : ''}</h1>
             <button class="icon-btn" data-act="refresh" aria-label="${esc(t('refresh'))}">⟳</button></header>`;
     }
 
@@ -292,7 +303,7 @@
     function renderLogin(noDb) {
         applyLang();
         $app.innerHTML = `
-            <img class="login-logo" src="${esc(assetUrl('icon-192.png'))}" alt="">
+            <img class="login-logo" src="${esc(companyLogo())}" alt="" onerror="this.onerror=null;this.src='${esc(assetUrl('icon-192.png'))}'">
             <h1 class="center" style="margin:0 0 4px">${esc(t('appName'))}</h1>
             <p class="center muted" style="margin:0 0 18px">${esc(t('loginHint'))}</p>
             <form class="card" id="login-form" autocomplete="on">
@@ -303,7 +314,8 @@
                 <button class="btn" type="submit">${esc(t('enter'))}</button>
                 ${noDb ? `<div class="error"><a href="/web/login?redirect=/ecc/owner/app">/web/login</a></div>` : ''}
             </form>
-            <p class="center" style="margin-top:16px"><button class="chip" data-act="lang">${esc(t('language'))}</button></p>`;
+            <p class="center" style="margin-top:16px"><button class="chip" data-act="lang">${esc(t('language'))}</button></p>
+            ${credit()}`;
         const form = document.getElementById('login-form');
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
@@ -364,7 +376,7 @@
             ? `<div class="owes">${esc(t('owes'))} <b dir="ltr">${esc(money(-card.balance))}</b></div>` : '';
         const sessions = state.sessions.slice(0, 3).map(sessionRow).join('');
         $app.innerHTML = `
-            ${topbar(card.owner, card.company)}
+            ${topbar(card.owner, card.company, false, card.company_id)}
             <section class="balance">
                 <div class="label">${esc(t('balance'))}</div>
                 <div class="amount">${esc(money(card.balance))}</div>
@@ -385,7 +397,8 @@
             <h2 class="section">${esc(t('sessionsTitle'))}</h2>
             <div class="list">${sessions || `<div class="empty">${esc(t('noSessions'))}</div>`}
                 ${state.sessions.length > 3 ? `<button class="row" data-go="collect"><span class="main title">+${state.sessions.length - 3}</span><span class="flip">←</span></button>` : ''}</div>
-            <p class="hint center" style="margin-top:18px">${esc(t('telegramToo'))}</p>`;
+            <p class="hint center" style="margin-top:18px">${esc(t('telegramToo'))}</p>
+            ${credit()}`;
     }
 
     const tile = (route, icon, label, badge) => `<button class="action" data-go="${route}">
@@ -756,7 +769,7 @@
         openSheet(`<h3>${esc(state.user || t('appName'))}</h3>${boxes}${install}
             <button class="btn secondary" data-act="lang">🌐 ${esc(t('language'))}</button>
             <button class="btn secondary" data-act="logout">${esc(t('logout'))}</button>
-            <button class="btn secondary" data-act="close-sheet">${esc(t('cancel'))}</button>`);
+            <button class="btn secondary" data-act="close-sheet">${esc(t('cancel'))}</button>${credit()}`);
     }
 
     // ------------------------------------------------------------------ routing

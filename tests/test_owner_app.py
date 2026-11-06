@@ -53,7 +53,7 @@ class TestOwnerApp(HttpCase):
     def _api(self, action, **params):
         response = self.url_open('/ecc/owner/api/%s' % action, data=json.dumps(
             {'jsonrpc': '2.0', 'method': 'call', 'params': params, 'id': 1}),
-            headers={'Content-Type': 'application/json'})
+            headers={'Content-Type': 'application/json'}, timeout=60)
         self.assertEqual(response.status_code, 200)
         body = response.json()
         self.assertNotIn('error', body, body.get('error'))

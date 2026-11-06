@@ -61,16 +61,17 @@ class OwnerApp(http.Controller):
     @http.route('/ecc/owner/manifest.webmanifest', type='http', auth='public', sitemap=False)
     def owner_manifest(self, **kw):
         manifest = {
-            'name': _('Owner Cash Box'),
+            'name': _('Owner Cash Box') + ' · DoniaLink',
             'short_name': _('Cash Box'),
             'description': _('Collect POS cash, record expenses and see your balance.'),
+            'developer': {'name': 'DoniaLink · Yousif Shakir', 'url': 'https://www.donialink.com'},
             'id': '/ecc/owner/app',
             'start_url': '/ecc/owner/app',
             'scope': '/ecc/owner/',
             'display': 'standalone',
             'orientation': 'portrait',
-            'background_color': '#f4f6f8',
-            'theme_color': '#0f5132',
+            'background_color': '#0a1622',
+            'theme_color': '#0a1622',
             'lang': 'ar',
             'dir': 'auto',
             'icons': [
