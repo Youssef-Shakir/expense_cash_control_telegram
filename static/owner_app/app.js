@@ -47,6 +47,10 @@
             types: { collect: 'استلام', expense: 'مصروف', drawing: 'سحب شخصي', deposit: 'إيداع', adjust: 'تسوية' },
             telegramToo: 'يعمل التطبيق مع بوت تيليجرام: كل ما تسجله هنا يظهر هناك أيضاً.',
             poweredBy: 'بواسطة', developedBy: 'تطوير', developer: 'يوسف شاكر',
+            installTitle: 'ثبّت التطبيق على هاتفك',
+            iosSteps: ['اضغط زر المشاركة <b>⬆︎</b> في أسفل سفاري (أو أعلاه في الآيباد)', 'اختر <b>«إضافة إلى الشاشة الرئيسية»</b>', 'اضغط <b>«إضافة»</b>'],
+            iosInApp: 'إذا فتحت الرابط من تيليجرام أو واتساب: افتحه أولاً في سفاري (⋯ ثم «فتح في سفاري»).',
+            installNow: 'تثبيت', dismiss: 'لاحقاً',
         },
         en: {
             appName: 'Owner Cash Box', login: 'Log in', loginHint: 'Use the login the accountant gave you.',
@@ -88,6 +92,10 @@
             types: { collect: 'Collected', expense: 'Expense', drawing: 'Took for me', deposit: 'Deposit', adjust: 'Adjustment' },
             telegramToo: 'The app works alongside the Telegram bot: what you record here shows there too.',
             poweredBy: 'Powered by', developedBy: 'Developed by', developer: 'Yousif Shakir',
+            installTitle: 'Install the app on your phone',
+            iosSteps: ['Tap the Share button <b>⬆︎</b> at the bottom of Safari (top on iPad)', 'Choose <b>"Add to Home Screen"</b>', 'Tap <b>"Add"</b>'],
+            iosInApp: 'Opened from Telegram or WhatsApp? Open it in Safari first (⋯ then "Open in Safari").',
+            installNow: 'Install', dismiss: 'Later',
         },
     };
 
@@ -229,6 +237,37 @@
 
     const companyLogo = (companyId) => `/web/binary/company_logo${companyId ? `?company=${encodeURIComponent(companyId)}` : ''}`;
 
+    // iPhone/iPad never show an install prompt: Safari only offers Share > Add to Home Screen.
+    // iPadOS reports itself as a Mac, so check touch points too.
+    const isIos = () => /iphone|ipad|ipod/i.test(navigator.userAgent)
+        || (/macintosh/i.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+    const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+
+    function installBanner() {
+        if (isStandalone() || store.get('install_dismissed') === '1') {
+            return '';
+        }
+        if (isIos()) {
+            const steps = t('iosSteps').map((step) => `<li>${step}</li>`).join('');
+            return `<div class="install"><strong>📲 ${esc(t('installTitle'))}</strong><ol>${steps}</ol>
+                <p class="hint">${esc(t('iosInApp'))}</p>
+                <button type="button" class="chip" data-act="install-dismiss">${esc(t('dismiss'))}</button></div>`;
+        }
+        if (state.installEvent) {
+            return `<div class="install"><strong>📲 ${esc(t('installTitle'))}</strong>
+                <div class="btn-row"><button type="button" class="btn" data-act="install">${esc(t('installNow'))}</button>
+                <button type="button" class="btn secondary" data-act="install-dismiss">${esc(t('dismiss'))}</button></div></div>`;
+        }
+        return '';
+    }
+
+    function drawInstall() {
+        const slot = document.getElementById('install-slot');
+        if (slot) {
+            slot.innerHTML = installBanner();
+        }
+    }
+
     function credit() {
         return `<footer class="credit"><img src="${esc(assetUrl('donialink-logo-white.png'))}" alt="DoniaLink">
             ${esc(t('poweredBy'))} <b>DoniaLink</b> · ${esc(t('developedBy'))} <b>${esc(t('developer'))}</b></footer>`;
@@ -314,8 +353,10 @@
                 <button class="btn" type="submit">${esc(t('enter'))}</button>
                 ${noDb ? `<div class="error"><a href="/web/login?redirect=/ecc/owner/app">/web/login</a></div>` : ''}
             </form>
+            <div id="install-slot"></div>
             <p class="center" style="margin-top:16px"><button class="chip" data-act="lang">${esc(t('language'))}</button></p>
             ${credit()}`;
+        drawInstall();
         const form = document.getElementById('login-form');
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
@@ -397,8 +438,10 @@
             <h2 class="section">${esc(t('sessionsTitle'))}</h2>
             <div class="list">${sessions || `<div class="empty">${esc(t('noSessions'))}</div>`}
                 ${state.sessions.length > 3 ? `<button class="row" data-go="collect"><span class="main title">+${state.sessions.length - 3}</span><span class="flip">←</span></button>` : ''}</div>
+            <div id="install-slot"></div>
             <p class="hint center" style="margin-top:18px">${esc(t('telegramToo'))}</p>
             ${credit()}`;
+        drawInstall();
     }
 
     const tile = (route, icon, label, badge) => `<button class="action" data-go="${route}">
@@ -756,15 +799,14 @@
 
     // ------------------------------------------------------------------ menu
     function openMenu() {
-        const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
-        const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+        const standalone = isStandalone();
         const boxes = state.boxes.length > 1 ? `<h3 style="margin-top:6px">${esc(t('switchBox'))}</h3><div class="list">${state.boxes.map((b) =>
             `<button class="row" data-box="${b.box_id}"><span class="main"><span class="title">${esc(b.owner)}</span><span class="desc">${esc(b.company)}</span></span>${b.box_id === state.boxId ? '✓' : ''}</button>`).join('')}</div>` : '';
         let install = '';
         if (!standalone && state.installEvent) {
             install = `<button class="btn" data-act="install">📲 ${esc(t('install'))}</button>`;
-        } else if (!standalone && isIos) {
-            install = `<p class="hint">📲 ${esc(t('iosInstall'))}</p>`;
+        } else if (!standalone && isIos()) {
+            install = `<div class="install"><strong>📲 ${esc(t('installTitle'))}</strong><ol>${t('iosSteps').map((step) => `<li>${step}</li>`).join('')}</ol></div>`;
         }
         openSheet(`<h3>${esc(state.user || t('appName'))}</h3>${boxes}${install}
             <button class="btn secondary" data-act="lang">🌐 ${esc(t('language'))}</button>
@@ -869,12 +911,17 @@
                     renderLogin();
                 }
                 break;
+            case 'install-dismiss':
+                store.set('install_dismissed', '1');
+                drawInstall();
+                break;
             case 'install':
                 if (state.installEvent) {
                     state.installEvent.prompt();
                     state.installEvent = null;
                 }
                 closeSheet();
+                drawInstall();
                 break;
             case 'logout':
                 try { await api('logout'); } catch (e) { /* already out */ }
@@ -891,6 +938,7 @@
     window.addEventListener('beforeinstallprompt', (event) => {
         event.preventDefault();
         state.installEvent = event;
+        drawInstall();
     });
     const updateOnline = () => {
         $offline.hidden = navigator.onLine;

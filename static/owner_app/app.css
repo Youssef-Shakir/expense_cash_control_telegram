@@ -158,3 +158,11 @@ textarea.input { min-height: 72px; resize: vertical; }
 .credit img { height: 22px; display: block; margin: 0 auto 6px; opacity: .9; }
 .credit b { color: var(--text); font-weight: 500; }
 h1, h2, h3 { font-family: var(--font-display); font-weight: 600; }
+
+/* --- install banner (iPhone has no install prompt: show the Share steps) --- */
+.install { background: var(--info-bg); border: 1px solid #1d4a70; border-radius: var(--radius); padding: 14px 16px; margin-top: 14px; }
+.install strong { font-family: var(--font-display); font-weight: 600; }
+.install ol { margin: 8px 0 6px; padding-inline-start: 22px; }
+.install li { margin: 4px 0; }
+.install b { color: var(--brand); }
+.install .btn { margin-top: 10px; }
