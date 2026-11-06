@@ -48,7 +48,9 @@
             telegramToo: 'يعمل التطبيق مع بوت تيليجرام: كل ما تسجله هنا يظهر هناك أيضاً.',
             poweredBy: 'بواسطة', developedBy: 'تطوير', developer: 'يوسف شاكر',
             installTitle: 'ثبّت التطبيق على هاتفك',
-            iosSteps: ['اضغط زر المشاركة <b>⬆︎</b> في أسفل سفاري (أو أعلاه في الآيباد)', 'اختر <b>«إضافة إلى الشاشة الرئيسية»</b>', 'اضغط <b>«إضافة»</b>'],
+            iosSteps: ['اضغط زر المشاركة <b>⬆︎</b> — في iOS 26 تجده داخل زر <b>⋯</b> أسفل الشاشة',
+                'مرّر القائمة للأسفل أو اضغط <b>«عرض المزيد»</b>', 'اختر <b>«إضافة إلى الشاشة الرئيسية»</b> ثم <b>«إضافة»</b>'],
+            iosMissing: 'غير موجودة؟ في آخر القائمة اضغط «تعديل الإجراءات…» وأضفها.',
             iosInApp: 'إذا فتحت الرابط من تيليجرام أو واتساب: افتحه أولاً في سفاري (⋯ ثم «فتح في سفاري»).',
             installNow: 'تثبيت', dismiss: 'لاحقاً',
         },
@@ -93,7 +95,9 @@
             telegramToo: 'The app works alongside the Telegram bot: what you record here shows there too.',
             poweredBy: 'Powered by', developedBy: 'Developed by', developer: 'Yousif Shakir',
             installTitle: 'Install the app on your phone',
-            iosSteps: ['Tap the Share button <b>⬆︎</b> at the bottom of Safari (top on iPad)', 'Choose <b>"Add to Home Screen"</b>', 'Tap <b>"Add"</b>'],
+            iosSteps: ['Tap Share <b>⬆︎</b> — on iOS 26 it is inside the <b>⋯</b> button at the bottom',
+                'Scroll the list down or tap <b>"View More"</b>', 'Choose <b>"Add to Home Screen"</b>, then <b>"Add"</b>'],
+            iosMissing: 'Not in the list? At the bottom tap "Edit Actions…" and add it.',
             iosInApp: 'Opened from Telegram or WhatsApp? Open it in Safari first (⋯ then "Open in Safari").',
             installNow: 'Install', dismiss: 'Later',
         },
@@ -250,6 +254,7 @@
         if (isIos()) {
             const steps = t('iosSteps').map((step) => `<li>${step}</li>`).join('');
             return `<div class="install"><strong>📲 ${esc(t('installTitle'))}</strong><ol>${steps}</ol>
+                <p class="hint">${esc(t('iosMissing'))}</p>
                 <p class="hint">${esc(t('iosInApp'))}</p>
                 <button type="button" class="chip" data-act="install-dismiss">${esc(t('dismiss'))}</button></div>`;
         }
