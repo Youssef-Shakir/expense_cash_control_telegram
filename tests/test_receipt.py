@@ -150,6 +150,57 @@ class TestTelegramReceipt(ExpenseCashCommon):
         self.assertEqual(expense.move_id.move_type, 'in_invoice')
         self.assertNotEqual(expense.move_id.name, 'flour', 'Prefill must not leak into the bill')
 
+    def test_vendor_payment_and_purchase_order(self):
+        """The cashier paid a vendor from the drawer (even a receipt marked payable): the cash-out goes on the
+        vendor account, the products go in a purchase order and its bill is paid by the cash-out."""
+        session = self._open_session()
+        move = self._cash_out(session, 50.0, 'flour')
+        move.category_id = self.category
+        move.action_classify()   # classified as an expense at the POS: reclassified as a vendor payment
+        sent_at = fields.Datetime.to_string(fields.Datetime.now() + timedelta(minutes=1)) + 'Z'
+        receipt = self._receipt(self._send(90, sent_at=sent_at))
+        receipt.write({'paid_by': 'payable', 'amount': 50.0})
+        self.assertIn(move, receipt.suggested_cash_move_ids, 'payable receipts can be matched too')
+
+        with self.assertRaises(UserError):
+            move.with_context(ecc_receipt_id=receipt.id).action_pay_vendor_receipt()   # no vendor yet
+        receipt.partner_id = self.vendor
+        action = move.with_context(ecc_receipt_id=receipt.id).action_pay_vendor_receipt()
+        self.assertEqual(action['res_model'], 'purchase.order')
+        self.assertEqual((move.state, move.classification_type, move.partner_id),
+                         ('classified', 'partner', self.vendor))
+        self.assertEqual((receipt.state, receipt.cash_move_id), ('processed', move))
+        self.assertTrue(receipt.vendor_payment)
+        payable = self.vendor.property_account_payable_id
+        self.assertTrue(move.statement_line_id.move_id.line_ids.filtered(lambda l: l.account_id == payable))
+
+        product = self.env['product.product'].create({'name': 'ECC Flour', 'purchase_method': 'purchase'})
+        order = self.env['purchase.order'].with_context(action['context']).create({
+            'partner_id': self.vendor.id,
+            'order_line': [(0, 0, {'product_id': product.id, 'product_qty': 2, 'price_unit': 25.0, 'taxes_id': []})],
+        })
+        self.assertEqual(receipt.purchase_order_id, order)
+        order.button_confirm()
+        order.action_create_invoice()
+        bill = order.invoice_ids
+        bill.invoice_date = fields.Date.today()
+        bill.action_post()
+        self.assertIn(bill.payment_state, ('paid', 'in_payment'), 'the cash-out paid the bill')
+        self.assertEqual(move.bill_id, bill)
+
+    def test_rejected_receipt_frees_the_cash_out(self):
+        session = self._open_session()
+        move = self._cash_out(session, 20.0, 'bread')
+        sent_at = fields.Datetime.to_string(fields.Datetime.now() + timedelta(minutes=1)) + 'Z'
+        wrong = self._receipt(self._send(80, sent_at=sent_at))
+        wrong.write({'paid_by': 'cashier', 'amount': 20.0, 'cash_move_id': move.id})
+        self.assertEqual(move.receipt_count, 1)
+        wrong.action_reject()
+        self.assertEqual(move.receipt_count, 0, 'a rejected photo proves nothing')
+        right = self._receipt(self._send(81, content=PNG_B, sent_at=sent_at))
+        right.write({'paid_by': 'cashier', 'amount': 20.0})
+        self.assertIn(move, right.suggested_cash_move_ids)
+
     def test_match_cash_out_classifies_and_review_rule(self):
         session = self._open_session()
         move = self._cash_out(session, 30.0, 'gas')
@@ -177,6 +228,9 @@ class TestTelegramReceipt(ExpenseCashCommon):
         self.assertEqual(session.cash_out_without_receipt_count, 1)  # "ice"
         unmatched = self._receipt(self._send(71, content=PNG_B))
         unmatched.paid_by = 'cashier'
+        # a cash-out that already has its receipt is not offered again
+        self.assertEqual(unmatched.suggested_cash_move_ids, other)
+        self.assertNotIn(move, self.env['pos.cash.move'].search([('receipt_count', '=', 0)]))
         self.assertEqual(unmatched.session_id, session)
         self.assertEqual(session.receipt_unmatched_count, 1)
 

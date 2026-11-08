@@ -5,8 +5,13 @@
 The bot tools (agent_tools_owner) and the app controller share the data builders below, so both channels show
 the same card, sessions, categories, moves and statements, and record through the same box methods.
 """
+import json
+import logging
+
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
 
 
 class OwnerBoxApp(models.Model):
@@ -15,11 +20,97 @@ class OwnerBoxApp(models.Model):
     app_user_id = fields.Many2one('res.users', string='Owner App Login', copy=False, tracking=True, index=True,
                                   help='This login opens the owner app (/ecc/owner/app) on this cash box.')
     app_url = fields.Char('Owner App', compute='_compute_app_url')
+    platform_enabled = fields.Boolean(
+        'On DoniaLink App', copy=False, tracking=True,
+        help='Set by the DoniaLink Platform when a platform user may open this box. Its notifications are then '
+             'sent to the platform even without a Telegram link.')
+    app_push_count = fields.Integer('Phones with Notifications', compute='_compute_app_push_count',
+                                    help='Phones where the owner turned notifications on in the app (menu ☰).')
 
     def _compute_app_url(self):
         base = self.env['ir.config_parameter'].sudo().get_param('web.base.url', '')
         for box in self:
             box.app_url = '%s/ecc/owner/app' % base.rstrip('/')
+
+    def _compute_app_push_count(self):
+        for box in self:
+            box.app_push_count = len(box._app_devices()) if box.id else 0
+
+    def _app_card(self, card_id):
+        """A card shared with this box (the owner app), or an empty record."""
+        self.ensure_one()
+        try:
+            card_id = int(card_id)
+        except (TypeError, ValueError):
+            return self.env['ecc.owner.card']
+        return self.sudo().card_ids.filtered(lambda c: c.id == card_id and c.active)
+
+    # ------------------------------------------------------------------
+    # Push notifications (Web Push through Odoo's mail.push queue)
+    # ------------------------------------------------------------------
+
+    def _app_lang(self):
+        self.ensure_one()
+        box = self.sudo()
+        return box.app_user_id.lang or box.company_id.partner_id.lang or self.env.lang
+
+    def _owner_notify(self, kind, text, title, body=None, route='home', card=None, tag=None, data=None,
+                      raise_errors=False):
+        """One notification to the owner on every channel he uses: Web Push of the Odoo owner app, and the
+        DoniaLink Platform (its app and/or Telegram) when the box is linked to Telegram or on the platform.
+        Returns (platform answer or {}, number of phones pushed). Errors are logged, except with
+        ``raise_errors`` (statements: the caller records that it was not sent)."""
+        self.ensure_one()
+        box = self.sudo()
+        pushed = box._app_push(title, body or text, route=route, card=card, tag=tag) if box.app_user_id else 0
+        answer = {}
+        if box.telegram_user_id or box.platform_enabled:
+            payload = dict(data or {}, title=title, body=body or text, route=route,
+                           card_id=card.id if card else None, tag=tag)
+            try:
+                answer = box._platform_send(kind, text, payload) or {}
+            except Exception as e:  # noqa: BLE001 - a notification never stops the action that sent it
+                if raise_errors:
+                    raise
+                _logger.warning('Owner cash box %s: %s notification not sent: %s', box.name, kind, e)
+        return answer, pushed
+
+    def _app_devices(self):
+        self.ensure_one()
+        user = self.sudo().app_user_id
+        if not user:
+            return self.env['mail.push.device']
+        return self.env['mail.push.device'].sudo().search([('partner_id', '=', user.partner_id.id)])
+
+    def _app_push(self, title, body, route='home', card=None, tag=None):
+        """Queue a notification to the phones where the owner turned notifications on. Never raises: a
+        notification must not stop the action that sent it. Tapping it opens the app on ``route`` (and the
+        ``card``) of this box. Returns the number of phones."""
+        self.ensure_one()
+        url = '/ecc/owner/app?box=%s%s#%s' % (self.id, '&card=%s' % card.id if card else '', route)
+        try:
+            devices = self._app_devices()
+            if not devices:
+                return 0
+            payload = json.dumps({
+                'title': title[:120],
+                'options': {
+                    'body': (body or '')[:400],
+                    'icon': '/expense_cash_control_telegram/static/owner_app/icon-192.png',
+                    'badge': '/expense_cash_control_telegram/static/owner_app/favicon-32.png',
+                    'tag': tag or False,
+                    'data': {'url': url, 'box_id': self.id},
+                },
+            }, ensure_ascii=False)
+            self.env['mail.push'].sudo().create([{'mail_push_device_id': d.id, 'payload': payload}
+                                                 for d in devices])
+            cron = self.env.ref('mail.ir_cron_web_push_notification', raise_if_not_found=False)
+            if cron:
+                cron.sudo()._trigger()
+            return len(devices)
+        except Exception as e:  # noqa: BLE001
+            _logger.warning('Owner app: push notification to %s not queued: %s', self.display_name, e)
+            return 0
 
     @api.model
     def _app_boxes(self, user=None):
@@ -69,6 +160,7 @@ class OwnerBoxApp(models.Model):
             'till_name': box.till_journal_id.name or '',
             'bank_name': box.bank_journal_id.name or '',
             'text': box._card_text(),
+            'cards': [card._api_summary() for card in box.card_ids.filtered('active')],
         }
 
     def _api_sessions(self, limit=10):
@@ -135,7 +227,8 @@ class OwnerBoxApp(models.Model):
                 'state': statement.state,
                 'can_answer': statement.state in ('draft', 'sent'),
                 'figures': [[key, getattr(statement, key), fmt(getattr(statement, key))] for key in
-                            ('opening', 'collected', 'spent', 'took', 'deposited', 'adjusted', 'closing')],
+                            ('opening', 'collected', 'from_card', 'spent', 'took', 'deposited', 'adjusted',
+                             'closing')],
                 'closing': statement.closing,
                 'answer_note': statement.answer_note or '',
             })
@@ -145,7 +238,8 @@ class OwnerBoxApp(models.Model):
 class OwnerMoveApp(models.Model):
     _inherit = 'ecc.owner.move'
 
-    source = fields.Selection(selection_add=[('app', 'Owner App')], ondelete={'app': 'set default'})
+    source = fields.Selection(selection_add=[('app', 'Owner App'), ('platform', 'DoniaLink App')],
+                              ondelete={'app': 'set default', 'platform': 'set default'})
     app_request_uid = fields.Char('App Request', copy=False, index='btree_not_null', readonly=True,
                                   help='Sent by the owner app with each action: a retry on a bad connection '
                                        'returns the movement already saved instead of a second one.')

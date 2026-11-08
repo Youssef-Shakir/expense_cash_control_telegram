@@ -131,3 +131,219 @@ msgstr "صندوقي"
 #. module: expense_cash_control_telegram
 msgid "Collect POS cash, record expenses and see your balance."
 msgstr "استلم نقد الكاشير، سجّل المصاريف، واطّلع على رصيدك."
+
+#. module: expense_cash_control_telegram
+msgid "This card is not shared with you."
+msgstr "هذه البطاقة غير مشتركة معك."
+
+#. module: expense_cash_control_telegram
+#, python-format
+msgid "The card %s is not shared with this owner."
+msgstr "البطاقة %s غير مشتركة مع هذا المالك."
+
+#. module: expense_cash_control_telegram
+msgid "Choose where the cash goes."
+msgstr "اختر أين يذهب النقد."
+
+#. module: expense_cash_control_telegram
+msgid "Choose bank, till or card."
+msgstr "اختر البنك أو صندوق الكاشير أو البطاقة."
+
+#. module: expense_cash_control_telegram
+#, python-format
+msgid "Deposited %(amount)s to %(card)s"
+msgstr "تم إيداع %(amount)s في %(card)s"
+
+#. module: expense_cash_control_telegram
+#, python-format
+msgid "Took %(amount)s for you from %(card)s"
+msgstr "تم سحب %(amount)s لك من %(card)s"
+
+#. module: expense_cash_control_telegram
+#, python-format
+msgid "%(amount)s from %(card)s added to your cash"
+msgstr "تمت إضافة %(amount)s من %(card)s إلى نقدك"
+
+#. module: expense_cash_control_telegram
+#, python-format
+msgid "Card expense %(amount)s (%(category)s) recorded · waiting for accountant review"
+msgstr "تم تسجيل مصروف بالبطاقة %(amount)s (%(category)s) · بانتظار مراجعة المحاسب"
+
+#. module: expense_cash_control_telegram
+#, python-format
+msgid "The bank shows %(counted)s, the books say %(expected)s (difference %(difference)s). The accountant will check it."
+msgstr "البنك يظهر %(counted)s والسجلات تقول %(expected)s (الفرق %(difference)s). سيتحقق المحاسب."
+
+#. module: expense_cash_control_telegram
+#, python-format
+msgid "From cards: +%s"
+msgstr "من البطاقات: +%s"
+
+#. module: expense_cash_control_telegram
+#, python-format
+msgid "Session closed: %s"
+msgstr "أُغلقت الجلسة: %s"
+
+#. module: expense_cash_control_telegram
+#, python-format
+msgid "%s cash to collect. Tap to collect."
+msgstr "%s نقداً للاستلام. اضغط للاستلام."
+
+#. module: expense_cash_control_telegram
+msgid "Your statement is ready"
+msgstr "كشفك جاهز"
+
+#. module: expense_cash_control_telegram
+#, python-format
+msgid "Difference explained: %s"
+msgstr "تم توضيح الفرق: %s"
+
+#. module: expense_cash_control_telegram
+msgid "Expense reviewed ✓"
+msgstr "تمت مراجعة المصروف ✓"
+
+#. module: expense_cash_control_telegram
+msgid "Expense rejected"
+msgstr "تم رفض المصروف"
+
+#. module: expense_cash_control_telegram
+msgid "Expense is a duplicate"
+msgstr "المصروف مكرر"
+
+#. module: expense_cash_control_telegram
+#, python-format
+msgid "The amount is back on the card %s."
+msgstr "أُعيد المبلغ إلى البطاقة %s."
+
+#. module: expense_cash_control_telegram
+msgid "The amount is back in your cash box."
+msgstr "أُعيد المبلغ إلى صندوقك النقدي."
+
+#. module: expense_cash_control_telegram
+msgid "The server key changed. Turn notifications on again."
+msgstr "تغيّر مفتاح الخادم. شغّل الإشعارات مرة أخرى."
+
+#. module: expense_cash_control_telegram
+msgid "Bank Entry"
+msgstr "قيد بنكي"
+
+#. module: expense_cash_control_telegram
+#, python-format
+msgid "%(card)s: %(balance)s"
+msgstr "%(card)s: %(balance)s"
+
+#. module: expense_cash_control_telegram
+#, python-format
+msgid "%(actor)s via DoniaLink app: %(text)s"
+msgstr "%(actor)s عبر تطبيق دونيا لينك: %(text)s"
+
+#. module: expense_cash_control_telegram
+msgid "DoniaLink App"
+msgstr "تطبيق دونيا لينك"
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__reminder_expense
+msgid "Daily Expense Reminder"
+msgstr "تذكير يومي بالمصاريف"
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__reminder_hour
+msgid "Reminder Hour"
+msgstr "ساعة التذكير"
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__reminder_count_weekday
+msgid "Count Reminder Day"
+msgstr "يوم تذكير العدّ"
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_form
+msgid "Reminders"
+msgstr "التذكيرات"
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_reminder.py:0
+msgid ""
+"You haven't recorded any cash expense today. Balance: %(balance)s. Spent "
+"cash? Record it now."
+msgstr ""
+"لم تسجّل أي مصروف نقدي اليوم. الرصيد: %(balance)s. هل صرفت نقداً؟ سجّله "
+"الآن."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_reminder.py:0
+msgid "Record your cash expenses"
+msgstr "سجّل مصاريفك النقدية"
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_reminder.py:0
+msgid "Count the cash you hold and confirm the balance (%(balance)s)."
+msgstr "عُدّ النقد الذي معك وأكّد الرصيد (%(balance)s)."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_reminder.py:0
+msgid "Count your cash"
+msgstr "عُدّ نقدك"
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_reminder.py:0
+msgid "The reminder hour must be between 0 and 23."
+msgstr "ساعة التذكير يجب أن تكون بين 0 و 23."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "Choose a day of the week."
+msgstr "اختر يوماً من أيام الأسبوع."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "notification settings changed"
+msgstr "تم تغيير إعدادات الإشعارات"
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "Notification settings saved."
+msgstr "تم حفظ إعدادات الإشعارات."
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__vendor_payment
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid "Vendor Payment"
+msgstr "دفعة للمورّد"
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid "Vendor Payment + Purchase Order"
+msgstr "دفعة للمورّد + أمر شراء"
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "Choose the vendor of the receipt first."
+msgstr "اختر مورّد الإيصال أولاً."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "Choose the POS cash-out that paid the vendor."
+msgstr "اختر السحب النقدي من نقطة البيع الذي دُفع منه للمورّد."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "Cash-out %(move)s reconciled with the bill %(bill)s."
+msgstr "تمت تسوية السحب النقدي %(move)s مع الفاتورة %(bill)s."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "The cash-out could not be reconciled with the bill: %s"
+msgstr "تعذّرت تسوية السحب النقدي مع الفاتورة: %s"

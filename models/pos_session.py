@@ -81,6 +81,13 @@ class PosSession(models.Model):
 
     def _validate_session(self, balancing_account=False, amount_to_balance=0, bank_payment_method_diffs=None):
         result = super()._validate_session(balancing_account, amount_to_balance, bank_payment_method_diffs)
+        closed = self.filtered(lambda s: s.state == 'closed')
+        if closed:
+            try:
+                with self.env.cr.savepoint():
+                    self.env['ecc.owner.card'].sudo()._feed_sessions(closed)
+            except Exception as e:  # noqa: BLE001 - never block a POS closing; the daily job adds them later
+                _logger.warning('Card boxes: card sales of %s not added: %s', closed.mapped('name'), e)
         self.filtered(lambda s: s.state == 'closed' and not s.owner_notified)._notify_owners()
         return result
 
@@ -90,20 +97,24 @@ class PosSession(models.Model):
         Box = self.env['ecc.owner.box'].sudo()
         for session in self:
             session.sudo().owner_notified = True
-            boxes = Box.search([('company_id', '=', session.company_id.id), ('is_linked', '=', True),
-                                ('notify_session_close', '=', True)]).filtered(
+            boxes = Box.search([('company_id', '=', session.company_id.id), ('notify_session_close', '=', True),
+                                '|', '|', ('is_linked', '=', True), ('app_user_id', '!=', False),
+                                ('platform_enabled', '=', True)]).filtered(
                 lambda b: not b.pos_config_ids or session.config_id in b.pos_config_ids)
             amount = session.owner_remaining_amount
             if not boxes or float_compare(amount, 0.0, precision_rounding=session.currency_id.rounding or 0.01) <= 0:
                 continue
-            text = _('%(session)s closed with %(amount)s cash. Collect?', session=session.name,
-                     amount=session.currency_id.format(amount))
+            money = session.currency_id.format(amount)
             for box in boxes:
-                try:
-                    box._platform_send('session_closed', text, {'session_id': session.id, 'amount': amount,
-                                                                'session': session.name})
-                except Exception as e:  # noqa: BLE001 - never block a POS closing for a Telegram message
-                    _logger.warning('Owner cash box %s: session %s notification failed: %s', box.name, session.name, e)
+                # never blocks the closing: _owner_notify logs what could not be sent
+                env = box.with_context(lang=box._app_lang()).env
+                box._owner_notify(
+                    'session_closed', env._('%(session)s closed with %(amount)s cash. Collect?', session=session.name,
+                                            amount=money),
+                    env._('Session closed: %s', session.name),
+                    body=env._('%s cash to collect. Tap to collect.', money), route='collect',
+                    tag='session-%s' % session.id,
+                    data={'session_id': session.id, 'amount': amount, 'session': session.name})
 
     def action_cash_review_done(self):
         for session in self.filtered('config_id.cash_out_receipt_required'):

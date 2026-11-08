@@ -9,8 +9,12 @@
               groups="expense_cash_control.group_expense_manager" sequence="25"/>
     <menuitem id="menu_ecc_owner_box" name="Cash Boxes" parent="menu_ecc_owner_root"
               action="action_ecc_owner_box" sequence="10"/>
+    <menuitem id="menu_ecc_owner_card" name="Card Boxes" parent="menu_ecc_owner_root"
+              action="action_ecc_owner_card" sequence="15"/>
     <menuitem id="menu_ecc_owner_move" name="Movements" parent="menu_ecc_owner_root"
               action="action_ecc_owner_move" sequence="20"/>
+    <menuitem id="menu_ecc_owner_card_move" name="Card Movements" parent="menu_ecc_owner_root"
+              action="action_ecc_owner_card_move" sequence="25"/>
     <menuitem id="menu_ecc_owner_difference" name="Differences" parent="menu_ecc_owner_root"
               action="action_ecc_owner_difference" sequence="30"/>
     <menuitem id="menu_ecc_owner_statement" name="Statements" parent="menu_ecc_owner_root"

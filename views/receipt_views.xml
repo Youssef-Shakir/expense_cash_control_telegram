@@ -8,8 +8,9 @@
             <form string="Receipt" create="false">
                 <header>
                     <button name="action_create_purchase_order" type="object" string="Create Purchase Order"
-                            class="btn-primary" invisible="state != 'to_review' or paid_by in ('cashier', 'owner')"
-                            help="New RFQ with the vendor and the photo: add the products and confirm it."/>
+                            class="btn-primary"
+                            invisible="purchase_order_id or not ((state == 'to_review' and paid_by not in ('cashier', 'owner')) or vendor_payment)"
+                            help="New RFQ with the vendor and the photo: add the products and confirm it. When a POS cash-out paid the vendor, the bill of the order is paid by it."/>
                     <button name="action_create_bill" type="object" string="Create Expense"
                             invisible="state != 'to_review' or paid_by == 'owner'"
                             help="For costs that are not stock purchases (repairs, rent...): an expense with a category."/>
@@ -21,6 +22,10 @@
                             confirm="The owner's expense is removed and replaced by a purchase order. Register the payment of its bill from the owner's cash journal so his balance goes down again."/>
                     <button name="action_match_cash_move" type="object" string="Match Cash-Out" class="btn-primary"
                             invisible="state != 'to_review' or not cash_move_id"/>
+                    <button name="action_match_vendor_payment" type="object" string="Vendor Payment + Purchase Order"
+                            invisible="state != 'to_review' or not cash_move_id or paid_by == 'owner'"
+                            help="The cash-out paid the vendor: it goes on the vendor account, then enter the products in a purchase order. Its bill is paid by the cash-out."/>
+                    <field name="vendor_payment" invisible="1"/>
                     <button name="action_ask_question" type="object" string="Ask Question" icon="fa-telegram"
                             invisible="not chat_id"/>
                     <button name="action_reject" type="object" string="Reject" invisible="state != 'to_review'"/>
@@ -75,13 +80,14 @@
                             <field name="paid_by" widget="radio" options="{'horizontal': true}" readonly="state != 'to_review'"/>
                             <field name="note" readonly="state != 'to_review'" placeholder="No note"/>
                             <field name="owner_box_id" invisible="not owner_box_id"/>
+                            <field name="card_id" invisible="not card_id"/>
                         </group>
                         <group string="Review">
                             <field name="amount" readonly="state != 'to_review'"/>
                             <field name="category_id" readonly="state != 'to_review'" options="{'no_create': True}"/>
                             <field name="partner_id" readonly="state != 'to_review'" invisible="paid_by == 'cashier'"/>
                             <field name="session_id" readonly="state != 'to_review'" options="{'no_create': True}"/>
-                            <field name="cash_move_id" readonly="state != 'to_review'" invisible="paid_by == 'payable' and not cash_move_id"
+                            <field name="cash_move_id" readonly="state != 'to_review'" invisible="paid_by == 'owner' and not cash_move_id"
                                    options="{'no_create': True}" placeholder="Pick from the suggestions below"/>
                             <field name="purchase_order_id" invisible="not purchase_order_id"/>
                             <field name="expense_id" invisible="not expense_id"/>
@@ -103,11 +109,14 @@
                             </field>
                         </page>
                         <page string="Match to POS Cash-Out" name="match"
-                              invisible="state != 'to_review' or paid_by in ('payable', 'owner')">
+                              invisible="state != 'to_review' or paid_by == 'owner'">
                             <p class="text-muted">
                                 Paid by the cashier: the photo is the proof of a POS Cash Out, never a second expense.
-                                Cash-outs of the session open when the photo was sent; the ones without a receipt first.
+                                Cash-outs of the session open when the photo was sent that have no receipt yet.
                                 Choose the category above when the cash-out is not classified yet.
+                                When the cash-out paid a vendor for goods, choose the vendor above and use
+                                "Vendor Payment": the cash-out goes on the vendor account and a purchase order opens
+                                to enter the products; its bill is paid by the cash-out when it is posted.
                             </p>
                             <field name="suggested_cash_move_ids" readonly="1">
                                 <list create="false" delete="false" decoration-muted="receipt_count &gt; 0">
@@ -122,6 +131,8 @@
                                     <field name="receipt_count" string="Receipts"/>
                                     <button name="action_match_receipt" type="object" string="Match" icon="fa-link"
                                             class="btn-link text-success" context="{'ecc_receipt_id': parent.id}"/>
+                                    <button name="action_pay_vendor_receipt" type="object" string="Vendor Payment"
+                                            icon="fa-truck" class="btn-link" context="{'ecc_receipt_id': parent.id}"/>
                                     <field name="currency_id" column_invisible="True"/>
                                 </list>
                             </field>

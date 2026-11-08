@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ecc_owner_card_list" model="ir.ui.view">
+        <field name="name">ecc.owner.card.list</field>
+        <field name="model">ecc.owner.card</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="journal_id"/>
+                <field name="box_ids" widget="many2many_tags"/>
+                <field name="account_id" optional="show"/>
+                <field name="balance" sum="Total"/>
+                <field name="difference_pending_count" string="To Explain" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="currency_id" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ecc_owner_card_form" model="ir.ui.view">
+        <field name="name">ecc.owner.card.form</field>
+        <field name="model">ecc.owner.card</field>
+        <field name="arch" type="xml">
+            <form string="Card Box">
+                <header>
+                    <button name="action_feed_sales" type="object" string="Add Card Sales" icon="fa-refresh"
+                            invisible="not id"
+                            help="Add the card sales of closed sessions not added yet (done automatically at closing)"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_moves" type="object" class="oe_stat_button" icon="fa-exchange">
+                            <div class="o_stat_info"><span class="o_stat_text">Movements</span></div>
+                        </button>
+                        <button name="action_view_differences" type="object" class="oe_stat_button" icon="fa-balance-scale">
+                            <field name="difference_pending_count" widget="statinfo" string="Differences"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Rafidain card"/></h1>
+                        <h2 invisible="not id"><field name="balance" widget="monetary"/></h2>
+                    </div>
+                    <group>
+                        <group string="Bank">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="account_id" options="{'no_create': True}"/>
+                            <field name="journal_id" options="{'no_create': True}"/>
+                        </group>
+                        <group string="POS Card Sales">
+                            <field name="payment_method_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                            <field name="feed_from"/>
+                        </group>
+                        <group string="Owners" colspan="2">
+                            <field name="box_ids" widget="many2many_tags" options="{'no_create': True}"
+                                   placeholder="Owners who can use this card in the app"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-info" role="status">
+                        The card balance is the balance of its account in the books: everything posted on it shows
+                        in the owner app, also bank fees or entries made in Odoo. The card sales of every closed session are entered in the bank journal and matched with
+                        the POS payment. Don't import them again from the bank statement: match the bank
+                        statement with these lines instead.
+                    </div>
+                    <notebook>
+                        <page string="Last Movements" name="moves">
+                            <field name="move_ids" readonly="1">
+                                <list limit="20" decoration-muted="state == 'cancelled'">
+                                    <field name="date"/>
+                                    <field name="kind" widget="badge" decoration-success="kind in ('sales', 'deposit')"
+                                           decoration-danger="kind == 'expense'" decoration-warning="kind == 'drawing'"
+                                           decoration-info="kind == 'withdraw'"/>
+                                    <field name="name"/>
+                                    <field name="box_id" optional="show"/>
+                                    <field name="session_id" optional="hide"/>
+                                    <field name="source" optional="hide"/>
+                                    <field name="amount" sum="Total"/>
+                                    <field name="state" optional="hide"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                    <field name="active" invisible="1"/>
+                    <field name="currency_id" invisible="1"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ecc_owner_card" model="ir.actions.act_window">
+        <field name="name">Card Boxes</field>
+        <field name="res_model">ecc.owner.card</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a card box</p>
+            <p>A card box follows the bank account the card terminal pays into: the card sales of every closed
+               session are added to it. The owners you choose see it in the owner app, withdraw cash from it,
+               pay expenses with it and deposit cash on it.</p>
+        </field>
+    </record>
+
+    <record id="view_ecc_owner_card_move_list" model="ir.ui.view">
+        <field name="name">ecc.owner.card.move.list</field>
+        <field name="model">ecc.owner.card.move</field>
+        <field name="arch" type="xml">
+            <list create="false" decoration-muted="state == 'cancelled'">
+                <field name="date"/>
+                <field name="card_id"/>
+                <field name="kind" widget="badge" decoration-success="kind in ('sales', 'deposit')"
+                       decoration-danger="kind == 'expense'" decoration-warning="kind == 'drawing'"
+                       decoration-info="kind == 'withdraw'"/>
+                <field name="name"/>
+                <field name="box_id" optional="show"/>
+                <field name="session_id" optional="show"/>
+                <field name="source" optional="show"/>
+                <field name="amount" sum="Total"/>
+                <field name="state" optional="hide"/>
+                <button name="action_open_entry" type="object" icon="fa-book" title="Journal Entry"
+                        invisible="not account_move_id"/>
+                <field name="account_move_id" column_invisible="True"/>
+                <field name="currency_id" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_ecc_owner_card_move_form" model="ir.ui.view">
+        <field name="name">ecc.owner.card.move.form</field>
+        <field name="model">ecc.owner.card.move</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="card_id"/>
+                            <field name="kind"/>
+                            <field name="name"/>
+                            <field name="amount"/>
+                            <field name="date"/>
+                            <field name="state"/>
+                        </group>
+                        <group>
+                            <field name="box_id"/>
+                            <field name="source"/>
+                            <field name="session_id" invisible="not session_id"/>
+                            <field name="expense_id" invisible="not expense_id"/>
+                            <field name="receipt_id" invisible="not receipt_id"/>
+                            <field name="owner_move_id" invisible="not owner_move_id"/>
+                            <field name="difference_id" invisible="not difference_id"/>
+                            <field name="account_move_id"/>
+                        </group>
+                    </group>
+                    <field name="currency_id" invisible="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_ecc_owner_card_move_search" model="ir.ui.view">
+        <field name="name">ecc.owner.card.move.search</field>
+        <field name="model">ecc.owner.card.move</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="card_id"/>
+                <field name="box_id"/>
+                <field name="session_id"/>
+                <field name="name"/>
+                <filter name="posted" string="Posted" domain="[('state', '=', 'posted')]"/>
+                <separator/>
+                <filter name="sales" string="Card Sales" domain="[('kind', '=', 'sales')]"/>
+                <filter name="withdraw" string="Withdrawals" domain="[('kind', 'in', ('withdraw', 'drawing'))]"/>
+                <filter name="expense" string="Expenses" domain="[('kind', '=', 'expense')]"/>
+                <separator/>
+                <filter name="filter_date" string="Date" date="date"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_card" string="Card" context="{'group_by': 'card_id'}"/>
+                    <filter name="group_owner" string="Owner" context="{'group_by': 'box_id'}"/>
+                    <filter name="group_kind" string="Type" context="{'group_by': 'kind'}"/>
+                    <filter name="group_day" string="Day" context="{'group_by': 'date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_ecc_owner_card_move" model="ir.actions.act_window">
+        <field name="name">Card Movements</field>
+        <field name="res_model">ecc.owner.card.move</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_posted': 1}</field>
+    </record>
+</odoo>

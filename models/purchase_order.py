@@ -22,7 +22,8 @@ class PurchaseOrder(models.Model):
     def create(self, vals_list):
         orders = super().create(vals_list)
         receipt = self._receipt_from_context()
-        if receipt and len(orders) == 1 and receipt.state == 'to_review' and not receipt.purchase_order_id:
+        if receipt and len(orders) == 1 and not receipt.purchase_order_id and (
+                receipt.state == 'to_review' or receipt.vendor_payment):
             receipt._link_purchase_order(orders)
         return orders
 

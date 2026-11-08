@@ -4,11 +4,9 @@
 Page, manifest and service worker are public files; every API call needs a logged-in user linked to the
 box (``ecc.owner.box.app_user_id``). Writes go through the same box methods as the Telegram bot.
 """
-import base64
-import binascii
 import json
 import logging
-import re
+from datetime import datetime, timezone
 from pathlib import Path
 
 import psycopg2
@@ -16,16 +14,15 @@ import psycopg2
 from odoo import _, http
 from odoo.exceptions import AccessDenied, AccessError, UserError, ValidationError
 from odoo.http import request
-from odoo.tools import float_round
+
+from ..models.owner_service import OwnerServiceError
 
 _logger = logging.getLogger(__name__)
 
 STATIC = Path(__file__).resolve().parent.parent / 'static' / 'owner_app'
 ASSET_URL = '/expense_cash_control_telegram/static/owner_app'
-UID_RE = re.compile(r'^[A-Za-z0-9_-]{8,64}$')
-MAX_PHOTOS = 5
-MAX_PHOTO_BYTES = 8 * 1024 * 1024
-WRITE_ACTIONS = ('collect', 'expense', 'took', 'deposit', 'count', 'statement_answer')
+WRITE_ACTIONS = ('collect', 'expense', 'took', 'deposit', 'count', 'statement_answer',
+                 'card_withdraw', 'card_expense', 'card_count', 'notifications_set')
 
 
 class AppError(Exception):
@@ -117,10 +114,13 @@ class OwnerApp(http.Controller):
                 result = handler(**params)
         except AppError as e:
             return {'ok': False, 'code': e.code, 'error': str(e)}
+        except OwnerServiceError as e:
+            return {'ok': False, 'code': e.code, 'error': e.args[0] if e.args else str(e)}
+        except (AccessError, AccessDenied):
+            # before UserError: AccessError is one
+            return {'ok': False, 'code': 'forbidden', 'error': _('Not allowed.')}
         except (UserError, ValidationError) as e:
             return {'ok': False, 'code': 'refused', 'error': e.args[0] if e.args else str(e)}
-        except (AccessError, AccessDenied):
-            return {'ok': False, 'code': 'forbidden', 'error': _('Not allowed.')}
         except psycopg2.IntegrityError:
             # two identical requests at the same time: the other one saved it
             return {'ok': False, 'code': 'duplicate', 'error': _('Already saved. Refresh to see it.')}
@@ -144,43 +144,11 @@ class OwnerApp(http.Controller):
             raise AppError(_('This cash box is not yours.'), 'forbidden')
         return box.with_company(box.company_id).with_context(lang=request.env.user.lang)
 
-    def _amount(self, box, value, allow_none=False):
-        if value in (None, '') and allow_none:
-            return None
-        try:
-            amount = float(value)
-        except (TypeError, ValueError):
-            raise AppError(_('Enter a valid amount.')) from None
-        amount = float_round(amount, precision_rounding=box.currency_id.rounding)
-        if amount <= 0:
-            raise AppError(_('The amount must be positive.'))
-        return amount
+    def _svc(self):
+        return request.env['ecc.owner.service'].with_context(ecc_source='app', lang=request.env.user.lang)
 
-    def _note(self, note):
-        return (note or '').strip()[:500] or None
-
-    def _request_uid(self, request_uid):
-        if request_uid and UID_RE.match(str(request_uid)):
-            return str(request_uid)
-        return None
-
-    def _done(self, box, move, text, **extra):
-        return dict(extra, card=box._api_card(), text=text, move_id=move.id if move else False)
-
-    def _replay(self, box, request_uid):
-        """The same action sent again (no answer reached the phone): answer with what is saved."""
-        if not request_uid:
-            return None
-        move = request.env['ecc.owner.move'].sudo().search(
-            [('box_id', '=', box.id), ('app_request_uid', '=', request_uid)], limit=1)
-        if move:
-            return self._done(box, move, _('Already saved: %(name)s · %(amount)s', name=move.name,
-                                          amount=box.currency_id.format(move.amount)), replayed=True)
-        return None
-
-    def _stamp(self, move, request_uid):
-        if request_uid:
-            move.sudo().app_request_uid = request_uid
+    def _card(self, box, card_id):
+        return self._svc()._card(box, card_id)
 
     # session ----------------------------------------------------------
 
@@ -241,101 +209,76 @@ class OwnerApp(http.Controller):
         box = self._box(box_id)
         return {'statements': box._api_statements(), 'card': box._api_card()}
 
-    # writing ----------------------------------------------------------
+    # writing (same service as the connector tools) ---------------------
 
     def _api_collect(self, box_id, session_id, amount=None, request_uid=None):
-        box = self._box(box_id)
-        request_uid = self._request_uid(request_uid)
-        replay = self._replay(box, request_uid)
-        if replay:
-            return replay
-        session = request.env['pos.session'].sudo().browse(int(session_id or 0)).exists()
-        if not session:
-            raise AppError(_('Session not found.'), 'not_found')
-        move = box._collect_session(session, self._amount(box, amount, allow_none=True), source='app')
-        self._stamp(move, request_uid)
-        return self._done(box, move, _('Collected %(amount)s from %(session)s', amount=box.currency_id.format(
-            move.amount), session=session.name), sessions=box._api_sessions(30))
+        return self._svc().collect(self._box(box_id), session_id, amount, request_uid)
 
     def _api_expense(self, box_id, amount, category_id, note=None, photos=None, request_uid=None):
-        box = self._box(box_id)
-        request_uid = self._request_uid(request_uid)
-        replay = self._replay(box, request_uid)
-        if replay:
-            return replay
-        amount = self._amount(box, amount)
-        category = box._api_category(category_id)
-        if not category:
-            raise AppError(_('Choose a category.'))
-        decoded = []
-        for index, photo in enumerate((photos or [])[:MAX_PHOTOS]):
-            try:
-                content = base64.b64decode((photo or {}).get('content_b64') or '', validate=True)
-            except (binascii.Error, ValueError, AttributeError):
-                raise AppError(_('A photo could not be read. Take it again.')) from None
-            if not content or len(content) > MAX_PHOTO_BYTES:
-                raise AppError(_('A photo is too large.'))
-            mimetype = photo.get('mimetype') or 'image/jpeg'
-            if not mimetype.startswith('image/'):
-                raise AppError(_('Only photos can be attached.'))
-            decoded.append({'content': content, 'mimetype': mimetype,
-                            'filename': (photo.get('filename') or 'receipt-%s.jpg' % (index + 1))[:200]})
-        move, receipt = box._record_expense(amount, category, note=self._note(note), photos=decoded, source='app')
-        self._stamp(move, request_uid)
-        return self._done(box, move, _('Expense %(amount)s (%(category)s) recorded · waiting for accountant '
-                                       'review', amount=box.currency_id.format(amount), category=category.name),
-                          reference=receipt.name)
+        return self._svc().expense(self._box(box_id), amount, category_id, note, photos, request_uid)
 
     def _api_took(self, box_id, amount, note=None, request_uid=None):
-        box = self._box(box_id)
-        request_uid = self._request_uid(request_uid)
-        replay = self._replay(box, request_uid)
-        if replay:
-            return replay
-        move = box._record_drawing(self._amount(box, amount), self._note(note), source='app')
-        self._stamp(move, request_uid)
-        return self._done(box, move, _('Took %s for you', box.currency_id.format(-move.amount)))
+        return self._svc().took(self._box(box_id), amount, note, request_uid)
 
-    def _api_deposit(self, box_id, amount, target, note=None, request_uid=None):
-        box = self._box(box_id)
-        if target not in ('bank', 'till'):
-            raise AppError(_('Choose bank or till.'))
-        request_uid = self._request_uid(request_uid)
-        replay = self._replay(box, request_uid)
-        if replay:
-            return replay
-        move = box._record_deposit(self._amount(box, amount), target, self._note(note), source='app')
-        self._stamp(move, request_uid)
-        return self._done(box, move, _('Deposited %s', box.currency_id.format(-move.amount)))
+    def _api_deposit(self, box_id, amount, target, note=None, request_uid=None, card_id=None):
+        return self._svc().deposit(self._box(box_id), amount, target, note, request_uid, card_id)
 
     def _api_count(self, box_id, counted):
-        box = self._box(box_id)
-        try:
-            counted = float_round(float(counted), precision_rounding=box.currency_id.rounding)
-        except (TypeError, ValueError):
-            raise AppError(_('Enter a valid amount.')) from None
-        if counted < 0:
-            raise AppError(_('The amount cannot be negative.'))
-        expected = box.balance
-        difference = box._record_count(counted)
-        fmt = box.currency_id.format
-        if difference:
-            text = _('You counted %(counted)s, the books say %(expected)s (difference %(difference)s). '
-                     'The accountant will check it.', counted=fmt(counted), expected=fmt(expected),
-                     difference=fmt(difference.amount))
-        else:
-            text = _('%s — it matches the books.', fmt(counted))
-        return self._done(box, None, text, difference=difference.amount if difference else 0.0,
-                          expected=expected)
+        return self._svc().count(self._box(box_id), counted)
+
+    def _api_notifications(self, box_id):
+        return self._svc().notifications(self._box(box_id))
+
+    def _api_notifications_set(self, box_id, **values):
+        allowed = {'session_closed', 'reminder_expense', 'reminder_count_weekday', 'reminder_hour'}
+        return self._svc().set_notifications(self._box(box_id), **{k: v for k, v in values.items() if k in allowed})
 
     def _api_statement_answer(self, box_id, statement_id, correct, note=None):
-        box = self._box(box_id)
-        statement = request.env['ecc.owner.statement'].sudo().browse(int(statement_id or 0)).exists()
-        if not statement or statement.box_id != box:
-            raise AppError(_('Statement not found.'), 'not_found')
-        if statement.state not in ('draft', 'sent'):
-            raise AppError(_('This statement was already answered.'))
-        statement._answer(bool(correct), self._note(note))
-        text = _('Thank you, statement confirmed.') if correct else \
-            _('Noted. The accountant will check the statement with you.')
-        return self._done(box, None, text, statements=box._api_statements())
+        return self._svc().statement_answer(self._box(box_id), statement_id, correct, note)
+
+    # cards ------------------------------------------------------------
+
+    def _api_card_home(self, box_id, card_id, limit=30):
+        return self._svc().card_home(self._box(box_id), card_id, limit)
+
+    def _api_card_withdraw(self, box_id, card_id, amount, target='box', note=None, request_uid=None):
+        return self._svc().card_withdraw(self._box(box_id), card_id, amount, target, note, request_uid)
+
+    def _api_card_expense(self, box_id, card_id, amount, category_id, note=None, photos=None, request_uid=None):
+        return self._svc().card_expense(self._box(box_id), card_id, amount, category_id, note, photos, request_uid)
+
+    def _api_card_count(self, box_id, card_id, counted):
+        return self._svc().card_count(self._box(box_id), card_id, counted)
+
+    # push notifications --------------------------------------------------
+
+    def _api_push_key(self):
+        return {'key': request.env['mail.push.device'].sudo().get_web_push_vapid_public_key()}
+
+    def _api_push_subscribe(self, endpoint, keys, vapid_key, expiration=None):
+        """This phone gets the notifications of the logged-in owner (one phone = one login)."""
+        if not request.env['ecc.owner.box']._app_boxes():
+            raise AccessError('no box')
+        if not isinstance(endpoint, str) or not endpoint.startswith('https://') or len(endpoint) > 2048 \
+                or not isinstance(keys, dict) or not keys.get('p256dh') or not keys.get('auth'):
+            raise AppError(_('Invalid request.'), 'bad_request')
+        Device = request.env['mail.push.device'].sudo()
+        if vapid_key != Device.get_web_push_vapid_public_key():
+            raise AppError(_('The server key changed. Turn notifications on again.'), 'push_key')
+        partner = request.env.user.partner_id
+        expiration = None if not isinstance(expiration, (int, float)) else \
+            datetime.fromtimestamp(expiration / 1000, tz=timezone.utc).replace(tzinfo=None)
+        values = {'partner_id': partner.id, 'keys': json.dumps({'p256dh': str(keys['p256dh']),
+                                                                'auth': str(keys['auth'])}),
+                  'expiration_time': expiration}
+        device = Device.search([('endpoint', '=', endpoint)], limit=1)
+        if device:
+            device.write(values)
+        else:
+            Device.create(dict(values, endpoint=endpoint))
+        return {'push': True}
+
+    def _api_push_unsubscribe(self, endpoint):
+        request.env['mail.push.device'].sudo().search(
+            [('endpoint', '=', endpoint), ('partner_id', '=', request.env.user.partner_id.id)]).unlink()
+        return {'push': False}

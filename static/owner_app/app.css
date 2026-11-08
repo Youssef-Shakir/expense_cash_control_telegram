@@ -166,3 +166,8 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 600; }
 .install li { margin: 4px 0; }
 .install b { color: var(--brand); }
 .install .btn { margin-top: 10px; }
+
+/* notification settings */
+.row.toggle { cursor: pointer; }
+.row.toggle input { width: 22px; height: 22px; accent-color: var(--brand); flex: none; }
+.row.toggle .desc { white-space: normal; }

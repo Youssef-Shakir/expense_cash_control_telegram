@@ -59,3 +59,41 @@ self.addEventListener('fetch', (event) => {
         })));
     }
 });
+
+// Push notifications (Web Push sent by Odoo's mail.push queue): session closed, card movements, reviewed
+// expenses, explained differences, statements. Tapping one opens the app on the right screen.
+self.addEventListener('push', (event) => {
+    let data = {};
+    try {
+        data = event.data ? event.data.json() : {};
+    } catch (e) {
+        data = { title: event.data ? event.data.text() : '' };
+    }
+    const options = Object.assign({
+        icon: '{{ASSET}}/icon-192.png',
+        badge: '{{ASSET}}/favicon-32.png',
+        dir: 'auto',
+    }, data.options || {});
+    if (!options.tag) {
+        delete options.tag;
+    }
+    options.data = Object.assign({ url: '/ecc/owner/app' }, options.data || {});
+    event.waitUntil(self.registration.showNotification(data.title || 'DoniaLink', options));
+});
+
+self.addEventListener('notificationclick', (event) => {
+    event.notification.close();
+    const url = (event.notification.data && event.notification.data.url) || '/ecc/owner/app';
+    const target = new URL(url, self.location.origin);
+    if (target.origin !== self.location.origin || !target.pathname.startsWith('/ecc/owner/')) {
+        return;
+    }
+    event.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windows) => {
+        const open = windows.find((w) => new URL(w.url).pathname.startsWith('/ecc/owner/'));
+        if (open) {
+            open.postMessage({ type: 'open', url: target.href });
+            return open.focus();
+        }
+        return self.clients.openWindow(target.href);
+    }));
+});

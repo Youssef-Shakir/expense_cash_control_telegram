@@ -10,10 +10,11 @@ class PosCashMove(models.Model):
     receipt_count = fields.Integer('Receipt Count', compute='_compute_receipt_count', store=True)
     owner_move_ids = fields.One2many('ecc.owner.move', 'cash_move_id', string='Owner Collection')
 
-    @api.depends('receipt_ids')
+    @api.depends('receipt_ids.state')
     def _compute_receipt_count(self):
+        # a rejected or duplicate photo proves nothing: the cash-out stays without receipt
         for move in self:
-            move.receipt_count = len(move.receipt_ids)
+            move.receipt_count = len(move.receipt_ids.filtered(lambda r: r.state not in ('rejected', 'duplicate')))
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -64,3 +65,11 @@ class PosCashMove(models.Model):
         if not receipt:
             return False
         return receipt._match_cash_move(self)
+
+    def action_pay_vendor_receipt(self):
+        """Row button in the receipt's suggestions: this cash-out paid the receipt's vendor."""
+        self.ensure_one()
+        receipt = self.env['ecc.receipt'].browse(self.env.context.get('ecc_receipt_id')).exists()
+        if not receipt:
+            return False
+        return receipt._pay_vendor_with(self)

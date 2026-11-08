@@ -9,4 +9,20 @@
         <field name="interval_type">days</field>
         <field name="nextcall" eval="(DateTime.now().replace(hour=6, minute=0, second=0) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')"/>
     </record>
+    <record id="cron_owner_card_sales" model="ir.cron">
+        <field name="name">Owner Cards: add card sales of closed sessions</field>
+        <field name="model_id" ref="model_ecc_owner_card"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_feed_sales()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+    </record>
+    <record id="cron_owner_reminders" model="ir.cron">
+        <field name="name">Owner Cash: reminders (record expenses, count cash)</field>
+        <field name="model_id" ref="model_ecc_owner_box"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_owner_reminders()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+    </record>
 </odoo>

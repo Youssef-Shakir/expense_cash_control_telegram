@@ -114,6 +114,8 @@
                             <field name="drawings_account_id" options="{'no_create': True}"/>
                             <field name="bank_journal_id" options="{'no_create': True}"/>
                             <field name="till_journal_id" options="{'no_create': True}"/>
+                            <field name="card_ids" widget="many2many_tags" options="{'no_create': True}"
+                                   placeholder="Card boxes this owner can use"/>
                         </group>
                         <group string="POS Collection">
                             <field name="collection_category_id" invisible="not id"/>
@@ -124,12 +126,19 @@
                         <group string="Owner App">
                             <field name="app_user_id" readonly="1"/>
                             <field name="app_url" widget="url" invisible="not app_user_id"/>
+                            <field name="app_push_count" invisible="not app_user_id"/>
+                            <field name="platform_enabled" readonly="1"/>
                         </group>
                         <group string="Telegram">
                             <field name="is_linked"/>
                             <field name="telegram_name" invisible="not is_linked"/>
                             <field name="statement_frequency"/>
                             <field name="statement_weekday" invisible="statement_frequency != 'weekly'"/>
+                        </group>
+                        <group string="Reminders">
+                            <field name="reminder_expense"/>
+                            <field name="reminder_count_weekday" placeholder="Never"/>
+                            <field name="reminder_hour" invisible="not reminder_expense and not reminder_count_weekday"/>
                         </group>
                     </group>
                     <notebook>
@@ -139,7 +148,7 @@
                                     <field name="date"/>
                                     <field name="kind" widget="badge" decoration-success="kind == 'collect'"
                                            decoration-danger="kind == 'expense'" decoration-warning="kind == 'drawing'"
-                                           decoration-info="kind == 'deposit'"/>
+                                           decoration-info="kind in ('deposit', 'from_card')"/>
                                     <field name="name"/>
                                     <field name="source" optional="show"/>
                                     <field name="amount" sum="Balance"/>
@@ -183,9 +192,10 @@
                 <field name="box_id"/>
                 <field name="kind" widget="badge" decoration-success="kind == 'collect'"
                        decoration-danger="kind == 'expense'" decoration-warning="kind == 'drawing'"
-                       decoration-info="kind == 'deposit'"/>
+                       decoration-info="kind in ('deposit', 'from_card')"/>
                 <field name="name"/>
                 <field name="session_id" optional="show"/>
+                <field name="card_id" optional="show"/>
                 <field name="source" optional="show"/>
                 <field name="amount" sum="Total"/>
                 <field name="state" optional="hide"/>
@@ -287,6 +297,7 @@
                 <field name="date" readonly="1"/>
                 <field name="box_id" readonly="1"/>
                 <field name="kind" widget="badge" readonly="1"/>
+                <field name="card_id" readonly="1" optional="show"/>
                 <field name="session_id" readonly="1" optional="show"/>
                 <field name="amount" readonly="1"/>
                 <field name="note" readonly="1" optional="show"/>
@@ -325,7 +336,7 @@
         <field name="context">{'search_default_pending': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Nothing to explain</p>
-            <p>Partial collections ("Other amount"), cash counts that do not match and disputed statements appear here.</p>
+            <p>Partial collections ("Other amount"), cash counts or card balances that do not match and disputed statements appear here.</p>
         </field>
     </record>
 
@@ -340,6 +351,7 @@
                 <field name="date_to"/>
                 <field name="opening"/>
                 <field name="collected"/>
+                <field name="from_card" optional="show"/>
                 <field name="spent"/>
                 <field name="took"/>
                 <field name="deposited"/>
@@ -372,6 +384,7 @@
                         <group>
                             <field name="opening"/>
                             <field name="collected"/>
+                            <field name="from_card"/>
                             <field name="spent"/>
                             <field name="took"/>
                             <field name="deposited"/>

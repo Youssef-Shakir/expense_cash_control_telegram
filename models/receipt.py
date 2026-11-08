@@ -60,6 +60,8 @@ class Receipt(models.Model):
     sender_id = fields.Many2one('ecc.telegram.sender', string='Sent By', readonly=True, index=True)
     owner_box_id = fields.Many2one('ecc.owner.box', string='Owner Cash Box', readonly=True, index='btree_not_null',
                                    ondelete='set null', help='Expense paid by the owner from his cash.')
+    card_id = fields.Many2one('ecc.owner.card', string='Paid by Card', readonly=True, index='btree_not_null',
+                              ondelete='set null', help='Expense paid by the owner with this card box.')
     sent_at = fields.Datetime('Sent On', required=True, readonly=True, default=fields.Datetime.now, index=True)
     chat_id = fields.Char('Telegram Chat', readonly=True, index=True)
     chat_title = fields.Char('Telegram Group', readonly=True)
@@ -85,13 +87,19 @@ class Receipt(models.Model):
                                         index='btree_not_null', ondelete='set null')
     cash_move_id = fields.Many2one('pos.cash.move', string='POS Cash-Out', copy=False,
                                    index='btree_not_null', ondelete='set null',
-                                   domain="[('company_id', '=', company_id), ('move_type', '=', 'out')]")
+                                   domain="[('company_id', '=', company_id), ('move_type', '=', 'out'), "
+                                          "'|', ('receipt_count', '=', 0), ('id', '=', cash_move_id)]",
+                                   help='Only cash-outs without a receipt are offered.')
     session_id = fields.Many2one('pos.session', string='POS Session', index='btree_not_null',
                                  domain="[('company_id', '=', company_id)]",
                                  help='Session open when the photo was sent (or of the matched cash-out).')
     suggested_cash_move_ids = fields.Many2many('pos.cash.move', string='Suggested Cash-Outs',
                                                compute='_compute_suggested_cash_move_ids')
     amount_mismatch = fields.Boolean('Amount Mismatch', compute='_compute_amount_mismatch')
+    vendor_payment = fields.Boolean(
+        'Vendor Payment', compute='_compute_vendor_payment',
+        help='The matched POS cash-out paid the vendor: it is on the vendor account and pays the bill of the '
+             'purchase order.')
     duplicate_of_id = fields.Many2one('ecc.receipt', string='Possible Duplicate Of', readonly=True, copy=False,
                                       index='btree_not_null', ondelete='set null')
     processed_by_id = fields.Many2one('res.users', string='Processed By', readonly=True, copy=False)
@@ -146,6 +154,11 @@ class Receipt(models.Model):
                 receipt.amount and other is not None
                 and float_compare(receipt.amount, other, precision_rounding=receipt.currency_id.rounding or 0.01))
 
+    @api.depends('cash_move_id.classification_type')
+    def _compute_vendor_payment(self):
+        for receipt in self:
+            receipt.vendor_payment = receipt.cash_move_id.classification_type == 'partner'
+
     @api.depends('sent_at', 'company_id', 'session_id', 'amount', 'state')
     def _compute_suggested_cash_move_ids(self):
         for receipt in self:
@@ -167,20 +180,21 @@ class Receipt(models.Model):
 
     def _candidate_cash_moves(self, limit=20):
         """Cash-outs this photo may prove: those of the receipt's session (or of the sessions running when
-        it was sent), the ones without a receipt first, then the closest amount, then the closest time."""
+        it was sent) that have no receipt yet, the closest amount first, then the closest time."""
         self.ensure_one()
         sessions = self.session_id or self._candidate_sessions()
         if not sessions:
             return self.env['pos.cash.move']
         moves = self.env['pos.cash.move'].search([
             ('session_id', 'in', sessions.ids), ('move_type', '=', 'out'),
+            '|', ('receipt_count', '=', 0), ('id', '=', self.cash_move_id.id),
         ])
         amount = self.amount
         sent_at = self.sent_at
 
         def key(move):
             when = move.statement_line_id.create_date or sent_at
-            return (bool(move.receipt_ids), abs(move.amount_abs - amount) if amount else 0,
+            return (abs(move.amount_abs - amount) if amount else 0,
                     abs((when - sent_at).total_seconds()))
         return moves.sorted(key)[:limit]
 
@@ -334,9 +348,19 @@ class Receipt(models.Model):
 
     def action_create_purchase_order(self):
         """Open a new RFQ prefilled from the receipt (vendor, date, note, photo); the accountant adds the
-        product lines and confirms it. Saving it links it here and copies the photos on it."""
+        product lines and confirms it. Saving it links it here and copies the photos on it. Also for a receipt
+        already matched to a cash-out paid to the vendor: the bill of the order is then paid by that cash-out."""
         self.ensure_one()
-        self._check_to_review()
+        if not self._can_add_purchase_order():
+            self._check_to_review()
+        return self._open_new_purchase_order()
+
+    def _can_add_purchase_order(self):
+        self.ensure_one()
+        return self.vendor_payment and not self.purchase_order_id
+
+    def _open_new_purchase_order(self):
+        self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
             'name': _('Purchase Order from %s', self.name),
@@ -364,7 +388,8 @@ class Receipt(models.Model):
             self.expense_id = False
             expense.sudo().unlink()
             self.message_post(body=_('Owner expense replaced by a purchase order: register the payment of its '
-                                     'bill from the journal %s.', self.owner_box_id.journal_id.display_name))
+                                     'bill from the journal %s.',
+                                     (self.card_id.journal_id or self.owner_box_id.journal_id).display_name))
         copies = self._copy_photos(order)
         body = _('Telegram receipt %s.', self._get_html_link())
         if self.note:
@@ -376,6 +401,7 @@ class Receipt(models.Model):
         self.write(vals)
         self._close('processed')
         self.message_post(body=_('Recorded as purchase order %s.', order._get_html_link()))
+        self._reconcile_vendor_payment()
 
     def _copy_photos(self, record):
         copies = self.env['ir.attachment']
@@ -446,9 +472,67 @@ class Receipt(models.Model):
             raise UserError(_('Choose the POS cash-out this receipt proves.'))
         return self._match_cash_move(move)
 
-    def _match_cash_move(self, move):
+    def action_match_vendor_payment(self):
+        """Header button: the cash-out of the POS Cash-Out field paid the vendor of the receipt."""
+        self.ensure_one()
+        if not self.cash_move_id:
+            raise UserError(_('Choose the POS cash-out that paid the vendor.'))
+        return self._pay_vendor_with(self.cash_move_id)
+
+    def _pay_vendor_with(self, move):
+        """Match the cash-out as a payment to the vendor, then open the purchase order to enter the products
+        (unless the receipt has one already)."""
+        self.ensure_one()
+        self._match_cash_move(move, vendor=True)
+        if self.purchase_order_id:
+            return True
+        return self._open_new_purchase_order()
+
+    def _classify_as_vendor_payment(self, move):
+        """Put the cash-out on the vendor's payable account (reclassified if it went to a category)."""
+        vendor = self.partner_id.commercial_partner_id
+        if not vendor:
+            raise UserError(_('Choose the vendor of the receipt first.'))
+        if (move.state == 'classified' and move.classification_type == 'partner'
+                and move.partner_id.commercial_partner_id == vendor):
+            return
+        if move.state == 'classified':
+            move.action_reset()
+        move.write({'classification_type': 'partner', 'partner_id': vendor.id, 'bill_id': False})
+        move.action_classify()
+
+    def _reconcile_vendor_payment(self):
+        """A cash-out paid to the vendor pays the posted bills of the receipt's purchase order."""
+        for receipt in self.filtered(lambda r: r.vendor_payment and r.purchase_order_id):
+            move = receipt.cash_move_id
+            account = move.partner_account_id
+            bills = receipt.purchase_order_id.invoice_ids.filtered(
+                lambda b: b.state == 'posted' and b.move_type == 'in_invoice'
+                and b.payment_state in ('not_paid', 'partial'))
+            if not bills or not account:
+                continue
+            _liquidity, _suspense, own_lines = move.statement_line_id._seek_for_lines()
+            own_lines = own_lines.filtered(lambda l: l.account_id == account and not l.reconciled)
+            bill_lines = bills.line_ids.filtered(lambda l: l.account_id == account and not l.reconciled)
+            if not own_lines or not bill_lines:
+                continue
+            try:
+                with self.env.cr.savepoint():
+                    (own_lines + bill_lines).reconcile()
+            except UserError as e:
+                receipt.message_post(body=_('The cash-out could not be reconciled with the bill: %s',
+                                            e.args[0] if e.args else e))
+                continue
+            if not move.bill_id:
+                move.with_context(ecc_allow_category_change=True).bill_id = bills[0]
+            receipt.message_post(body=_('Cash-out %(move)s reconciled with the bill %(bill)s.',
+                                        move=move._get_html_link(),
+                                        bill=', '.join(b.display_name for b in bills)))
+
+    def _match_cash_move(self, move, vendor=False):
         """The photo proves this cash-out: link it, attach the photos on the cash-out and classify the
-        cash-out with the receipt's category when it is not classified yet. No new expense is recorded."""
+        cash-out with the receipt's category when it is not classified yet. No new expense is recorded.
+        ``vendor``: the cash-out paid the vendor of the receipt; it goes on his payable account."""
         self.ensure_one()
         self._check_to_review()
         move.ensure_one()
@@ -456,7 +540,9 @@ class Receipt(models.Model):
             raise UserError(_('Only a Cash Out can be proved by a receipt.'))
         if move.company_id != self.company_id:
             raise UserError(_('The cash-out belongs to another company.'))
-        if move.state == 'to_classify':
+        if vendor:
+            self._classify_as_vendor_payment(move)
+        elif move.state == 'to_classify':
             if move.classification_type == 'category':
                 category = self.category_id or move.category_id
                 if not category:
@@ -478,6 +564,8 @@ class Receipt(models.Model):
             self.message_post(body=_('⚠️ Amount on the receipt %(receipt)s, on the cash-out %(move)s.',
                                      receipt=self.currency_id.format(self.amount),
                                      move=self.currency_id.format(move.amount_abs)))
+        if vendor:
+            self._reconcile_vendor_payment()
         return True
 
     def action_mark_reviewed(self):
@@ -487,27 +575,54 @@ class Receipt(models.Model):
             if not receipt.expense_id and not receipt.purchase_order_id:
                 raise UserError(_('Receipt %s has no expense or purchase order yet.', receipt.name))
         self._close('processed')
+        self._push_owner('processed')
         return True
+
+    def _push_owner(self, state):
+        """Tell the owner his expense (cash box or card) was reviewed, rejected or found a duplicate."""
+        for receipt in self.filtered(lambda r: r.paid_by == 'owner' and r.owner_box_id):
+            box = receipt.owner_box_id
+            rec = receipt.with_context(lang=box._app_lang()).sudo()
+            env = rec.env
+            what = '%s · %s' % (rec.currency_id.format(rec.amount), rec.note or rec.category_id.name or rec.name)
+            if state == 'processed':
+                title, body = env._('Expense reviewed ✓'), what
+            else:
+                title = env._('Expense rejected') if state == 'rejected' else env._('Expense is a duplicate')
+                back = (env._('The amount is back on the card %s.', rec.card_id.name) if rec.card_id
+                        else env._('The amount is back in your cash box.'))
+                body = '%s · %s' % (what, back)
+            kind = {'processed': 'expense_reviewed', 'rejected': 'expense_rejected'}.get(state, 'expense_duplicate')
+            box._owner_notify(kind, '%s\n%s' % (title, body), title, body=body,
+                              route='bankcard' if rec.card_id else 'moves', card=rec.card_id or None,
+                              tag='receipt-%s' % rec.id,
+                              data={'receipt_id': rec.id, 'amount': rec.amount, 'reference': rec.name})
 
     def _drop_owner_expense(self):
         """A rejected / duplicate owner expense is removed: his balance gets the amount back."""
         for receipt in self.filtered(lambda r: r.paid_by == 'owner' and r.expense_id):
             expense = receipt.expense_id
             receipt.expense_id = False
-            receipt.message_post(body=_('Owner expense %s removed: the amount is back in the cash box.',
-                                        expense.display_name))
+            if receipt.card_id:
+                receipt.message_post(body=_('Owner expense %(expense)s removed: the amount is back on the card '
+                                            '%(card)s.', expense=expense.display_name, card=receipt.card_id.name))
+            else:
+                receipt.message_post(body=_('Owner expense %s removed: the amount is back in the cash box.',
+                                            expense.display_name))
             expense.sudo().unlink()
 
     def action_reject(self):
         self._check_to_review()
         self._drop_owner_expense()
         self._close('rejected')
+        self._push_owner('rejected')
         return True
 
     def action_mark_duplicate(self):
         self._check_to_review()
         self._drop_owner_expense()
         self._close('duplicate')
+        self._push_owner('duplicate')
         return True
 
     def action_reset_to_review(self):

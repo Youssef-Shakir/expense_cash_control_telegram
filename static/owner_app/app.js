@@ -23,11 +23,18 @@
             depositTo: 'إيداع إلى', bank: 'البنك', till: 'صندوق الكاشير',
             countHint: 'اكتب كم نقداً معك الآن. أي فرق يذهب للمحاسب.', counted: 'المبلغ المعدود',
             check: 'تحقق', noMoves: 'لا توجد حركات بعد.', noStatements: 'لا توجد كشوفات بعد.',
-            stOpening: 'الرصيد الافتتاحي', stCollected: 'المستلم', stSpent: 'المصاريف', stTook: 'سحب شخصي',
+            stOpening: 'الرصيد الافتتاحي', stCollected: 'المستلم', stFromCard: 'من البطاقات', stSpent: 'المصاريف', stTook: 'سحب شخصي',
             stDeposited: 'الإيداعات', stAdjusted: 'التسويات', stClosing: 'الرصيد الختامي',
             correct: '✅ صحيح', notCorrect: '⚠️ غير صحيح', whatsWrong: 'ما الخطأ؟ (اختياري)',
             stDraft: 'جديد', stSent: 'بانتظار ردك', stConfirmed: 'مؤكد', stDisputed: 'مُعترض عليه',
             pendingStatement: 'كشف بانتظار ردك', openIt: 'اضغط للمراجعة',
+            remindBanner: 'لم تسجّل شيئاً اليوم', remindText: 'صرفت نقداً اليوم؟ سجّله الآن',
+            notifications: 'الإشعارات', notifPhone: 'هذا الهاتف', notifWhat: 'ماذا أُبلَّغ',
+            notifSession: 'إغلاق جلسة', notifSessionText: 'عند إغلاق جلسة فيها نقد للاستلام',
+            notifExpense: 'تذكير يومي بالمصاريف', notifExpenseText: 'إن لم تسجّل أي مصروف في ذلك اليوم',
+            notifCount: 'تذكير أسبوعي بعدّ النقد', notifHour: 'ساعة التذكير', never: 'أبداً',
+            notifSaved: 'تم حفظ الإشعارات', notifEverywhere: 'تصلك على هذا التطبيق وتيليجرام وتطبيق DoniaLink',
+            weekdays: ['الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت', 'الأحد'],
             done: 'تم', home: 'الرئيسية', newBalance: 'الرصيد الجديد',
             collected: (a, s) => `تم استلام ${a} من ${s}`,
             expenseDone: (a, c) => `تم تسجيل مصروف ${a} (${c}) · بانتظار مراجعة المحاسب`,
@@ -44,7 +51,12 @@
             language: 'English', install: 'تثبيت التطبيق', iosInstall: 'في سفاري: زر المشاركة ثم "إضافة إلى الشاشة الرئيسية".',
             switchBox: 'تغيير الصندوق', logout: 'تسجيل الخروج', confirmCollect: (a, s) => `استلام ${a} من ${s}؟`,
             confirm: 'تأكيد', cancel: 'إلغاء', waitingReview: 'قيد المراجعة', closedAt: 'أُغلقت',
-            types: { collect: 'استلام', expense: 'مصروف', drawing: 'سحب شخصي', deposit: 'إيداع', adjust: 'تسوية' },
+            notifOn: 'تشغيل الإشعارات', notifOff: 'إيقاف الإشعارات', notifEnabled: 'الإشعارات مفعّلة على هذا الهاتف',
+            notifDisabled: 'تم إيقاف الإشعارات', notifBlocked: 'الإشعارات محظورة: اسمح بها من إعدادات المتصفح',
+            notifInstallFirst: 'ثبّت التطبيق على الشاشة الرئيسية أولاً لتصلك الإشعارات', notifUnsupported: 'هذا المتصفح لا يدعم الإشعارات',
+            notifBanner: 'فعّل الإشعارات', notifBannerText: 'اعرف فوراً عند إغلاق جلسة أو حركة على البطاقة', notifLater: 'لاحقاً',
+            types: { bank: 'قيد بنكي', collect: 'استلام', expense: 'مصروف', drawing: 'سحب شخصي', deposit: 'إيداع', adjust: 'تسوية',
+                from_card: 'من البطاقة', sales: 'مبيعات البطاقة', withdraw: 'سحب نقد' },
             telegramToo: 'يعمل التطبيق مع بوت تيليجرام: كل ما تسجله هنا يظهر هناك أيضاً.',
             poweredBy: 'بواسطة', developedBy: 'تطوير', developer: 'يوسف شاكر',
             installTitle: 'ثبّت التطبيق على هاتفك',
@@ -53,6 +65,17 @@
             iosMissing: 'غير موجودة؟ في آخر القائمة اضغط «تعديل الإجراءات…» وأضفها.',
             iosInApp: 'إذا فتحت الرابط من تيليجرام أو واتساب: افتحه أولاً في سفاري (⋯ ثم «فتح في سفاري»).',
             installNow: 'تثبيت', dismiss: 'لاحقاً',
+            cards: 'البطاقات', cardBalance: 'رصيد البطاقة', withdraw: 'سحب نقد', cardExpense: 'دفع بالبطاقة',
+            checkBalance: 'مطابقة الرصيد', cardHistory: 'حركات البطاقة', depositCard: 'إيداع في البطاقة',
+            toMyBox: 'إلى صندوقي النقدي', forMe: 'سحب شخصي لي', withdrawTo: 'النقد يذهب إلى',
+            withdrawHint: 'إلى صندوقك: يبقى نقداً للشركة معك. سحب شخصي: مسحوبات المالك.',
+            cardExpenseHint: 'يُخصم من رصيد البطاقة فوراً، ويراجعه المحاسب.',
+            cardCountHint: 'اكتب الرصيد الظاهر في تطبيق البنك الآن. أي فرق يذهب للمحاسب.', bankShows: 'رصيد البنك',
+            cardCountDiff: (a, e, d) => `البنك يظهر ${a} والسجلات تقول ${e} (الفرق ${d}). سيتحقق المحاسب.`,
+            withdrawDone: (a, c) => `تمت إضافة ${a} من ${c} إلى نقدك`,
+            withdrawTookDone: (a, c) => `تم سحب ${a} لك من ${c}`,
+            cardExpenseDone: (a, c) => `تم تسجيل مصروف بالبطاقة ${a} (${c}) · بانتظار مراجعة المحاسب`,
+            by: 'بواسطة', backToCard: 'العودة للبطاقة',
         },
         en: {
             appName: 'Owner Cash Box', login: 'Log in', loginHint: 'Use the login the accountant gave you.',
@@ -70,11 +93,18 @@
             depositTo: 'Deposit to', bank: 'Bank', till: 'POS till',
             countHint: 'Type how much cash you hold now. Any difference goes to the accountant.', counted: 'Counted cash',
             check: 'Check', noMoves: 'No movements yet.', noStatements: 'No statements yet.',
-            stOpening: 'Opening balance', stCollected: 'Collected', stSpent: 'Spent', stTook: 'Took for me',
+            stOpening: 'Opening balance', stCollected: 'Collected', stFromCard: 'From cards', stSpent: 'Spent', stTook: 'Took for me',
             stDeposited: 'Deposited', stAdjusted: 'Adjustments', stClosing: 'Closing balance',
             correct: '✅ Correct', notCorrect: '⚠️ Not correct', whatsWrong: "What's wrong? (optional)",
             stDraft: 'New', stSent: 'Waiting for you', stConfirmed: 'Confirmed', stDisputed: 'Disputed',
             pendingStatement: 'A statement waits for your answer', openIt: 'Tap to review',
+            remindBanner: 'Nothing recorded today', remindText: 'Spent cash today? Record it now',
+            notifications: 'Notifications', notifPhone: 'This phone', notifWhat: 'What you are told',
+            notifSession: 'Session closed', notifSessionText: 'When a session closes with cash to collect',
+            notifExpense: 'Daily expense reminder', notifExpenseText: 'If you recorded no expense that day',
+            notifCount: 'Weekly cash count reminder', notifHour: 'Reminder hour', never: 'Never',
+            notifSaved: 'Notifications saved', notifEverywhere: 'Sent to this app, Telegram and the DoniaLink app',
+            weekdays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
             done: 'Done', home: 'Home', newBalance: 'New balance',
             collected: (a, s) => `Collected ${a} from ${s}`,
             expenseDone: (a, c) => `Expense ${a} (${c}) recorded · waiting for accountant review`,
@@ -91,7 +121,12 @@
             language: 'العربية', install: 'Install app', iosInstall: 'In Safari: Share button, then "Add to Home Screen".',
             switchBox: 'Switch cash box', logout: 'Log out', confirmCollect: (a, s) => `Collect ${a} from ${s}?`,
             confirm: 'Confirm', cancel: 'Cancel', waitingReview: 'In review', closedAt: 'Closed',
-            types: { collect: 'Collected', expense: 'Expense', drawing: 'Took for me', deposit: 'Deposit', adjust: 'Adjustment' },
+            notifOn: 'Turn on notifications', notifOff: 'Turn off notifications', notifEnabled: 'Notifications are on for this phone',
+            notifDisabled: 'Notifications turned off', notifBlocked: 'Notifications are blocked: allow them in the browser settings',
+            notifInstallFirst: 'Add the app to your Home Screen first to get notifications', notifUnsupported: 'This browser does not support notifications',
+            notifBanner: 'Turn on notifications', notifBannerText: 'Know at once when a session closes or a card moves', notifLater: 'Later',
+            types: { bank: 'Bank entry', collect: 'Collected', expense: 'Expense', drawing: 'Took for me', deposit: 'Deposit', adjust: 'Adjustment',
+                from_card: 'From card', sales: 'Card sales', withdraw: 'Cash withdrawal' },
             telegramToo: 'The app works alongside the Telegram bot: what you record here shows there too.',
             poweredBy: 'Powered by', developedBy: 'Developed by', developer: 'Yousif Shakir',
             installTitle: 'Install the app on your phone',
@@ -100,6 +135,17 @@
             iosMissing: 'Not in the list? At the bottom tap "Edit Actions…" and add it.',
             iosInApp: 'Opened from Telegram or WhatsApp? Open it in Safari first (⋯ then "Open in Safari").',
             installNow: 'Install', dismiss: 'Later',
+            cards: 'Cards', cardBalance: 'Card balance', withdraw: 'Withdraw cash', cardExpense: 'Pay by card',
+            checkBalance: 'Check balance', cardHistory: 'Card history', depositCard: 'Deposit to card',
+            toMyBox: 'To my cash box', forMe: 'Took for me', withdrawTo: 'The cash goes',
+            withdrawHint: 'To your cash box: it stays business cash you hold. Took for me: owner drawings.',
+            cardExpenseHint: 'Taken from the card balance now; the accountant reviews it.',
+            cardCountHint: 'Type the balance your bank app shows now. Any difference goes to the accountant.', bankShows: 'Bank balance',
+            cardCountDiff: (a, e, d) => `The bank shows ${a}, the books say ${e} (difference ${d}). The accountant will check it.`,
+            withdrawDone: (a, c) => `${a} from ${c} added to your cash`,
+            withdrawTookDone: (a, c) => `Took ${a} for you from ${c}`,
+            cardExpenseDone: (a, c) => `Card expense ${a} (${c}) recorded · waiting for accountant review`,
+            by: 'by', backToCard: 'Back to the card',
         },
     };
 
@@ -117,7 +163,7 @@
     // ------------------------------------------------------------------ state
     const state = {
         user: null, boxes: [], boxId: null, card: null, sessions: [], pending: 0,
-        categories: null, form: {}, installEvent: null,
+        categories: null, form: {}, installEvent: null, bankId: null, bank: null,
     };
     const $app = document.getElementById('app');
     const $sheet = document.getElementById('sheet');
@@ -313,6 +359,10 @@
     // ------------------------------------------------------------------ boot / login
     async function boot() {
         applyLang();
+        if (location.search) {
+            const target = openTarget(location.href);
+            history.replaceState(null, '', `/ecc/owner/app#${target}`);
+        }
         try {
             const info = await api('session');
             if (!info.logged) {
@@ -320,6 +370,7 @@
                 return;
             }
             setUser(info);
+            pushRefresh().then(() => { if ((location.hash || '#home') === '#home') { route(); } });
             await loadHome();
         } catch (e) {
             if (e.code === 'login') {
@@ -370,6 +421,7 @@
             try {
                 const info = await api('login', { login: form.login.value, password: form.password.value });
                 setUser(info);
+                pushRefresh();
                 await loadHome();
             } catch (e) {
                 showError(form, e.message || t('serverError'));
@@ -430,6 +482,9 @@
                 <div class="meta"><span>${esc(t('toCollect'))}: <b>${card.uncollected_sessions}</b></span>
                     <span dir="ltr">${esc(card.uncollected_sessions ? money(card.uncollected_amount) : '')}</span></div>
             </section>
+            ${cardsSection(card)}
+            ${pushBanner()}
+            ${card.expense_reminder_due ? `<button class="banner info" data-go="expense">🧾<span><strong>${esc(t('remindBanner'))}</strong>${esc(t('remindText'))}</span></button>` : ''}
             ${state.pending ? `<button class="banner warn" data-go="statements">📄<span><strong>${esc(t('pendingStatement'))}</strong>${esc(t('openIt'))}</span></button>` : ''}
             <nav class="grid">
                 ${tile('collect', '💰', t('collect'), card.uncollected_sessions)}
@@ -447,6 +502,18 @@
             <p class="hint center" style="margin-top:18px">${esc(t('telegramToo'))}</p>
             ${credit()}`;
         drawInstall();
+    }
+
+    const cardRow = (c) => `<button class="row" data-act="bankcard" data-id="${c.card_id}">
+        <span class="main"><span class="title">💳 ${esc(c.name)}</span><span class="desc">${esc(c.bank || '')}</span></span>
+        <span class="num ${c.balance < 0 ? 'out' : 'in'}">${esc(money(c.balance))}</span></button>`;
+
+    function cardsSection(card) {
+        const cards = (card && card.cards) || [];
+        if (!cards.length) {
+            return '';
+        }
+        return `<h2 class="section">${esc(t('cards'))}</h2><div class="list">${cards.map(cardRow).join('')}</div>`;
     }
 
     const tile = (route, icon, label, badge) => `<button class="action" data-go="${route}">
@@ -513,9 +580,14 @@
         state.form = { kind, uid: newUid(), photos: [], category: null, target: null };
     }
 
-    async function renderExpense() {
-        startForm('expense');
-        $app.innerHTML = `${topbar(t('expense'), state.card && state.card.owner, true)}
+    async function renderExpense(byCard) {
+        const bank = byCard === true ? state.bank : null;
+        if (byCard === true && !bank) {
+            go('home');
+            return;
+        }
+        startForm(bank ? 'card_expense' : 'expense');
+        $app.innerHTML = `${bank ? cardTopbar(t('cardExpense')) : topbar(t('expense'), state.card && state.card.owner, true)}
             <form class="card" id="form">
                 ${amountField('amount')}
                 <label class="lbl">${esc(t('category'))}</label>
@@ -525,7 +597,7 @@
                 <input type="file" id="file" accept="image/*" capture="environment" hidden>
                 <label class="lbl" for="note">${esc(t('note'))}</label>
                 <textarea class="input" id="note" maxlength="500"></textarea>
-                <p class="hint">${esc(t('expenseHint'))}</p>
+                <p class="hint">${esc(t(bank ? 'cardExpenseHint' : 'expenseHint'))}</p>
                 <button class="btn" type="submit">${esc(t('save'))}</button>
             </form>`;
         bindAmount();
@@ -568,12 +640,13 @@
                 throw { message: t('needCategory') };
             }
             const category = state.categories.find((c) => c.id === state.form.category);
-            const result = await api('expense', {
-                box_id: state.boxId, amount, category_id: state.form.category,
+            const result = await api(bank ? 'card_expense' : 'expense', {
+                box_id: state.boxId, card_id: bank ? bank.card_id : undefined, amount, category_id: state.form.category,
                 note: document.getElementById('note').value, request_uid: state.form.uid,
                 photos: state.form.photos.map((p) => ({ content_b64: p.b64, mimetype: 'image/jpeg', filename: p.name })),
             }, 90000);
-            return [result, result.replayed ? t('alreadySaved') : t('expenseDone', money(amount), category ? category.name : '')];
+            return [result, result.replayed ? t('alreadySaved')
+                : t(bank ? 'cardExpenseDone' : 'expenseDone', money(amount), category ? category.name : '')];
         });
     }
 
@@ -626,16 +699,19 @@
         });
     }
 
-    function renderDeposit() {
-        startForm('deposit');
+    function renderDeposit(toCard) {
         const card = state.card || {};
-        state.form.target = 'bank';
-        $app.innerHTML = `${topbar(t('deposit'), card.owner, true)}
+        const bank = toCard === true ? state.bank : null;
+        startForm(bank ? 'card_deposit' : 'deposit');
+        state.form.target = bank ? `card:${bank.card_id}` : 'bank';
+        const pressed = (value) => String(state.form.target === value);
+        $app.innerHTML = `${bank ? cardTopbar(t('depositCard')) : topbar(t('deposit'), card.owner, true)}
             <form class="card" id="form">${amountField('amount')}
                 <label class="lbl">${esc(t('depositTo'))}</label>
                 <div class="seg">
-                    <button type="button" class="chip" data-target="bank" aria-pressed="true">🏦 ${esc(card.bank_name || t('bank'))}</button>
+                    <button type="button" class="chip" data-target="bank" aria-pressed="${pressed('bank')}">🏦 ${esc(card.bank_name || t('bank'))}</button>
                     <button type="button" class="chip" data-target="till" aria-pressed="false" ${card.till_available ? '' : 'disabled'}>🧮 ${esc(card.till_name || t('till'))}</button>
+                    ${((card.cards) || []).map((c) => `<button type="button" class="chip" data-target="card:${c.card_id}" aria-pressed="${pressed(`card:${c.card_id}`)}">💳 ${esc(c.name)}</button>`).join('')}
                 </div>
                 <label class="lbl" for="note">${esc(t('note'))}</label><textarea class="input" id="note" maxlength="500"></textarea>
                 <button class="btn" type="submit">${esc(t('save'))}</button></form>`;
@@ -645,10 +721,17 @@
             if (!amount) {
                 throw { message: t('needAmount') };
             }
-            const target = state.form.target;
-            const result = await api('deposit', { box_id: state.boxId, amount, target,
+            let target = state.form.target;
+            let cardId;
+            let name = target === 'bank' ? (card.bank_name || t('bank')) : (card.till_name || t('till'));
+            if (target.startsWith('card:')) {
+                cardId = parseInt(target.slice(5), 10);
+                const picked = (card.cards || []).find((c) => c.card_id === cardId);
+                name = picked ? picked.name : '';
+                target = 'card';
+            }
+            const result = await api('deposit', { box_id: state.boxId, amount, target, card_id: cardId,
                 note: document.getElementById('note').value, request_uid: state.form.uid });
-            const name = target === 'bank' ? (card.bank_name || t('bank')) : (card.till_name || t('till'));
             return [result, result.replayed ? t('alreadySaved') : t('depositDone', money(amount), name)];
         });
     }
@@ -709,11 +792,19 @@
         if (result.sessions) {
             state.sessions = result.sessions;
         }
+        const fromCard = Boolean(result.bank_card) && String(state.form.kind || '').startsWith('card');
+        if (result.bank_card) {
+            state.bank = result.bank_card;
+        }
         state.form = {};
+        const cardLine = result.bank_card
+            ? `<p class="muted">${esc(t('cardBalance'))} · ${esc(result.bank_card.name)}: <b dir="ltr">${esc(money(result.bank_card.balance))}</b></p>` : '';
         $app.innerHTML = `${topbar(t('done'), state.card && state.card.owner, true)}
             <div class="card center"><div class="done-ico">✅</div><p style="font-size:17px">${esc(text)}</p>
+            ${cardLine}
             <p class="muted">${esc(t('newBalance'))}: <b dir="ltr">${esc(money(state.card ? state.card.balance : 0))}</b></p>
-            <button class="btn" data-go="home">${esc(t('home'))}</button></div>`;
+            ${fromCard ? `<button class="btn" data-go="bankcard">💳 ${esc(t('backToCard'))}</button>` : ''}
+            <button class="btn ${fromCard ? 'secondary' : ''}" data-go="home">${esc(t('home'))}</button></div>`;
         toast(text, 'ok');
         if (navigator.vibrate) {
             navigator.vibrate(30);
@@ -744,7 +835,7 @@
         }
     }
 
-    const FIG_LABELS = { opening: 'stOpening', collected: 'stCollected', spent: 'stSpent', took: 'stTook',
+    const FIG_LABELS = { opening: 'stOpening', collected: 'stCollected', from_card: 'stFromCard', spent: 'stSpent', took: 'stTook',
         deposited: 'stDeposited', adjusted: 'stAdjusted', closing: 'stClosing' };
     const ST_STATES = { draft: 'stDraft', sent: 'stSent', confirmed: 'stConfirmed', disputed: 'stDisputed' };
 
@@ -766,8 +857,8 @@
             return;
         }
         box.innerHTML = statements.map((s) => {
-            const figs = s.figures.filter(([key, value]) => key !== 'adjusted' || value).map(([key, value]) => {
-                const sign = { collected: '+', spent: '−', took: '−', deposited: '−' }[key] || '';
+            const figs = s.figures.filter(([key, value]) => (key !== 'adjusted' && key !== 'from_card') || value).map(([key, value]) => {
+                const sign = { collected: '+', from_card: '+', spent: '−', took: '−', deposited: '−' }[key] || '';
                 const cls = key === 'closing' ? ' total' : '';
                 const shown = sign ? `${sign}${number(value)} ${symbol()}` : money(value);
                 return `<span class="${cls}">${esc(t(FIG_LABELS[key]))}</span><span class="v${cls}">${esc(shown)}</span>`;
@@ -802,6 +893,129 @@
         }
     }
 
+    // ------------------------------------------------------------------ cards
+    function cardTopbar(title) {
+        return topbar(title, state.bank ? state.bank.name : '', true).replace('data-go="home"', 'data-go="bankcard"');
+    }
+
+    function openCard(id) {
+        const cards = (state.card && state.card.cards) || [];
+        state.bankId = id;
+        state.bank = cards.find((c) => c.card_id === id) || null;
+        store.set('bank', String(id));
+        go('bankcard');
+    }
+
+    async function renderCard() {
+        if (!state.bankId) {
+            const saved = parseInt(store.get('bank') || '0', 10);
+            const cards = (state.card && state.card.cards) || [];
+            state.bankId = (cards.find((c) => c.card_id === saved) || cards[0] || {}).card_id || null;
+        }
+        if (!state.bankId) {
+            go('home');
+            return;
+        }
+        const draw = (bank, moves) => {
+            $app.innerHTML = `${topbar(bank ? bank.name : t('cards'), bank ? bank.bank : '', true)}
+                <section class="balance">
+                    <div class="label">💳 ${esc(t('cardBalance'))}</div>
+                    <div class="amount">${esc(bank ? money(bank.balance) : '…')}</div>
+                </section>
+                <nav class="grid">
+                    ${tile('cardwithdraw', '💵', t('withdraw'))}
+                    ${tile('cardexpense', '🧾', t('cardExpense'))}
+                    ${tile('cardcount', '🔢', t('checkBalance'))}
+                    ${tile('carddeposit', '🏦', t('depositCard'))}
+                </nav>
+                <h2 class="section">${esc(t('cardHistory'))}</h2>
+                <div class="list" id="card-moves">${moves === null ? '<div class="splash" style="min-height:20vh"><div class="spinner"></div></div>'
+                    : (moves.map((m) => `<div class="row">
+                        <span class="main"><span class="title">${esc((t('types')[m.type]) || m.type_label)}${m.review === 'to_review' ? ` <span class="pill warn">${esc(t('waitingReview'))}</span>` : ''}</span>
+                        <span class="desc">${esc(m.description)}</span>
+                        <span class="small"><bdi dir="ltr">${esc(m.local_date)}</bdi>${m.owner ? ` · ${esc(t('by'))} ${esc(m.owner)}` : ''}</span></span>
+                        <span class="side"><span class="num ${m.amount >= 0 ? 'in' : 'out'}">${m.amount >= 0 ? '+' : ''}${esc(money(m.amount))}</span>
+                        <span class="small" style="display:block">→ ${esc(money(m.balance_after))}</span></span></div>`).join('')
+                        || `<div class="empty">${esc(t('noMoves'))}</div>`)}</div>`;
+        };
+        draw(state.bank, null);
+        try {
+            const data = await api('card_home', { box_id: state.boxId, card_id: state.bankId, limit: 50 });
+            state.bank = data.bank_card;
+            state.card = data.card || state.card;
+            if ((location.hash || '').slice(1) === 'bankcard') {
+                draw(state.bank, data.moves || []);
+            }
+        } catch (e) {
+            if (e.code === 'forbidden' || e.code === 'not_found') {
+                state.bankId = null;
+                store.set('bank', '');
+                go('home');
+            }
+            if (e.code !== 'login') {
+                toast(e.message || t('serverError'), 'bad');
+            }
+        }
+    }
+
+    function renderCardWithdraw() {
+        const bank = state.bank;
+        if (!bank) {
+            go('bankcard');
+            return;
+        }
+        startForm('card_withdraw');
+        state.form.target = 'box';
+        $app.innerHTML = `${cardTopbar(t('withdraw'))}
+            <form class="card" id="form">${amountField('amount')}
+                <label class="lbl">${esc(t('withdrawTo'))}</label>
+                <div class="seg">
+                    <button type="button" class="chip" data-target="box" aria-pressed="true">👛 ${esc(t('toMyBox'))}</button>
+                    <button type="button" class="chip" data-target="took" aria-pressed="false">🙋 ${esc(t('forMe'))}</button>
+                </div>
+                <p class="hint">${esc(t('withdrawHint'))}</p>
+                <label class="lbl" for="note">${esc(t('note'))}</label><textarea class="input" id="note" maxlength="500"></textarea>
+                <button class="btn" type="submit">${esc(t('save'))}</button></form>`;
+        bindAmount();
+        bindSubmit(async () => {
+            const amount = parseAmount(document.getElementById('amount').value);
+            if (!amount) {
+                throw { message: t('needAmount') };
+            }
+            const target = state.form.target;
+            const result = await api('card_withdraw', { box_id: state.boxId, card_id: bank.card_id, amount, target,
+                note: document.getElementById('note').value, request_uid: state.form.uid });
+            const text = result.replayed ? t('alreadySaved')
+                : t(target === 'took' ? 'withdrawTookDone' : 'withdrawDone', money(amount), bank.name);
+            return [result, text];
+        });
+    }
+
+    function renderCardCount() {
+        const bank = state.bank;
+        if (!bank) {
+            go('bankcard');
+            return;
+        }
+        startForm('card_count');
+        $app.innerHTML = `${cardTopbar(t('checkBalance'))}
+            <form class="card" id="form">${amountField('amount', t('bankShows'))}
+                <p class="hint">${esc(t('cardCountHint'))}</p>
+                <button class="btn" type="submit">${esc(t('check'))}</button></form>`;
+        bindAmount();
+        bindSubmit(async () => {
+            const counted = parseAmount(document.getElementById('amount').value);
+            if (counted === null) {
+                throw { message: t('needAmount') };
+            }
+            const result = await api('card_count', { box_id: state.boxId, card_id: bank.card_id, counted });
+            const text = result.difference
+                ? t('cardCountDiff', money(counted), money(result.expected), money(result.difference))
+                : t('countOk', money(counted));
+            return [result, text];
+        });
+    }
+
     // ------------------------------------------------------------------ menu
     function openMenu() {
         const standalone = isStandalone();
@@ -814,15 +1028,210 @@
             install = `<div class="install"><strong>📲 ${esc(t('installTitle'))}</strong><ol>${t('iosSteps').map((step) => `<li>${step}</li>`).join('')}</ol></div>`;
         }
         openSheet(`<h3>${esc(state.user || t('appName'))}</h3>${boxes}${install}
+            <button class="btn secondary" data-go="notifications">🔔 ${esc(t('notifications'))}</button>
             <button class="btn secondary" data-act="lang">🌐 ${esc(t('language'))}</button>
             <button class="btn secondary" data-act="logout">${esc(t('logout'))}</button>
             <button class="btn secondary" data-act="close-sheet">${esc(t('cancel'))}</button>${credit()}`);
+    }
+
+    // ------------------------------------------------------------------ push notifications
+    async function renderNotifications() {
+        $app.innerHTML = `${topbar(t('notifications'), state.card && state.card.owner, true)}<div class="card center muted">…</div>`;
+        let n;
+        try {
+            n = (await api('notifications', { box_id: state.boxId })).notifications;
+        } catch (e) {
+            toast(e.message || t('serverError'), 'bad');
+            return;
+        }
+        const toggle = (id, on, title, desc) => `<label class="row toggle" for="${id}">
+            <span class="main"><span class="title">${esc(title)}</span>${desc ? `<span class="desc">${esc(desc)}</span>` : ''}</span>
+            <input type="checkbox" id="${id}" ${on ? 'checked' : ''}></label>`;
+        const days = t('weekdays').map((d, i) => `<option value="${i}" ${n.reminder_count_weekday === String(i) ? 'selected' : ''}>${esc(d)}</option>`).join('');
+        const hours = Array.from({ length: 24 }, (_, h) => `<option value="${h}" ${n.reminder_hour === h ? 'selected' : ''}>${String(h).padStart(2, '0')}:00</option>`).join('');
+        const phone = pushMenuButton() || `<p class="hint">${esc(t('notifUnsupported'))}</p>`;
+        $app.innerHTML = `${topbar(t('notifications'), state.card && state.card.owner, true)}
+            <h2 class="section">${esc(t('notifPhone'))}</h2>
+            ${state.pushOn ? `<p class="hint">✅ ${esc(t('notifEnabled'))}</p>` : ''}${phone}
+            <h2 class="section">${esc(t('notifWhat'))}</h2>
+            <form class="card" id="notif-form">
+                <div class="list">
+                    ${toggle('n-session', n.session_closed, t('notifSession'), t('notifSessionText'))}
+                    ${toggle('n-expense', n.reminder_expense, t('notifExpense'), t('notifExpenseText'))}
+                </div>
+                <label class="lbl" for="n-count">${esc(t('notifCount'))}</label>
+                <select class="input" id="n-count"><option value="" ${n.reminder_count_weekday ? '' : 'selected'}>${esc(t('never'))}</option>${days}</select>
+                <label class="lbl" for="n-hour">${esc(t('notifHour'))}</label>
+                <select class="input" id="n-hour" dir="ltr">${hours}</select>
+                <p class="hint">${esc(t('notifEverywhere'))}</p>
+                <button class="btn" type="submit">${esc(t('save'))}</button></form>`;
+        const form = document.getElementById('notif-form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const button = form.querySelector('button[type=submit]');
+            if (button.disabled) {
+                return;
+            }
+            setBusy(button, true);
+            try {
+                await api('notifications_set', {
+                    box_id: state.boxId,
+                    session_closed: document.getElementById('n-session').checked,
+                    reminder_expense: document.getElementById('n-expense').checked,
+                    reminder_count_weekday: document.getElementById('n-count').value || null,
+                    reminder_hour: parseInt(document.getElementById('n-hour').value, 10),
+                });
+                toast(t('notifSaved'), 'ok');
+                go('home');
+            } catch (e) {
+                showError(form, e.message || t('serverError'));
+            } finally {
+                setBusy(button, false);
+            }
+        });
+    }
+
+    const pushSupported = () => 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+
+    async function pushSubscription() {
+        if (!pushSupported()) {
+            return null;
+        }
+        const reg = await navigator.serviceWorker.getRegistration('/ecc/owner/');
+        return reg ? reg.pushManager.getSubscription() : null;
+    }
+
+    function pushMenuButton() {
+        if (!pushSupported()) {
+            return isIos() && !isStandalone() ? `<p class="hint">🔔 ${esc(t('notifInstallFirst'))}</p>` : '';
+        }
+        return state.pushOn
+            ? `<button class="btn secondary" data-act="push-off">🔕 ${esc(t('notifOff'))}</button>`
+            : `<button class="btn secondary" data-act="push-on">🔔 ${esc(t('notifOn'))}</button>`;
+    }
+
+    function pushBanner() {
+        if (!pushSupported() || state.pushOn || Notification.permission === 'denied' || store.get('pushLater')) {
+            return '';
+        }
+        return `<div class="banner info"><span>🔔</span><span style="flex:1"><strong>${esc(t('notifBanner'))}</strong>${esc(t('notifBannerText'))}</span>
+            <button class="chip" data-act="push-on">${esc(t('notifOn'))}</button>
+            <button class="chip" data-act="push-later">${esc(t('notifLater'))}</button></div>`;
+    }
+
+    async function pushSend(sub, key) {
+        const json = sub.toJSON();
+        await api('push_subscribe', { endpoint: json.endpoint, keys: json.keys, expiration: json.expirationTime || null,
+            vapid_key: key });
+    }
+
+    function b64ToBytes(value) {
+        const padded = (value + '='.repeat((4 - (value.length % 4)) % 4)).replace(/-/g, '+').replace(/_/g, '/');
+        return Uint8Array.from(atob(padded), (c) => c.charCodeAt(0));
+    }
+
+    async function pushEnable() {
+        if (!pushSupported()) {
+            toast(t(isIos() && !isStandalone() ? 'notifInstallFirst' : 'notifUnsupported'), 'bad');
+            return;
+        }
+        try {
+            const permission = await Notification.requestPermission();
+            if (permission !== 'granted') {
+                toast(t('notifBlocked'), 'bad');
+                return;
+            }
+            const { key } = await api('push_key');
+            const reg = await navigator.serviceWorker.ready;
+            let sub = await reg.pushManager.getSubscription();
+            if (sub && store.get('pushKey') !== key) {
+                await sub.unsubscribe();
+                sub = null;
+            }
+            sub = sub || await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToBytes(key) });
+            await pushSend(sub, key);
+            store.set('pushKey', key);
+            state.pushOn = true;
+            toast(t('notifEnabled'), 'ok');
+            route();
+        } catch (e) {
+            toast(e.message || t('serverError'), 'bad');
+        }
+    }
+
+    async function pushForget() {
+        try {
+            const sub = await pushSubscription();
+            if (sub) {
+                await api('push_unsubscribe', { endpoint: sub.endpoint });
+            }
+        } catch (e) { /* offline: the server drops it when the phone is unreachable */ }
+    }
+
+    async function pushDisable() {
+        await pushForget();
+        try {
+            const sub = await pushSubscription();
+            if (sub) {
+                await sub.unsubscribe();
+            }
+        } catch (e) { /* already gone */ }
+        state.pushOn = false;
+        toast(t('notifDisabled'));
+        route();
+    }
+
+    /** After login: a phone that already allowed notifications is linked again to this login (and a new key). */
+    async function pushRefresh() {
+        try {
+            const sub = await pushSubscription();
+            state.pushOn = Boolean(sub) && Notification.permission === 'granted';
+            if (!state.pushOn) {
+                return;
+            }
+            const { key } = await api('push_key');
+            if (store.get('pushKey') && store.get('pushKey') !== key) {
+                await sub.unsubscribe();
+                state.pushOn = false;
+                return;
+            }
+            await pushSend(sub, key);
+            store.set('pushKey', key);
+        } catch (e) {
+            state.pushOn = false;
+        }
+    }
+
+    /** Opened from a notification: /ecc/owner/app?box=1&card=2#bankcard */
+    function openTarget(href) {
+        const url = new URL(href, location.href);
+        const box = parseInt(url.searchParams.get('box') || '0', 10);
+        const card = parseInt(url.searchParams.get('card') || '0', 10);
+        if (box) {
+            store.set('box', String(box));
+        }
+        if (card) {
+            store.set('bank', String(card));
+        }
+        if (state.user && box) {
+            const found = state.boxes.find((b) => b.box_id === box);
+            if (found) {
+                state.boxId = box;
+                state.card = found;
+            }
+        }
+        if (card) {
+            state.bankId = null;
+        }
+        return url.hash ? url.hash.slice(1) : 'home';
     }
 
     // ------------------------------------------------------------------ routing
     const ROUTES = {
         home: renderHome, collect: renderCollect, expense: renderExpense, took: renderTook,
         deposit: renderDeposit, count: renderCount, moves: renderMoves, statements: renderStatements,
+        bankcard: renderCard, cardwithdraw: renderCardWithdraw, cardexpense: () => renderExpense(true),
+        cardcount: renderCardCount, carddeposit: () => renderDeposit(true), notifications: renderNotifications,
     };
 
     function route() {
@@ -873,6 +1282,8 @@
             store.set('box', String(state.boxId));
             state.card = state.boxes.find((b) => b.box_id === state.boxId) || null;
             state.categories = null;
+            state.bankId = null;
+            state.bank = null;
             closeSheet();
             go('home');
             loadHome();
@@ -895,7 +1306,7 @@
                 const name = (location.hash || '#home').slice(1);
                 if (name === 'home' || !ROUTES[name]) {
                     await loadHome();
-                } else if (name === 'moves' || name === 'statements' || name === 'collect') {
+                } else if (['moves', 'statements', 'collect', 'bankcard'].includes(name)) {
                     if (name === 'collect') {
                         await loadHome(true);
                     }
@@ -904,6 +1315,7 @@
                 break;
             }
             case 'session': openSession(parseInt(target.dataset.id, 10)); break;
+            case 'bankcard': openCard(parseInt(target.dataset.id, 10)); break;
             case 'add-photo': document.getElementById('file').click(); break;
             case 'lang':
                 lang = lang === 'ar' ? 'en' : 'ar';
@@ -928,7 +1340,20 @@
                 closeSheet();
                 drawInstall();
                 break;
+            case 'push-on':
+                closeSheet();
+                await pushEnable();
+                break;
+            case 'push-off':
+                closeSheet();
+                await pushDisable();
+                break;
+            case 'push-later':
+                store.set('pushLater', '1');
+                route();
+                break;
             case 'logout':
+                await pushForget();
                 try { await api('logout'); } catch (e) { /* already out */ }
                 state.user = null;
                 closeSheet();
@@ -958,6 +1383,12 @@
         }
     });
     if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.addEventListener('message', (event) => {
+            if (event.data && event.data.type === 'open' && state.user) {
+                go(openTarget(event.data.url));
+                loadHome(true);
+            }
+        });
         navigator.serviceWorker.register('/ecc/owner/sw.js', { scope: '/ecc/owner/' }).catch(() => { /* http without TLS */ });
     }
     updateOnline();

@@ -33,4 +33,6 @@ class ExpenseExpress(models.Model):
             moves = self.env['ecc.owner.move'].sudo().search([('expense_id', 'in', self.ids)])
             for move in moves:
                 move.amount = -move.expense_id.amount
+            for move in self.env['ecc.owner.card.move'].sudo().search([('expense_id', 'in', self.ids)]):
+                move.amount = -move.expense_id.amount
         return result

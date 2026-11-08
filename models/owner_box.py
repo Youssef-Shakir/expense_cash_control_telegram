@@ -8,7 +8,8 @@ so it is computed by Odoo, never typed:
     collect   POS cash -> owner box (a POS Cash Out with his collection category, or later from the bot)  +
     expense   a "Paid Now" expense from his box (photo reviewed in the Receipts inbox)                     -
     drawing   "Took for me": owner box -> Owner Drawings (equity)                                           -
-    deposit   owner box -> bank (internal transfer account) or back to the till (POS cash journal)          -
+    deposit   owner box -> bank (internal transfer account), a card box or back to the till (POS cash journal) -
+    from_card cash withdrawn from a card box (ecc.owner.card) into his box                                   +
     adjust    a classified difference (count of his cash)                                                  +/-
 
 A negative balance means the business owes him the money.
@@ -84,6 +85,8 @@ class OwnerBox(models.Model):
     statement_ids = fields.One2many('ecc.owner.statement', 'box_id', string='Statements')
     difference_ids = fields.One2many('ecc.owner.difference', 'box_id', string='Differences')
     receipt_ids = fields.One2many('ecc.receipt', 'owner_box_id', string='Expense Receipts')
+    card_ids = fields.Many2many('ecc.owner.card', 'ecc_owner_card_box_rel', 'box_id', 'card_id', string='Cards',
+                                help='Card boxes shared with this owner.')
 
     balance = fields.Monetary('Balance', compute='_compute_balance',
                               help='Collected − expenses − took for me − deposits ± adjustments. '
@@ -288,23 +291,40 @@ class OwnerBox(models.Model):
         """Owner paid a business expense from his cash: a "Paid Now" expense from the box, final after the
         accountant's review in the Receipts inbox."""
         self.ensure_one()
+        expense, receipt = self._create_owner_expense(amount, category, note=note, photos=photos, chat_id=chat_id,
+                                                      message_id=message_id, sender=sender, source=source)
+        move = self._add_move('expense', -amount, expense.name, source=source, expense_id=expense.id,
+                              receipt_id=receipt.id, account_move_id=expense.move_id.id)
+        return move, receipt
+
+    def _create_owner_expense(self, amount, category, note=None, photos=(), chat_id=None, message_id=None,
+                              sender=None, source='telegram', journal=None, card=None):
+        """The "Paid Now" expense and its receipt (to review), paid from the box or from a ``card``."""
+        self.ensure_one()
         self._check_amount(amount)
         if not category.account_id:
             raise UserError(_('The category "%s" has no account.', category.name))
+        channel = {'app': _('Owner App'), 'platform': _('DoniaLink App'), 'odoo': _('Odoo')}.get(source,
+                                                                                            _('Telegram'))
+        if card:
+            notes = _('Paid by %(owner)s with the card %(card)s (%(channel)s).', owner=self.name, card=card.name,
+                      channel=channel)
+        else:
+            notes = _('Paid by %(owner)s from his cash (%(channel)s).', owner=self.name, channel=channel)
         expense = self.env['expense.express'].sudo().with_company(self.company_id).create({
             'name': (note or '').strip()[:120] or category.name,
             'amount': amount,
             'category_id': category.id,
             'payment_mode': 'paid',
-            'journal_id': self.journal_id.id,
+            'journal_id': (journal or self.journal_id).id,
             'company_id': self.company_id.id,
-            'notes': _('Paid by %(owner)s from his cash (%(channel)s).', owner=self.name,
-                       channel=_('Owner App') if source == 'app' else _('Telegram')),
+            'notes': notes,
         })
         receipt = self.env['ecc.receipt'].sudo().with_company(self.company_id).create({
             'company_id': self.company_id.id,
             'paid_by': 'owner',
             'owner_box_id': self.id,
+            'card_id': card.id if card else False,
             'sender_id': sender.id if sender else False,
             'chat_id': str(chat_id) if chat_id else False,
             'message_id': message_id or 0,
@@ -319,9 +339,7 @@ class OwnerBox(models.Model):
         copies = receipt._copy_photos(expense)
         if copies:
             expense.write({'attachment_ids': [Command.link(a.id) for a in copies]})
-        move = self._add_move('expense', -amount, expense.name, source=source, expense_id=expense.id,
-                              receipt_id=receipt.id, account_move_id=expense.move_id.id)
-        return move, receipt
+        return expense, receipt
 
     def _record_drawing(self, amount, note=None, source='telegram'):
         """Took for me: personal withdrawal to Owner Drawings (equity), never an expense."""
@@ -392,6 +410,7 @@ class OwnerBox(models.Model):
         return {
             'opening': opening,
             'collected': total('collect'),
+            'from_card': total('from_card'),
             'spent': -total('expense'),
             'took': -total('drawing'),
             'deposited': -total('deposit'),
@@ -446,12 +465,12 @@ class OwnerBox(models.Model):
     def _platform_send(self, kind, text, data=None):
         """Message to the owner's private chat through the DoniaLink Platform (buttons drawn from ``kind``)."""
         self.ensure_one()
-        if not self.telegram_user_id:
+        if not self.telegram_user_id and not self.platform_enabled:
             return False
         return self.env['telegram.service'].with_company(self.company_id).donialink_post('telegram/owner', {
             'company_id': self.company_id.id,
             'box_id': self.id,
-            'telegram_user_id': self.telegram_user_id,
+            'telegram_user_id': self.telegram_user_id or None,
             'kind': kind,
             'text': text,
             'data': data or {},
@@ -552,13 +571,16 @@ class OwnerMove(models.Model):
         ('drawing', 'Took for Me'),
         ('deposit', 'Deposit'),
         ('adjust', 'Adjustment'),
+        ('from_card', 'From Card'),
     ], string='Type', required=True, index=True)
     name = fields.Char('Description', required=True)
     amount = fields.Monetary('Amount', required=True, help='Effect on the balance: + in, − out.')
     state = fields.Selection([('posted', 'Posted'), ('cancelled', 'Cancelled'), ('returned', 'Returned to Till')],
                              default='posted', required=True, index=True)
     source = fields.Selection([('telegram', 'Telegram'), ('pos', 'POS'), ('odoo', 'Odoo')], default='odoo')
-    deposit_target = fields.Selection([('bank', 'Bank'), ('till', 'Till')])
+    deposit_target = fields.Selection([('bank', 'Bank'), ('till', 'Till'), ('card', 'Card')])
+    card_id = fields.Many2one('ecc.owner.card', string='Card', ondelete='set null', index='btree_not_null',
+                              help='Withdrawn from / deposited to this card box.')
     session_id = fields.Many2one('pos.session', string='POS Session', index='btree_not_null', ondelete='set null')
     cash_move_id = fields.Many2one('pos.cash.move', string='POS Cash-Out', index='btree_not_null',
                                    ondelete='cascade')
@@ -662,6 +684,7 @@ class OwnerDifference(models.Model):
         ('collection', 'Partial Collection'),
         ('count', 'Cash Count'),
         ('statement', 'Disputed Statement'),
+        ('card_count', 'Card Balance Check'),
     ], string='Type', required=True)
     amount = fields.Monetary('Difference', help='Partial collection: cash left in the session.\n'
                                                 'Cash count: counted − expected (negative = missing).')
@@ -669,6 +692,8 @@ class OwnerDifference(models.Model):
     expected = fields.Monetary('Expected')
     session_id = fields.Many2one('pos.session', string='POS Session', ondelete='set null', index='btree_not_null')
     statement_id = fields.Many2one('ecc.owner.statement', string='Statement', ondelete='set null')
+    card_id = fields.Many2one('ecc.owner.card', string='Card', ondelete='cascade', index='btree_not_null',
+                              help='Card balance check: checked by the owner (Cash Box) in the bank app.')
     note = fields.Text('Note')
     resolution = fields.Selection([
         ('left_in_till', 'Left in Till'),
@@ -682,12 +707,14 @@ class OwnerDifference(models.Model):
     state = fields.Selection([('pending', 'To Explain'), ('done', 'Explained'), ('cancelled', 'Cancelled')],
                              default='pending', required=True, tracking=True, index=True)
     move_ids = fields.One2many('ecc.owner.move', 'difference_id')
+    card_move_ids = fields.One2many('ecc.owner.card.move', 'difference_id')
 
     @api.depends('box_id', 'kind', 'date')
     def _compute_display_name(self):
         labels = dict(self._fields['kind']._description_selection(self.env))
         for difference in self:
-            difference.display_name = '%s · %s' % (difference.box_id.name, labels.get(difference.kind, ''))
+            name = difference.card_id.name if difference.card_id else difference.box_id.name
+            difference.display_name = '%s · %s' % (name, labels.get(difference.kind, ''))
 
     def action_resolve(self):
         for difference in self.filtered(lambda d: d.state == 'pending'):
@@ -696,7 +723,25 @@ class OwnerDifference(models.Model):
             if difference.resolution == 'loss':
                 difference._post_loss()
             difference.state = 'done'
+            difference._push_resolved()
         return True
+
+    def _push_resolved(self):
+        """Tell the owner how the accountant explained his difference."""
+        self.ensure_one()
+        box = self.box_id
+        if not (box.app_user_id or box.telegram_user_id or box.platform_enabled):
+            return
+        diff = self.with_context(lang=box._app_lang()).sudo()
+        labels = dict(diff._fields['resolution']._description_selection(diff.env))
+        body = '%s · %s' % (diff.currency_id.format(diff.amount), labels.get(diff.resolution, ''))
+        if diff.note:
+            body += ' · %s' % diff.note
+        title = diff.env._('Difference explained: %s', diff.display_name)
+        box._owner_notify('difference_explained', '%s\n%s' % (title, body), title, body=body,
+                          route='bankcard' if diff.card_id else 'moves', card=diff.card_id or None,
+                          tag='difference-%s' % diff.id,
+                          data={'difference_id': diff.id, 'amount': diff.amount, 'resolution': diff.resolution})
 
     def _post_loss(self):
         self.ensure_one()
@@ -707,6 +752,14 @@ class OwnerDifference(models.Model):
         amount = abs(self.amount)
         if float_is_zero(amount, precision_rounding=box.currency_id.rounding):
             raise UserError(_('There is no amount to record.'))
+        if self.card_id:
+            # the card: missing (amount < 0) -> out of the bank on the category; extra -> in
+            card = self.card_id
+            label = _('Card difference – %s', card.name)
+            st_line = card._statement_line(self.amount, label, category.account_id)
+            card._add_move('adjust', self.amount, label, box=box, difference_id=self.id,
+                           statement_line_id=st_line.id, account_move_id=st_line.move_id.id)
+            return
         if self.kind == 'collection':
             # the cash left in the session is lost: out of the POS cash journal, on the category account
             label = _('Loss on collection of %s', self.session_id.name)
@@ -726,7 +779,7 @@ class OwnerDifference(models.Model):
 
     def action_reset(self):
         for difference in self.filtered(lambda d: d.state == 'done'):
-            if difference.move_ids.filtered(lambda m: m.state == 'posted'):
+            if (difference.move_ids | difference.card_move_ids).filtered(lambda m: m.state == 'posted'):
                 raise UserError(_('This difference already changed the balance; it cannot be reopened.'))
             difference.state = 'pending'
         return True
@@ -745,6 +798,7 @@ class OwnerStatement(models.Model):
     date_to = fields.Date('To', required=True)
     opening = fields.Monetary('Opening Balance')
     collected = fields.Monetary('Collected')
+    from_card = fields.Monetary('From Cards')
     spent = fields.Monetary('Spent')
     took = fields.Monetary('Took for Me')
     deposited = fields.Monetary('Deposited')
@@ -769,6 +823,10 @@ class OwnerStatement(models.Model):
               end=self.date_to.strftime('%d/%m')),
             _('Opening balance: %s', fmt(self.opening)),
             _('Collected: +%s', fmt(self.collected)),
+        ]
+        if self.from_card:
+            lines.append(_('From cards: +%s', fmt(self.from_card)))
+        lines += [
             _('Spent: −%s', fmt(self.spent)),
             _('Took for me: −%s', fmt(self.took)),
             _('Deposited: −%s', fmt(self.deposited)),
@@ -782,9 +840,13 @@ class OwnerStatement(models.Model):
 
     def _send(self):
         for statement in self:
-            answer = statement.box_id._platform_send('statement', statement._text(),
-                                                     {'statement_id': statement.id}) or {}
-            if answer.get('delivered'):
+            box = statement.box_id
+            in_lang = statement.with_context(lang=box._app_lang())
+            answer, pushed = box._owner_notify(
+                'statement', in_lang._text(), in_lang.env._('Your statement is ready'),
+                body=in_lang._text().replace('\n', ' · '), route='statements', tag='statement-%s' % statement.id,
+                data={'statement_id': statement.id}, raise_errors=True)
+            if answer.get('delivered') or pushed:
                 statement.state = 'sent'
             else:
                 statement.message_post(body=_('The DoniaLink bot could not deliver the statement: %s',

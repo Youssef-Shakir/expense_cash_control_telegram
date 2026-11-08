@@ -18,3 +18,7 @@ access_ecc_owner_statement_user,ecc.owner.statement.user,model_ecc_owner_stateme
 access_ecc_owner_statement_manager,ecc.owner.statement.manager,model_ecc_owner_statement,expense_cash_control.group_expense_manager,1,1,1,0
 access_ecc_owner_collection_return_manager,ecc.owner.collection.return.manager,model_ecc_owner_collection_return,expense_cash_control.group_expense_manager,1,1,1,1
 access_ecc_owner_app_access_manager,ecc.owner.app.access.manager,model_ecc_owner_app_access,expense_cash_control.group_expense_manager,1,1,1,1
+access_ecc_owner_card_user,ecc.owner.card.user,model_ecc_owner_card,expense_cash_control.group_expense_user,1,0,0,0
+access_ecc_owner_card_manager,ecc.owner.card.manager,model_ecc_owner_card,expense_cash_control.group_expense_manager,1,1,1,1
+access_ecc_owner_card_move_user,ecc.owner.card.move.user,model_ecc_owner_card_move,expense_cash_control.group_expense_user,1,0,0,0
+access_ecc_owner_card_move_manager,ecc.owner.card.move.manager,model_ecc_owner_card_move,expense_cash_control.group_expense_manager,1,1,1,0
