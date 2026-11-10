@@ -137,13 +137,15 @@ class OwnerBox(models.Model):
                 box.account_balance = 0.0
 
     def _compute_counters(self):
-        Receipt = self.env['ecc.receipt']
         for box in self:
             sessions = box._uncollected_sessions() if box.id else self.env['pos.session']
             box.uncollected_session_count = len(sessions)
             box.uncollected_amount = sum(sessions.mapped('owner_remaining_amount'))
-            box.receipt_to_review_count = Receipt.search_count(
-                [('owner_box_id', '=', box.id), ('state', '=', 'to_review')]) if box.id else 0
+            box.receipt_to_review_count = (
+                self.env['ecc.owner.move'].sudo().search_count(
+                    [('box_id', '=', box.id), ('review_state', '=', 'to_review')])
+                + self.env['ecc.owner.card.move'].sudo().search_count(
+                    [('box_id', '=', box.id), ('review_state', '=', 'to_review')])) if box.id else 0
             box.difference_pending_count = len(box.difference_ids.filtered(lambda d: d.state == 'pending'))
             box.last_statement_id = box.statement_ids[:1]
             box.last_statement_state = box.last_statement_id.state
@@ -288,18 +290,17 @@ class OwnerBox(models.Model):
 
     def _record_expense(self, amount, category, note=None, photos=(), chat_id=None, message_id=None,
                         sender=None, source='telegram'):
-        """Owner paid a business expense from his cash: a "Paid Now" expense from the box, final after the
-        accountant's review in the Receipts inbox."""
+        """Owner paid a business expense from his cash: cash out of his box, booked at once as a "Paid Now"
+        expense on the category he chose; the accountant reviews it on the movement (expense, payment to a
+        vendor, or rejected), like a POS cash-out."""
         self.ensure_one()
-        expense, receipt = self._create_owner_expense(amount, category, note=note, photos=photos, chat_id=chat_id,
-                                                      message_id=message_id, sender=sender, source=source)
-        move = self._add_move('expense', -amount, expense.name, source=source, expense_id=expense.id,
-                              receipt_id=receipt.id, account_move_id=expense.move_id.id)
-        return move, receipt
+        expense = self._create_owner_expense(amount, category, note=note, photos=photos, source=source)
+        return self._add_move('expense', -amount, expense.name, source=source, expense_id=expense.id,
+                              account_move_id=expense.move_id.id, review_state='to_review')
 
-    def _create_owner_expense(self, amount, category, note=None, photos=(), chat_id=None, message_id=None,
-                              sender=None, source='telegram', journal=None, card=None):
-        """The "Paid Now" expense and its receipt (to review), paid from the box or from a ``card``."""
+    def _create_owner_expense(self, amount, category, note=None, photos=(), source='telegram', journal=None,
+                              card=None, **_telegram):
+        """The "Paid Now" expense, paid from the box or from a ``card``, with the photos."""
         self.ensure_one()
         self._check_amount(amount)
         if not category.account_id:
@@ -320,26 +321,16 @@ class OwnerBox(models.Model):
             'company_id': self.company_id.id,
             'notes': notes,
         })
-        receipt = self.env['ecc.receipt'].sudo().with_company(self.company_id).create({
-            'company_id': self.company_id.id,
-            'paid_by': 'owner',
-            'owner_box_id': self.id,
-            'card_id': card.id if card else False,
-            'sender_id': sender.id if sender else False,
-            'chat_id': str(chat_id) if chat_id else False,
-            'message_id': message_id or 0,
-            'note': note or False,
-            'amount': amount,
-            'category_id': category.id,
-            'expense_id': expense.id,
-        })
-        for photo in photos:
-            receipt._add_photo(photo['content'], photo.get('filename'), photo.get('mimetype'),
-                               photo.get('message_id'), photo.get('file_unique_id'))
-        copies = receipt._copy_photos(expense)
-        if copies:
-            expense.write({'attachment_ids': [Command.link(a.id) for a in copies]})
-        return expense, receipt
+        attachments = self.env['ir.attachment'].sudo()
+        for index, photo in enumerate(photos):
+            attachments |= attachments.create({
+                'name': photo.get('filename') or 'expense-%s.jpg' % (index + 1),
+                'raw': photo['content'], 'mimetype': photo.get('mimetype') or 'image/jpeg',
+                'res_model': 'expense.express', 'res_id': expense.id,
+            })
+        if attachments:
+            expense.write({'attachment_ids': [Command.link(a.id) for a in attachments]})
+        return expense
 
     def _record_drawing(self, amount, note=None, source='telegram'):
         """Took for me: personal withdrawal to Owner Drawings (equity), never an expense."""
@@ -542,9 +533,17 @@ class OwnerBox(models.Model):
                 'domain': [('id', 'in', self._uncollected_sessions().ids)]}
 
     def action_view_receipts(self):
+        """The owner's expenses waiting for review (cash box; card ones when there are no cash ones)."""
         self.ensure_one()
-        action = self.env['ir.actions.act_window']._for_xml_id('expense_cash_control_telegram.action_ecc_receipt')
-        action['domain'] = [('owner_box_id', '=', self.id)]
+        Move = self.env['ecc.owner.move']
+        if Move.search_count([('box_id', '=', self.id), ('review_state', '=', 'to_review')]) or \
+                not self.env['ecc.owner.card.move'].search_count([('box_id', '=', self.id),
+                                                                  ('review_state', '=', 'to_review')]):
+            xmlid = 'expense_cash_control_telegram.action_ecc_owner_move_review'
+        else:
+            xmlid = 'expense_cash_control_telegram.action_ecc_owner_card_move_review'
+        action = self.env['ir.actions.act_window']._for_xml_id(xmlid)
+        action['domain'] = [('box_id', '=', self.id)]
         return action
 
     def action_view_differences(self):

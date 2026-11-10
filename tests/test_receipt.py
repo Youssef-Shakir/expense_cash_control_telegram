@@ -150,6 +150,23 @@ class TestTelegramReceipt(ExpenseCashCommon):
         self.assertEqual(expense.move_id.move_type, 'in_invoice')
         self.assertNotEqual(expense.move_id.name, 'flour', 'Prefill must not leak into the bill')
 
+    def test_classified_cash_out_in_expenses_summary(self):
+        """The DoniaLink app's expenses list shows a POS cash-out classified to a category."""
+        session = self._open_session()
+        move = self._cash_out(session, 35.0, 'ice blocks')
+        move.category_id = self.category
+        move.action_classify()
+        today = str(move.date)
+        params = {'date_from': today, 'date_to': today, 'entries': 50}
+        result = self.tools._run_tool('expenses_summary', params)[1]
+        pos = [e for e in result['entries'] if e['source'] == 'pos' and e['id'] == move.id]
+        self.assertEqual(len(pos), 1)
+        self.assertEqual((pos[0]['name'], pos[0]['amount'], pos[0]['category'], pos[0]['pos']),
+                         ('ice blocks', 35.0, self.category.name, self.config.name))
+        self.assertGreaterEqual(result['pos_cash_outs'], 1)
+        without = self.tools._run_tool('expenses_summary', dict(params, include_pos_cash_outs=False))[1]
+        self.assertAlmostEqual(result['total'] - without['total'], result['pos_cash_out_total'])
+
     def test_vendor_payment_and_purchase_order(self):
         """The cashier paid a vendor from the drawer (even a receipt marked payable): the cash-out goes on the
         vendor account, the products go in a purchase order and its bill is paid by the cash-out."""

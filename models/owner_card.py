@@ -301,15 +301,14 @@ class OwnerCard(models.Model):
         return owner_move, card_move
 
     def _record_expense(self, box, amount, category, note=None, photos=(), source='odoo'):
-        """Expense paid by card: a "Paid Now" expense from the card's bank journal, final after the accountant's
-        review in the Receipts inbox."""
+        """Expense paid by card: a "Paid Now" expense from the card's bank journal, reviewed by the accountant on
+        the card movement (expense, payment to a vendor, or rejected)."""
         self.ensure_one()
         self._check_owner(box)
-        expense, receipt = box._create_owner_expense(amount, category, note=note, photos=photos, source=source,
-                                                     journal=self.journal_id, card=self)
-        move = self._add_move('expense', -amount, expense.name, box=box, source=source, expense_id=expense.id,
-                              receipt_id=receipt.id, account_move_id=expense.move_id.id)
-        return move, receipt
+        expense = box._create_owner_expense(amount, category, note=note, photos=photos, source=source,
+                                            journal=self.journal_id, card=self)
+        return self._add_move('expense', -amount, expense.name, box=box, source=source, expense_id=expense.id,
+                              account_move_id=expense.move_id.id, review_state='to_review')
 
     def _record_count(self, box, counted):
         """Balance checked in the bank app: a difference goes to the accountant to explain."""
@@ -366,7 +365,7 @@ class OwnerCard(models.Model):
                 'owner': move.box_id.name if move else '', 'entry': entry.name,
                 'amount': line.balance, 'amount_text': currency.format(line.balance),
                 'balance_after': running, 'balance_after_text': currency.format(running),
-                'review': move.receipt_id.state if move and move.receipt_id else False,
+                'review': move.review_state if move else False,
             })
             running -= line.balance
         return rows

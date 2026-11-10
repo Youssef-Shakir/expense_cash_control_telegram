@@ -11,6 +11,10 @@
               action="action_ecc_owner_box" sequence="10"/>
     <menuitem id="menu_ecc_owner_card" name="Card Boxes" parent="menu_ecc_owner_root"
               action="action_ecc_owner_card" sequence="15"/>
+    <menuitem id="menu_ecc_owner_move_review" name="Expenses to Review" parent="menu_ecc_owner_root"
+              action="action_ecc_owner_move_review" sequence="18"/>
+    <menuitem id="menu_ecc_owner_card_move_review" name="Card Expenses to Review" parent="menu_ecc_owner_root"
+              action="action_ecc_owner_card_move_review" sequence="19"/>
     <menuitem id="menu_ecc_owner_move" name="Movements" parent="menu_ecc_owner_root"
               action="action_ecc_owner_move" sequence="20"/>
     <menuitem id="menu_ecc_owner_card_move" name="Card Movements" parent="menu_ecc_owner_root"

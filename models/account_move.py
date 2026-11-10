@@ -7,7 +7,7 @@ class AccountMove(models.Model):
 
     def _post(self, soft=True):
         posted = super()._post(soft)
-        # the bill of a purchase order made from a receipt paid in cash from the POS: the cash-out pays it
+        # the bill of a purchase order made from a receipt paid in cash (POS cash-out or owner): that payment pays it
         orders = posted.filtered(lambda m: m.move_type == 'in_invoice').line_ids.purchase_line_id.order_id
         if orders:
             self.env['ecc.receipt'].sudo().search([

@@ -339,11 +339,16 @@ msgstr "اختر السحب النقدي من نقطة البيع الذي دُ�
 #. module: expense_cash_control_telegram
 #. odoo-python
 #: code:addons/expense_cash_control_telegram/models/receipt.py:0
-msgid "Cash-out %(move)s reconciled with the bill %(bill)s."
-msgstr "تمت تسوية السحب النقدي %(move)s مع الفاتورة %(bill)s."
+msgid "Payment %(move)s reconciled with the bill %(bill)s."
+msgstr "تمت تسوية الدفعة %(move)s مع الفاتورة %(bill)s."
 
 #. module: expense_cash_control_telegram
 #. odoo-python
 #: code:addons/expense_cash_control_telegram/models/receipt.py:0
 msgid "The cash-out could not be reconciled with the bill: %s"
 msgstr "تعذّرت تسوية السحب النقدي مع الفاتورة: %s"
+
+
+
+
+

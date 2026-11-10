@@ -13,5 +13,44 @@
                 </span>
             </button>
         </xpath>
+        <xpath expr="//section[contains(@class, 'o_ecc_panel')][.//h2[contains(., 'POS Cash Control')]]" position="after">
+            <section t-if="d.is_manager and d.owner" class="o_ecc_panel">
+                <div class="o_ecc_panel_head">
+                    <h2><i class="fa fa-briefcase me-2" title="Owner cash"/>Owner Cash Boxes</h2>
+                    <span class="text-muted small"><t t-esc="d.owner.statements_waiting"/> statement(s) waiting for the owner</span>
+                </div>
+                <div class="o_ecc_grid o_ecc_grid_3">
+                    <button t-attf-class="o_ecc_tile {{d.owner.expenses_to_review ? 'o_ecc_tile_alert' : 'o_ecc_tile_ok'}}"
+                            t-on-click="() => this.open(d.owner.cash_to_review || !d.owner.card_to_review ? 'expense_cash_control_telegram.action_ecc_owner_move_review' : 'expense_cash_control_telegram.action_ecc_owner_card_move_review')">
+                        <span class="o_ecc_tile_count" t-esc="d.owner.expenses_to_review"/>
+                        <span class="o_ecc_tile_label">Owner expenses to review</span>
+                        <span class="o_ecc_tile_hint">Cash <t t-esc="d.owner.cash_to_review"/> · Card <t t-esc="d.owner.card_to_review"/> · expense or vendor payment</span>
+                    </button>
+                    <button t-attf-class="o_ecc_tile {{d.owner.differences ? 'o_ecc_tile_alert' : 'o_ecc_tile_ok'}}"
+                            t-on-click="() => this.open('expense_cash_control_telegram.action_ecc_owner_difference')">
+                        <span class="o_ecc_tile_count" t-esc="d.owner.differences"/>
+                        <span class="o_ecc_tile_label">Differences to explain</span>
+                        <span class="o_ecc_tile_hint"><t t-esc="d.owner.differences_fmt"/> · counts and partial collections</span>
+                    </button>
+                    <button t-attf-class="o_ecc_tile {{d.owner.statements_disputed ? 'o_ecc_tile_alert' : 'o_ecc_tile_ok'}}"
+                            t-on-click="() => this.open('expense_cash_control_telegram.action_ecc_owner_statement_disputed')">
+                        <span class="o_ecc_tile_count" t-esc="d.owner.statements_disputed"/>
+                        <span class="o_ecc_tile_label">Disputed statements</span>
+                        <span class="o_ecc_tile_hint">The owner said the statement is wrong</span>
+                    </button>
+                </div>
+                <div class="o_ecc_panel_head mt-3">
+                    <h2>Balances</h2>
+                    <span class="text-muted small">Not collected: <t t-esc="d.owner.uncollected_fmt"/> (<t t-esc="d.owner.uncollected_sessions"/> session(s))</span>
+                </div>
+                <button t-foreach="d.owner.boxes" t-as="box" t-key="box.id" class="o_ecc_bar_row d-flex align-items-center gap-2"
+                        t-on-click="() => this.openOwnerBox(box.id)">
+                    <span class="flex-grow-1 text-start fw-semibold"><t t-esc="box.name"/>
+                        <span t-if="box.to_review" class="badge text-bg-warning ms-1"><t t-esc="box.to_review"/> to review</span>
+                        <small t-if="box.uncollected_fmt" class="d-block text-muted fw-normal">To collect <t t-esc="box.uncollected_fmt"/></small></span>
+                    <span t-attf-class="o_ecc_bar_value ms-auto text-nowrap {{box.balance &lt; 0 ? 'text-danger' : ''}}" t-esc="box.balance_fmt"/>
+                </button>
+            </section>
+        </xpath>
     </t>
 </templates>

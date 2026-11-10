@@ -501,18 +501,25 @@ class Receipt(models.Model):
         move.write({'classification_type': 'partner', 'partner_id': vendor.id, 'bill_id': False})
         move.action_classify()
 
+    def _vendor_payment_lines(self):
+        """(payable account, open journal items) of the cash-out paid to the vendor."""
+        self.ensure_one()
+        account = self.cash_move_id.partner_account_id
+        _liquidity, _suspense, lines = self.cash_move_id.statement_line_id._seek_for_lines()
+        return account, lines.filtered(lambda l: l.account_id == account and not l.reconciled)
+
     def _reconcile_vendor_payment(self):
-        """A cash-out paid to the vendor pays the posted bills of the receipt's purchase order."""
+        """A payment to the vendor (cash-out or owner) pays the posted bills of the receipt's purchase order."""
         for receipt in self.filtered(lambda r: r.vendor_payment and r.purchase_order_id):
             move = receipt.cash_move_id
-            account = move.partner_account_id
             bills = receipt.purchase_order_id.invoice_ids.filtered(
                 lambda b: b.state == 'posted' and b.move_type == 'in_invoice'
                 and b.payment_state in ('not_paid', 'partial'))
-            if not bills or not account:
+            if not bills:
                 continue
-            _liquidity, _suspense, own_lines = move.statement_line_id._seek_for_lines()
-            own_lines = own_lines.filtered(lambda l: l.account_id == account and not l.reconciled)
+            account, own_lines = receipt._vendor_payment_lines()
+            if not account:
+                continue
             bill_lines = bills.line_ids.filtered(lambda l: l.account_id == account and not l.reconciled)
             if not own_lines or not bill_lines:
                 continue
@@ -523,9 +530,9 @@ class Receipt(models.Model):
                 receipt.message_post(body=_('The cash-out could not be reconciled with the bill: %s',
                                             e.args[0] if e.args else e))
                 continue
-            if not move.bill_id:
+            if move and not move.bill_id:
                 move.with_context(ecc_allow_category_change=True).bill_id = bills[0]
-            receipt.message_post(body=_('Cash-out %(move)s reconciled with the bill %(bill)s.',
+            receipt.message_post(body=_('Payment %(move)s reconciled with the bill %(bill)s.',
                                         move=move._get_html_link(),
                                         bill=', '.join(b.display_name for b in bills)))
 

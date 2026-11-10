@@ -5,7 +5,7 @@ from datetime import timedelta
 from unittest.mock import patch
 
 from odoo import fields
-from odoo.exceptions import AccessError, ValidationError
+from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import HttpCase, tagged
 
 from odoo.addons.expense_cash_control.tests.common import ExpenseCashCommon
@@ -117,18 +117,61 @@ class TestOwnerCard(CardSetup, ExpenseCashCommon):
         self.assertAlmostEqual(self._bank_balance(), 600.0)
 
     def test_card_expense_and_reject(self):
-        move, receipt = self.card._record_expense(
+        move = self.card._record_expense(
             self.omar, 80.0, self.category, note='Generator oil',
             photos=[{'content': base64.b64decode(PHOTO), 'mimetype': 'image/png'}])
         self.assertAlmostEqual(self.card.balance, -80.0)
-        self.assertEqual(receipt.card_id, self.card)
-        self.assertEqual(receipt.owner_box_id, self.omar)
+        self.assertEqual((move.review_state, move.box_id), ('to_review', self.omar))
+        self.assertTrue(move.attachment_ids)
         self.assertEqual(move.expense_id.journal_id, self.bank)
         self.assertAlmostEqual(self.omar.balance, 0.0, msg='paid by card, not from his cash')
         move.expense_id.amount = 70.0
         self.assertAlmostEqual(self.card.balance, -70.0)
-        receipt.action_reject()
+        move.action_review_reject()
         self.assertAlmostEqual(self.card.balance, 0.0, msg='a rejected expense gives the amount back to the card')
+
+    def test_owner_expense_as_vendor_payment(self):
+        """The owner paid a vendor (cash box or card): the expense becomes a payment on the vendor account, his
+        balance is the same, and it is offered on the vendor's bills. No purchase order."""
+        payable = self.vendor.property_account_payable_id
+        for pay_by_card in (False, True):
+            if pay_by_card:
+                move = self.card._record_expense(self.ali, 60.0, self.category, note='sugar')
+                owner = self.card
+            else:
+                move = self.ali._record_expense(60.0, self.category, note='sugar', source='odoo')
+                owner = self.ali
+            owner.invalidate_recordset(['balance'])
+            before = owner.balance
+            expense = move.expense_id
+            move.write({'review_as': 'vendor', 'vendor_id': self.vendor.id})
+            self.assertTrue(move.action_review_confirm())
+            self.assertFalse(expense.exists(), 'the expense is replaced, never booked twice')
+            entry = move.vendor_entry_id
+            self.assertEqual((entry.state, move.account_move_id, move.review_state), ('posted', entry, 'reviewed'))
+            vendor_line = entry.line_ids.filtered(lambda l: l.account_id == payable)
+            self.assertEqual((vendor_line.debit, vendor_line.partner_id), (60.0, self.vendor))
+            owner.invalidate_recordset(['balance'])
+            self.assertAlmostEqual(owner.balance, before, msg='the owner balance does not change')
+            self.assertEqual(move.action_open_review()['res_id'], move.id)
+
+            bill = self.env['account.move'].create({
+                'move_type': 'in_invoice', 'partner_id': self.vendor.id, 'invoice_date': fields.Date.today(),
+                'invoice_line_ids': [(0, 0, {'name': 'Sugar', 'quantity': 1, 'price_unit': 60.0, 'tax_ids': []})],
+            })
+            bill.action_post()
+            line = next(c for c in bill.invoice_outstanding_credits_debits_widget['content']
+                        if c['move_id'] == entry.id)
+            bill.js_assign_outstanding_line(line['id'])
+            self.assertIn(bill.payment_state, ('paid', 'in_payment'), 'the owner payment paid the bill')
+
+    def test_review_as_expense_with_new_category(self):
+        move = self.ali._record_expense(20.0, self.category, note='gas', source='odoo')
+        other = self.category.copy({'name': 'ECC Other', 'code': 'ECC-OTH'})
+        move.category_id = other
+        move.action_review_confirm()
+        self.assertEqual((move.review_state, move.expense_id.category_id), ('reviewed', other))
+        self.assertTrue(move.photo_count >= 0)
 
     def test_deposit_from_box_to_card(self):
         self.card._withdraw(self.ali, 500.0, 'box')
@@ -299,9 +342,9 @@ class TestOwnerCardApp(CardSetup, HttpCase):
 
         # his card expense rejected
         self.env['mail.push'].search([]).unlink()
-        _move, receipt = self.card._record_expense(self.ali, 25.0, self.category, note='oil')
+        move = self.card._record_expense(self.ali, 25.0, self.category, note='oil')
         self.assertFalse(self._pushes(self.ali), 'no notification for what he did himself')
-        receipt.action_reject()
+        move.action_review_reject()
         pushes = self._pushes(self.ali)
         self.assertEqual(pushes[-1]['title'], 'Expense rejected')
         self.assertIn('back on the card', pushes[-1]['options']['body'])
@@ -380,8 +423,9 @@ class TestOwnerPlatformTools(CardSetup, ExpenseCashCommon):
                             note='oil', photos=[{'content_b64': PHOTO, 'mimetype': 'image/png'}],
                             request_uid='e' * 32)
         self.assertAlmostEqual(result['bank_card']['balance'], 370.0)
-        receipt = self.env['ecc.receipt'].browse(result['receipt_id'])
-        self.assertIn('DoniaLink App', receipt.expense_id.notes)
+        self.assertIsNone(result['receipt_id'])
+        card_expense = self.card.move_ids.filtered(lambda m: m.kind == 'expense')
+        self.assertIn('DoniaLink App', card_expense.expense_id.notes)
 
         result = self._tool('owner_deposit', amount=50.0, target='card', card_id=self.card.id, request_uid='d' * 32)
         self.assertAlmostEqual(result['bank_card']['balance'], 420.0)
@@ -419,11 +463,11 @@ class TestOwnerPlatformTools(CardSetup, ExpenseCashCommon):
         self.assertTrue(self._sent('card_sales'))
 
         self.platform.reset_mock()
-        _move, receipt = self.card._record_expense(self.ali, 10.0, self.category)
-        receipt.action_reject()
+        move = self.card._record_expense(self.ali, 10.0, self.category)
+        move.action_review_reject()
         rejected = self._sent('expense_rejected')
         self.assertEqual(len(rejected), 1)
-        self.assertEqual(rejected[0]['data']['receipt_id'], receipt.id)
+        self.assertEqual(rejected[0]['data']['move_id'], move.id)
 
     def test_odoo_app_and_platform_side_by_side(self):
         """One box in the Odoo app, on the DoniaLink app and on Telegram at once: same data, every channel told."""

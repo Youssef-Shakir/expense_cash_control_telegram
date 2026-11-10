@@ -117,6 +117,8 @@
                 <field name="session_id" optional="show"/>
                 <field name="source" optional="show"/>
                 <field name="amount" sum="Total"/>
+                <field name="review_state" widget="badge" optional="show" decoration-warning="review_state == 'to_review'"
+                       decoration-success="review_state == 'reviewed'" decoration-danger="review_state == 'rejected'"/>
                 <field name="state" optional="hide"/>
                 <button name="action_open_entry" type="object" icon="fa-book" title="Journal Entry"
                         invisible="not account_move_id"/>
@@ -129,26 +131,42 @@
         <field name="name">ecc.owner.card.move.form</field>
         <field name="model">ecc.owner.card.move</field>
         <field name="arch" type="xml">
-            <form create="false" edit="false">
+            <form create="false">
+                <header>
+                    <button name="action_open_review" type="object" string="Review" class="btn-primary"
+                            invisible="review_state != 'to_review'"/>
+                </header>
                 <sheet>
                     <group>
                         <group>
-                            <field name="card_id"/>
-                            <field name="kind"/>
-                            <field name="name"/>
-                            <field name="amount"/>
-                            <field name="date"/>
-                            <field name="state"/>
+                            <field readonly="1" name="card_id"/>
+                            <field readonly="1" name="kind"/>
+                            <field readonly="1" name="name"/>
+                            <field readonly="1" name="amount"/>
+                            <field readonly="1" name="date"/>
+                            <field readonly="1" name="state"/>
                         </group>
                         <group>
-                            <field name="box_id"/>
-                            <field name="source"/>
-                            <field name="session_id" invisible="not session_id"/>
-                            <field name="expense_id" invisible="not expense_id"/>
-                            <field name="receipt_id" invisible="not receipt_id"/>
-                            <field name="owner_move_id" invisible="not owner_move_id"/>
-                            <field name="difference_id" invisible="not difference_id"/>
-                            <field name="account_move_id"/>
+                            <field readonly="1" name="box_id"/>
+                            <field readonly="1" name="source"/>
+                            <field readonly="1" name="session_id" invisible="not session_id"/>
+                            <field readonly="1" name="expense_id" invisible="not expense_id"/>
+                            <field readonly="1" name="receipt_id" invisible="not receipt_id"/>
+                            <field readonly="1" name="owner_move_id" invisible="not owner_move_id"/>
+                            <field readonly="1" name="difference_id" invisible="not difference_id"/>
+                            <field readonly="1" name="account_move_id"/>
+                        </group>
+                    </group>
+                    <group string="Review" invisible="not review_state">
+                        <group>
+                            <field name="review_state" widget="badge" decoration-warning="review_state == 'to_review'"
+                                   decoration-success="review_state == 'reviewed'"
+                                   decoration-danger="review_state == 'rejected'"/>
+                            <field name="review_as" readonly="1" invisible="review_state == 'to_review'"/>
+                        </group>
+                        <group>
+                            <field name="vendor_id" readonly="1" invisible="not vendor_id"/>
+                            <field name="vendor_entry_id" invisible="not vendor_entry_id"/>
                         </group>
                     </group>
                     <field name="currency_id" invisible="1"/>
@@ -166,6 +184,7 @@
                 <field name="session_id"/>
                 <field name="name"/>
                 <filter name="posted" string="Posted" domain="[('state', '=', 'posted')]"/>
+                <filter name="to_review" string="Expenses to Review" domain="[('review_state', '=', 'to_review')]"/>
                 <separator/>
                 <filter name="sales" string="Card Sales" domain="[('kind', '=', 'sales')]"/>
                 <filter name="withdraw" string="Withdrawals" domain="[('kind', 'in', ('withdraw', 'drawing'))]"/>

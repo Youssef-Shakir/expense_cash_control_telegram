@@ -210,7 +210,7 @@ class OwnerBoxApp(models.Model):
                          'type_label': move._kind_label(), 'description': move.name, 'amount': move.amount,
                          'amount_text': currency.format(move.amount), 'balance_after': running,
                          'balance_after_text': currency.format(running), 'source': move.source,
-                         'review': move.receipt_id.state if move.receipt_id else False})
+                         'review': move.review_state or False})
             lines.append(move._bot_line(running))
             running -= move.amount
         return rows, lines

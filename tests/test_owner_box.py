@@ -185,44 +185,57 @@ class TestOwnerBox(ExpenseCashCommon):
                           chat_id=OWNER_TG, message_id=10, photos=[{'content_b64': PHOTO}])
         self.assertEqual(card['balance'], -7500.0)
         self.assertEqual(card['business_owes_owner'], 7500.0)
-        receipt = self.env['ecc.receipt'].browse(card['receipt_id'])
-        self.assertEqual((receipt.paid_by, receipt.state, receipt.owner_box_id), ('owner', 'to_review', self.box))
-        expense = receipt.expense_id
+        self.assertIsNone(card['receipt_id'], 'an owner expense is cash, not a receipt')
+        self.assertFalse(self.env['ecc.receipt'].search([('owner_box_id', '=', self.box.id)]))
+        move = self.box.move_ids.filtered(lambda m: m.kind == 'expense')
+        self.assertEqual(move.review_state, 'to_review')
+        self.assertEqual(self.box.receipt_to_review_count, 1)
+        expense = move.expense_id
         self.assertEqual(expense.journal_id, self.box.journal_id)
         self.assertEqual(expense.payment_mode, 'paid')
         self.assertTrue(expense.attachment_ids)
+        self.assertEqual(move.attachment_ids, expense.attachment_ids)
         expense.amount = 8000.0   # the accountant fixes the amount
         self.assertEqual(self.box.balance, -8000.0)
-        receipt.action_reject()
+        move.action_review_reject()
         self.assertFalse(expense.exists())
+        self.assertEqual((move.review_state, move.state), ('rejected', 'cancelled'))
         self.assertEqual(self.box.balance, 0.0)
 
-    def test_expense_converted_to_purchase_order(self):
-        card = self._tool('owner_expense', amount=5000.0, category_id=self.category.id)
-        receipt = self.env['ecc.receipt'].browse(card['receipt_id'])
-        receipt.partner_id = self.vendor
-        action = receipt.action_create_purchase_order()
-        product = self.env['product.product'].create({'name': 'ECC Sugar', 'type': 'consu'})
-        form = Form(self.env['purchase.order'].with_context(action['context']))
-        with form.order_line.new() as line:
-            line.product_id = product
-            line.product_qty = 1
-            line.price_unit = 5000.0
-            line.taxes_id.clear()
-        order = form.save()
-        self.assertEqual(receipt.purchase_order_id, order)
-        self.assertFalse(receipt.expense_id)
-        self.assertEqual(self.box.balance, 0.0)
-        order.button_confirm()
-        order.order_line.qty_received = 1
-        order.action_create_invoice()
-        bill = order.invoice_ids
-        bill.invoice_date = fields.Date.today()
+    def test_expense_reviewed(self):
+        self._tool('owner_expense', amount=3000.0, category_id=self.category.id)
+        move = self.box.move_ids.filtered(lambda m: m.kind == 'expense')
+        move.action_review_done()
+        self.assertEqual(move.review_state, 'reviewed')
+        self.assertEqual(self.box.balance, -3000.0)
+        with self.assertRaises(UserError):
+            move.action_review_reject()
+
+    def test_expense_as_vendor_payment(self):
+        """The owner paid a supplier: no purchase order, the amount goes on the vendor account and pays his bill."""
+        self._tool('owner_expense', amount=5000.0, category_id=self.category.id)
+        move = self.box.move_ids.filtered(lambda m: m.kind == 'expense')
+        move.review_as = 'vendor'
+        with self.assertRaises(UserError):
+            move.action_review_confirm()   # no vendor yet
+        move.vendor_id = self.vendor
+        self.assertTrue(move.action_review_confirm())
+        self.assertEqual((move.review_state, move.review_as), ('reviewed', 'vendor'))
+        self.assertFalse(move.expense_id, 'the expense is replaced, never booked twice')
+        self.assertFalse(self.env['purchase.order'].search([('partner_id', '=', self.vendor.id)]))
+        self.assertEqual(self.box.balance, -5000.0, 'the owner paid it: his balance does not change')
+
+        bill = self.env['account.move'].create({
+            'move_type': 'in_invoice', 'partner_id': self.vendor.id, 'invoice_date': fields.Date.today(),
+            'invoice_line_ids': [(0, 0, {'name': 'Sugar', 'quantity': 1, 'price_unit': 5000.0, 'tax_ids': []})],
+        })
         bill.action_post()
-        wizard = self.env['account.payment.register'].with_context(
-            active_model='account.move', active_ids=bill.ids).create({'journal_id': self.box.journal_id.id})
-        wizard.action_create_payments()
-        self.assertEqual(self.box.balance, -5000.0, 'Paying the bill from his cash lowers his box')
+        offered = [c for c in bill.invoice_outstanding_credits_debits_widget['content']
+                   if c['move_id'] == move.vendor_entry_id.id]
+        self.assertEqual(len(offered), 1, "the owner's payment is offered on the vendor's bill")
+        bill.js_assign_outstanding_line(offered[0]['id'])
+        self.assertIn(bill.payment_state, ('paid', 'in_payment'))
+        self.assertEqual(self.box.account_balance, -5000.0)
 
     def test_took_deposit_moves_count_statement(self):
         session = self._closed_session(100000.0)

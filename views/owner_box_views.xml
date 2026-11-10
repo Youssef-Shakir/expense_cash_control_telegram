@@ -198,6 +198,8 @@
                 <field name="card_id" optional="show"/>
                 <field name="source" optional="show"/>
                 <field name="amount" sum="Total"/>
+                <field name="review_state" widget="badge" optional="show" decoration-warning="review_state == 'to_review'"
+                       decoration-success="review_state == 'reviewed'" decoration-danger="review_state == 'rejected'"/>
                 <field name="state" optional="hide"/>
                 <button name="action_open_entry" type="object" icon="fa-book" title="Journal Entry"
                         invisible="not account_move_id"/>
@@ -213,31 +215,45 @@
         <field name="name">ecc.owner.move.form</field>
         <field name="model">ecc.owner.move</field>
         <field name="arch" type="xml">
-            <form create="false" edit="false">
+            <form create="false">
                 <header>
                     <button name="action_return_cash" type="object" string="Return to Till" class="btn-secondary"
                             groups="expense_cash_control.group_expense_manager"
                             invisible="kind != 'collect' or state != 'posted'"/>
+                    <button name="action_open_review" type="object" string="Review" class="btn-primary"
+                            invisible="review_state != 'to_review'"/>
                     <field name="state" widget="statusbar" statusbar_visible="posted"/>
                 </header>
                 <sheet>
                     <group>
                         <group>
-                            <field name="box_id"/>
-                            <field name="date"/>
-                            <field name="kind"/>
-                            <field name="name"/>
-                            <field name="amount"/>
+                            <field readonly="1" name="box_id"/>
+                            <field readonly="1" name="date"/>
+                            <field readonly="1" name="kind"/>
+                            <field readonly="1" name="name"/>
+                            <field readonly="1" name="amount"/>
                         </group>
                         <group>
-                            <field name="source"/>
-                            <field name="session_id" invisible="not session_id"/>
-                            <field name="cash_move_id" invisible="not cash_move_id"/>
-                            <field name="expense_id" invisible="not expense_id"/>
-                            <field name="payment_id" invisible="not payment_id"/>
-                            <field name="receipt_id" invisible="not receipt_id"/>
-                            <field name="deposit_target" invisible="kind != 'deposit'"/>
-                            <field name="account_move_id"/>
+                            <field readonly="1" name="source"/>
+                            <field readonly="1" name="session_id" invisible="not session_id"/>
+                            <field readonly="1" name="cash_move_id" invisible="not cash_move_id"/>
+                            <field readonly="1" name="expense_id" invisible="not expense_id"/>
+                            <field readonly="1" name="payment_id" invisible="not payment_id"/>
+                            <field readonly="1" name="receipt_id" invisible="not receipt_id"/>
+                            <field readonly="1" name="deposit_target" invisible="kind != 'deposit'"/>
+                            <field readonly="1" name="account_move_id"/>
+                        </group>
+                    </group>
+                    <group string="Review" invisible="not review_state">
+                        <group>
+                            <field name="review_state" widget="badge" decoration-warning="review_state == 'to_review'"
+                                   decoration-success="review_state == 'reviewed'"
+                                   decoration-danger="review_state == 'rejected'"/>
+                            <field name="review_as" readonly="1" invisible="review_state == 'to_review'"/>
+                        </group>
+                        <group>
+                            <field name="vendor_id" readonly="1" invisible="not vendor_id"/>
+                            <field name="vendor_entry_id" invisible="not vendor_entry_id"/>
                         </group>
                     </group>
                     <group string="Returned to Till" invisible="state != 'returned'">
@@ -266,6 +282,8 @@
                 <field name="session_id"/>
                 <filter name="posted" string="Posted" domain="[('state', '=', 'posted')]"/>
                 <filter name="returned" string="Returned to Till" domain="[('state', '=', 'returned')]"/>
+                <separator/>
+                <filter name="to_review" string="Expenses to Review" domain="[('review_state', '=', 'to_review')]"/>
                 <separator/>
                 <filter name="collect" string="Collected" domain="[('kind', '=', 'collect')]"/>
                 <filter name="expense" string="Expenses" domain="[('kind', '=', 'expense')]"/>
@@ -402,6 +420,12 @@
         <field name="name">Owner Statements</field>
         <field name="res_model">ecc.owner.statement</field>
         <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_ecc_owner_statement_disputed" model="ir.actions.act_window">
+        <field name="name">Disputed Statements</field>
+        <field name="res_model">ecc.owner.statement</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'disputed')]</field>
     </record>
 
     <!-- Session review: who collected the cash -->

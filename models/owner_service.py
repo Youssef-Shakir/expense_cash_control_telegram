@@ -208,12 +208,12 @@ class OwnerService(models.AbstractModel):
             return replay
         amount = self._amount(box, amount)
         category = self._category(box, category_id)
-        move, receipt = box._record_expense(amount, category, note=self._note(note), photos=self._photos(photos),
-                                            source=self._source(), **telegram)
+        move = box._record_expense(amount, category, note=self._note(note), photos=self._photos(photos),
+                                   source=self._source())
         self._stamp(move, request_uid)
         return self._done(box, move, _('Expense %(amount)s (%(category)s) recorded · waiting for accountant '
                                        'review', amount=box.currency_id.format(amount), category=category.name),
-                          receipt_id=receipt.id, reference=receipt.name)
+                          receipt_id=None, reference=move.account_move_id.name or move.name)
 
     @api.model
     def took(self, box, amount, note=None, request_uid=None):
@@ -344,13 +344,13 @@ class OwnerService(models.AbstractModel):
             return replay
         amount = self._amount(box, amount)
         category = self._category(box, category_id)
-        move, receipt = card._record_expense(box, amount, category, note=self._note(note),
-                                             photos=self._photos(photos), source=self._source())
+        move = card._record_expense(box, amount, category, note=self._note(note),
+                                    photos=self._photos(photos), source=self._source())
         self._stamp(move, request_uid)
         return self._card_done(box, card, move, _('Card expense %(amount)s (%(category)s) recorded · waiting for '
                                                   'accountant review', amount=box.currency_id.format(amount),
                                                   category=category.name),
-                               receipt_id=receipt.id, reference=receipt.name)
+                               receipt_id=None, reference=move.account_move_id.name or move.name)
 
     @api.model
     def card_count(self, box, card_id, counted):

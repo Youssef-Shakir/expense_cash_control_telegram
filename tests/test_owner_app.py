@@ -111,9 +111,10 @@ class TestOwnerApp(HttpCase):
                             note='Generator diesel', request_uid='expense-req-0001',
                             photos=[{'content_b64': PHOTO, 'mimetype': 'image/jpeg'}])
         self.assertEqual(expense['card']['balance'], 75000.0)
-        receipt = self.env['ecc.receipt'].search([('owner_box_id', '=', self.box.id)])
-        self.assertEqual((receipt.paid_by, receipt.state, len(receipt.photo_ids)), ('owner', 'to_review', 1))
-        self.assertIn('Owner App', receipt.expense_id.notes)
+        move = self.box.move_ids.filtered(lambda m: m.kind == 'expense')
+        self.assertEqual((move.review_state, len(move.expense_id.attachment_ids)), ('to_review', 1))
+        self.assertIn('Owner App', move.expense_id.notes)
+        self.assertFalse(self.env['ecc.receipt'].search([('owner_box_id', '=', self.box.id)]))
 
         self.assertEqual(self._api('took', box_id=self.box.id, amount=5000, request_uid='took-req-00001')
                          ['card']['balance'], 70000.0)
