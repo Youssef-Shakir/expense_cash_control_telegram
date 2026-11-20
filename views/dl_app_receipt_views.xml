@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ecc_receipt_form_app" model="ir.ui.view">
+        <field name="name">ecc.receipt.form.donialink.app</field>
+        <field name="model">ecc.receipt</field>
+        <field name="inherit_id" ref="expense_cash_control_telegram.view_ecc_receipt_form"/>
+        <field name="arch" type="xml">
+            <button name="action_ask_question" position="attributes">
+                <attribute name="invisible">not chat_id and not app_user_id</attribute>
+            </button>
+            <xpath expr="//field[@name='sender_id']/.." position="after">
+                <span invisible="not app_user_id"><i class="fa fa-mobile me-1" title="DoniaLink App"/><field name="app_user_id" readonly="1" options="{'no_open': True}"/></span>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_ecc_receipt_search_app" model="ir.ui.view">
+        <field name="name">ecc.receipt.search.donialink.app</field>
+        <field name="model">ecc.receipt</field>
+        <field name="inherit_id" ref="expense_cash_control_telegram.view_ecc_receipt_search"/>
+        <field name="arch" type="xml">
+            <field name="sender_id" position="after">
+                <field name="app_user_id"/>
+                <filter name="from_app" string="From the App" domain="[('app_user_id', '!=', False)]"/>
+            </field>
+        </field>
+    </record>
+</odoo>

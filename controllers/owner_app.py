@@ -23,6 +23,12 @@ STATIC = Path(__file__).resolve().parent.parent / 'static' / 'owner_app'
 ASSET_URL = '/expense_cash_control_telegram/static/owner_app'
 WRITE_ACTIONS = ('collect', 'expense', 'took', 'deposit', 'count', 'statement_answer',
                  'card_withdraw', 'card_expense', 'card_count', 'notifications_set')
+# what the DoniaLink App's cash box screen may call (login, logout and the phone's push belong to the app itself)
+DL_APP_ACTIONS = frozenset({
+    'session', 'home', 'categories', 'moves', 'statements', 'collect', 'expense', 'took', 'deposit', 'count',
+    'notifications', 'notifications_set', 'statement_answer', 'card_home', 'card_withdraw', 'card_expense',
+    'card_count',
+})
 
 
 class AppError(Exception):
@@ -44,16 +50,11 @@ class OwnerApp(http.Controller):
         return request.redirect('/ecc/owner/app', 303)
 
     @http.route('/ecc/owner/app', type='http', auth='public', sitemap=False)
-    def owner_app(self, **kw):
-        version = request.env['ir.module.module'].sudo().search(
-            [('name', '=', 'expense_cash_control_telegram')], limit=1).latest_version or '1'
-        html = (STATIC / 'index.html').read_text(encoding='utf-8')
-        html = html.replace('{{ASSET}}', ASSET_URL).replace('{{VERSION}}', version)
-        return request.make_response(html, headers=[
-            ('Content-Type', 'text/html; charset=utf-8'),
-            ('Cache-Control', 'no-cache'),
-            ('X-Frame-Options', 'DENY'),
-        ])
+    def owner_app(self, box=None, card=None, **kw):
+        """The owner app moved into the DoniaLink App (/dl/app#cashbox); an old notification link keeps its box
+        and card."""
+        target = request.env['ecc.owner.box']._dl_app_hash('bankcard' if card else 'home', card=card, box=box)
+        return request.redirect('/dl/app' + target, 303)
 
     @http.route('/ecc/owner/manifest.webmanifest', type='http', auth='public', sitemap=False)
     def owner_manifest(self, **kw):
@@ -129,6 +130,17 @@ class OwnerApp(http.Controller):
             return {'ok': False, 'code': 'bad_request', 'error': _('Invalid request.')}
         result = result or {}
         result.setdefault('ok', True)
+        return result
+
+    @http.route('/dl/app/cashbox/api/<string:action>', type='json', auth='user', methods=['POST'], sitemap=False)
+    def dl_app_cashbox_api(self, action, **params):
+        """The cash box screen of the DoniaLink App: the same actions and checks as the owner app API above,
+        answered the way the DoniaLink App reads errors ({error: code, message: text})."""
+        if action not in DL_APP_ACTIONS:
+            return {'error': 'not_found', 'message': _('Unknown action.')}
+        result = self.owner_api(action, **params)
+        if isinstance(result, dict) and result.get('ok') is False:
+            return {'error': result.get('code') or 'refused', 'message': result.get('error') or ''}
         return result
 
     # helpers ----------------------------------------------------------
@@ -209,7 +221,7 @@ class OwnerApp(http.Controller):
         box = self._box(box_id)
         return {'statements': box._api_statements(), 'card': box._api_card()}
 
-    # writing (same service as the connector tools) ---------------------
+    # writing (through the owner service) ---------------------
 
     def _api_collect(self, box_id, session_id, amount=None, request_uid=None):
         return self._svc().collect(self._box(box_id), session_id, amount, request_uid)

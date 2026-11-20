@@ -10,6 +10,8 @@ from odoo.tests import HttpCase, tagged
 
 from odoo.addons.expense_cash_control.tests.common import ExpenseCashCommon
 
+from .owner_calls import CallError, owner_call
+
 PHOTO = base64.b64encode(b'\x89PNG\r\n\x1a\n-ecc-card-expense').decode()
 
 
@@ -72,13 +74,6 @@ class TestOwnerCard(CardSetup, ExpenseCashCommon):
         super().setUpClass()
         cls._card_setup(cls.env, 'ECCK')
         cls.category.owner_expense = True
-
-    def setUp(self):
-        super().setUp()
-        patcher = patch.object(type(self.env['telegram.service']), 'donialink_post',
-                               return_value={'ok': True, 'delivered': True})
-        patcher.start()
-        self.addCleanup(patcher.stop)
 
     def _bank_balance(self):
         return sum(self.env['account.move.line'].search([
@@ -236,18 +231,11 @@ class TestOwnerCardApp(CardSetup, HttpCase):
         cls.category = env['expense.category'].create({'name': 'ECCQ Oil', 'code': 'ECCQ-OIL', 'account_id': account.id,
                                                        'owner_expense': True})
         wizard = env['ecc.owner.app.access'].with_context(ecc_owner_box_id=cls.ali.id).create({
-            'mode': 'new', 'login': 'ali_card_app', 'password': 'ali-card-pass-1'})
+            'mode': 'new', 'login': 'ali_card_app', 'password': 'ali-card-pass-1', 'lang': 'en_US'})
         wizard.action_confirm()
         other_bank = env['account.journal'].create({'name': 'ECCQ Other Bank', 'code': 'ECCQO', 'type': 'bank'})
         cls.other_card = env['ecc.owner.card'].create({'name': 'Not his', 'journal_id': other_bank.id,
                                                        'box_ids': [(6, 0, cls.stranger.ids)]})
-
-    def setUp(self):
-        super().setUp()
-        patcher = patch.object(type(self.env['telegram.service']), 'donialink_post',
-                               return_value={'ok': True, 'delivered': True})
-        patcher.start()
-        self.addCleanup(patcher.stop)
 
     def _api(self, action, **params):
         response = self.url_open('/ecc/owner/api/%s' % action, data=json.dumps(
@@ -331,7 +319,7 @@ class TestOwnerCardApp(CardSetup, HttpCase):
         self.assertIn('Rafidain card', pushes[0]['title'])
         self.assertIn('Omar', pushes[0]['options']['body'])
         self.assertEqual(pushes[0]['options']['data']['url'],
-                         '/ecc/owner/app?box=%s&card=%s#bankcard' % (self.ali.id, self.card.id))
+                         '/dl/app#cashbox/%s/card/%s' % (self.ali.id, self.card.id))
 
         # card sales of a closed session, and the session to collect
         self.env['mail.push'].search([]).unlink()
@@ -354,134 +342,107 @@ class TestOwnerCardApp(CardSetup, HttpCase):
 
 
 @tagged('post_install', '-at_install')
-class TestOwnerPlatformTools(CardSetup, ExpenseCashCommon):
-    """Connector tools used by the DoniaLink app: platform user instead of a Telegram link."""
+class TestOwnerService(CardSetup, ExpenseCashCommon):
+    """Cash box actions done for the owner by someone else (Sara, the manager)."""
 
-    APP_USER = {'id': 'dl:42', 'name': 'Sara (manager)'}
+    ACTOR = 'Sara (manager)'
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         cls._card_setup(cls.env, 'ECCP')
         cls.category.owner_expense = True
-        cls.tools = cls.env['donialink.agent.tools']
 
-    def setUp(self):
-        super().setUp()
-        patcher = patch.object(type(self.env['telegram.service']), 'donialink_post',
-                               return_value={'ok': True, 'delivered': True})
-        self.platform = patcher.start()
-        self.addCleanup(patcher.stop)
+    def _tool(self, name, box=None, **params):
+        return owner_call(self.env, box or self.ali, name, actor=self.ACTOR, **params)
 
-    def _tool(self, name, **params):
-        params.setdefault('box_id', self.ali.id)
-        params.setdefault('app_user', self.APP_USER)
-        return self.tools._run_tool(name, params)[1]
+    def _app_login(self):
+        if not self.ali.app_user_id:
+            wizard = self.env['ecc.owner.app.access'].with_context(ecc_owner_box_id=self.ali.id).create({
+                'mode': 'new', 'login': 'ali_owner_tools', 'password': 'ali-owner-pass-1', 'lang': 'en_US'})
+            wizard.action_confirm()
+        return self.ali.app_user_id
 
     def _sent(self, kind):
-        return [c.args[1] for c in self.platform.call_args_list
-                if c.args and c.args[0] == 'telegram/owner' and c.args[1]['kind'] == kind]
+        """Ali's DoniaLink App inbox messages of this kind (the owner is told there, not on the platform)."""
+        return self.env['donialink.app.message'].search([('kind_code', '=', 'owner_' + kind),
+                                                          ('user_id', '=', self.ali.app_user_id.id or 0)])
 
-    def test_boxes_and_platform_link(self):
-        boxes = self.tools._run_tool('owner_boxes', {})[1]['boxes']
-        ids = [b['box_id'] for b in boxes]
-        self.assertIn(self.ali.id, ids)
-        self.assertIn(self.stranger.id, ids)
-        self.assertFalse(next(b for b in boxes if b['box_id'] == self.ali.id)['on_platform'])
-        result = self.tools._run_tool('owner_platform_link', {'box_id': self.ali.id, 'enabled': True})[1]
-        self.assertEqual(result, {'box_id': self.ali.id, 'on_platform': True})
-        self.assertTrue(self.ali.platform_enabled)
+    def _forget(self):
+        self.env['donialink.app.message'].search([]).unlink()
 
-    def test_identity_required(self):
-        from odoo.addons.donialink_agent.models.agent_registry import ToolError
-        with self.assertRaises(ToolError) as error:
-            self.tools._run_tool('owner_card', {'box_id': self.ali.id})
-        self.assertEqual(error.exception.code, 'invalid_params')
-        with self.assertRaises(ToolError) as error:
-            self.tools._run_tool('owner_card', {'box_id': self.ali.id, 'telegram_user_id': '999'})
-        self.assertEqual(error.exception.code, 'not_linked')
-
-    def test_card_tools_with_app_user(self):
-        from odoo.addons.donialink_agent.models.agent_registry import ToolError
+    def test_card_actions_for_the_owner(self):
         self._fund_card(500.0)
-        cards = self._tool('owner_cards')['cards']
+        cards = self._tool('cards')['cards']
         self.assertEqual([c['card_id'] for c in cards], [self.card.id])
         self.assertAlmostEqual(cards[0]['balance'], 500.0)
 
         uid = 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6'
-        result = self._tool('owner_card_withdraw', card_id=self.card.id, amount=100.0, target='box', request_uid=uid)
+        result = self._tool('card_withdraw', card_id=self.card.id, amount=100.0, target='box', request_uid=uid)
         self.assertAlmostEqual(result['bank_card']['balance'], 400.0)
         self.assertAlmostEqual(result['card']['balance'], 100.0)
-        again = self._tool('owner_card_withdraw', card_id=self.card.id, amount=100.0, target='box', request_uid=uid)
+        again = self._tool('card_withdraw', card_id=self.card.id, amount=100.0, target='box', request_uid=uid)
         self.assertTrue(again['replayed'])
         self.assertAlmostEqual(self.card.balance, 400.0, msg='a retry never withdraws twice')
         move = self.card.move_ids.filtered(lambda m: m.kind == 'withdraw')
-        self.assertEqual(move.source, 'platform')
+        self.assertEqual(move.source, 'app')
         self.assertIn('Sara (manager) via DoniaLink app', self.ali.message_ids[0].body)
 
-        result = self._tool('owner_card_expense', card_id=self.card.id, amount=30.0, category_id=self.category.id,
+        result = self._tool('card_expense', card_id=self.card.id, amount=30.0, category_id=self.category.id,
                             note='oil', photos=[{'content_b64': PHOTO, 'mimetype': 'image/png'}],
                             request_uid='e' * 32)
         self.assertAlmostEqual(result['bank_card']['balance'], 370.0)
         self.assertIsNone(result['receipt_id'])
         card_expense = self.card.move_ids.filtered(lambda m: m.kind == 'expense')
-        self.assertIn('DoniaLink App', card_expense.expense_id.notes)
+        self.assertIn('Owner App', card_expense.expense_id.notes)
 
-        result = self._tool('owner_deposit', amount=50.0, target='card', card_id=self.card.id, request_uid='d' * 32)
+        result = self._tool('deposit', amount=50.0, target='card', card_id=self.card.id, request_uid='d' * 32)
         self.assertAlmostEqual(result['bank_card']['balance'], 420.0)
         self.assertAlmostEqual(result['balance'], 50.0, msg='box tools keep the balance card at the top level')
 
-        home = self._tool('owner_card_home', card_id=self.card.id, limit=10)
+        home = self._tool('card_home', card_id=self.card.id, limit=10)
         self.assertEqual([m['type'] for m in home['moves']][:3], ['deposit', 'expense', 'withdraw'])
-        result = self._tool('owner_card_count', card_id=self.card.id, counted=400.0)
+        result = self._tool('card_count', card_id=self.card.id, counted=400.0)
         self.assertAlmostEqual(result['difference'], -20.0)
 
-        with self.assertRaises(ToolError) as error:
-            self._tool('owner_card_home', box_id=self.stranger.id, card_id=self.card.id)
+        with self.assertRaises(CallError) as error:
+            self._tool('card_home', box=self.stranger, card_id=self.card.id)
         self.assertEqual(error.exception.code, 'forbidden')
 
-        statements = self._tool('owner_statements')
+        statements = self._tool('statements')
         self.assertIn('statements', statements)
 
-    def test_notifications_without_telegram(self):
-        self.ali.platform_enabled = True
+    def test_notifications_in_the_app(self):
+        self._app_login()
         self._fund_card(200.0)
         self.card._withdraw(self.omar, 80.0, 'took')
         sent = self._sent('card_move')
-        self.assertEqual(len(sent), 1, 'Ali is told; Omar (no Telegram, not on the platform) is not')
-        payload = sent[0]
-        self.assertEqual(payload['box_id'], self.ali.id)
-        self.assertIsNone(payload['telegram_user_id'])
-        self.assertEqual(payload['company_id'], self.ali.company_id.id)
-        data = payload['data']
-        self.assertEqual((data['route'], data['card_id']), ('bankcard', self.card.id))
-        self.assertTrue(data['title'] and data['body'] and data['tag'])
-        self.assertAlmostEqual(data['amount'], -80.0)
+        self.assertEqual(len(sent), 1, 'Ali is told; Omar (who did it, no app login) is not')
+        self.assertEqual(sent.url, '#cashbox/%s/card/%s' % (self.ali.id, self.card.id))
+        self.assertEqual(sent.company_id, self.ali.company_id)
+        self.assertTrue(sent.origin.startswith('owner_cash_box:card-move-'))
 
-        self.platform.reset_mock()
+        self._forget()
         self._session_with_card_sales(60.0)
         self.assertTrue(self._sent('card_sales'))
 
-        self.platform.reset_mock()
+        self._forget()
         move = self.card._record_expense(self.ali, 10.0, self.category)
         move.action_review_reject()
-        rejected = self._sent('expense_rejected')
-        self.assertEqual(len(rejected), 1)
-        self.assertEqual(rejected[0]['data']['move_id'], move.id)
+        self.assertEqual(len(self._sent('expense_rejected')), 1)
 
-    def test_odoo_app_and_platform_side_by_side(self):
-        """One box in the Odoo app, on the DoniaLink app and on Telegram at once: same data, every channel told."""
+    def test_two_people_same_box(self):
+        """Sara and Ali act on the same box: same data, Ali told once."""
         wizard = self.env['ecc.owner.app.access'].with_context(ecc_owner_box_id=self.ali.id).create({
             'mode': 'new', 'login': 'ali_both_apps', 'password': 'ali-both-pass-1'})
         wizard.action_confirm()
         self.env['mail.push.device'].sudo().create({
             'partner_id': self.ali.app_user_id.partner_id.id, 'endpoint': 'https://push.example.com/both',
             'keys': json.dumps({'p256dh': 'BPub', 'auth': 'secret'})})
-        self.ali.write({'platform_enabled': True, 'telegram_user_id': '777'})
         self._fund_card(300.0)
 
         # a move on the DoniaLink app shows in the Odoo app (and the platform flag does not hide the box there)
-        self._tool('owner_card_withdraw', card_id=self.card.id, amount=50.0, target='box', request_uid='p' * 32)
+        self._tool('card_withdraw', card_id=self.card.id, amount=50.0, target='box', request_uid='p' * 32)
         app = self.env['ecc.owner.service'].with_user(self.ali.app_user_id).with_context(ecc_source='app')
         self.assertAlmostEqual(app.cards(self.ali)['cards'][0]['balance'], 250.0)
         self.assertAlmostEqual(app.statements(self.ali)['card']['balance'], 50.0)
@@ -490,24 +451,21 @@ class TestOwnerPlatformTools(CardSetup, ExpenseCashCommon):
         self.assertTrue(again['replayed'])
         self.assertAlmostEqual(self.card.balance, 250.0)
 
-        # a co-owner's move: Ali gets the Odoo push AND the platform message (its app and Telegram)
+        # a co-owner's move: Ali's phone is notified once, and the message is in the app inbox
         self.env['mail.push'].search([]).unlink()
-        self.platform.reset_mock()
+        self._forget()
         self.card._withdraw(self.omar, 20.0, 'took')
-        self.assertEqual(len(self.env['mail.push'].search([])), 1)
-        sent = self._sent('card_move')
-        self.assertEqual(len(sent), 1)
-        self.assertEqual(sent[0]['telegram_user_id'], '777')
+        self.assertEqual(len(self.env['mail.push'].search([])), 1, 'one phone notification, not two')
+        self.assertEqual(len(self._sent('card_move')), 1)
 
     def test_same_request_at_the_same_moment(self):
-        from odoo.addons.donialink_agent.models.agent_registry import ToolError
         self._fund_card(100.0)
         uid = 'c' * 32
-        self._tool('owner_card_withdraw', card_id=self.card.id, amount=10.0, target='box', request_uid=uid)
+        self._tool('card_withdraw', card_id=self.card.id, amount=10.0, target='box', request_uid=uid)
         # the second request did not see the first one yet (its transaction was not committed)
         with patch.object(type(self.env['ecc.owner.service']), '_card_replay', return_value=None), \
-                self.assertRaises(ToolError) as error:
-            self._tool('owner_card_withdraw', card_id=self.card.id, amount=10.0, target='box', request_uid=uid)
+                self.assertRaises(CallError) as error:
+            self._tool('card_withdraw', card_id=self.card.id, amount=10.0, target='box', request_uid=uid)
         self.assertEqual((error.exception.code, error.exception.status), ('duplicate', 409))
         self.assertAlmostEqual(self.card.balance, 90.0)
 
@@ -516,28 +474,28 @@ class TestOwnerPlatformTools(CardSetup, ExpenseCashCommon):
         from datetime import datetime, time
         tz = pytz.timezone('Asia/Baghdad')
         self.ali.company_id.partner_id.tz = 'Asia/Baghdad'
-        self.ali.write({'platform_enabled': True, 'reminder_hour': 21,
+        self._app_login().tz = 'Asia/Baghdad'
+        self.ali.write({'reminder_hour': 21,
                         'reminder_count_weekday': str(self.ali._owner_now().weekday())})
         today = self.ali._owner_now().date()
         at = lambda hour: tz.localize(datetime.combine(today, time(hour, 30)))   # noqa: E731
 
         self.ali._run_reminders(at(20))
-        self.assertFalse(self.platform.called, 'nothing before the reminder hour')
+        self.assertFalse(self._sent('reminder_expense') or self._sent('reminder_count'), 'nothing before the hour')
         self.assertFalse(self.ali._expense_reminder_due(at(20)))
 
         self.ali._run_reminders(at(21))
         expense, count = self._sent('reminder_expense'), self._sent('reminder_count')
         self.assertEqual((len(expense), len(count)), (1, 1))
-        self.assertIsNone(expense[0]['telegram_user_id'])
-        self.assertIn("haven't recorded any cash expense today", expense[0]['text'])
-        data = expense[0]['data']
-        self.assertEqual((data['route'], data['tag']), ('expense', 'reminder-%s-%s' % (self.ali.id, today)))
-        self.assertEqual(count[0]['data']['route'], 'count')
-        self.assertTrue(count[0]['data']['tag'].startswith('count-%s-' % self.ali.id))
+        self.assertIn("haven't recorded any cash expense today", expense.preview)
+        self.assertEqual(expense.url, '#cashbox/%s/expense' % self.ali.id)
+        self.assertEqual(expense.origin, 'owner_cash_box:reminder-%s-%s' % (self.ali.id, today))
+        self.assertEqual(count.url, '#cashbox/%s/count' % self.ali.id)
+        self.assertTrue(count.origin.startswith('owner_cash_box:count-%s-' % self.ali.id))
 
-        self.platform.reset_mock()
+        self._forget()
         self.ali._run_reminders(at(22))
-        self.assertFalse(self.platform.called, 'each reminder once a day')
+        self.assertFalse(self._sent('reminder_expense') or self._sent('reminder_count'), 'each reminder once a day')
 
         # something recorded today: no expense reminder (the count day still asks to count)
         self.ali.write({'reminder_expense_on': False, 'reminder_count_on': False})
@@ -551,21 +509,20 @@ class TestOwnerPlatformTools(CardSetup, ExpenseCashCommon):
         self.assertEqual(len(self._sent('reminder_count')), 1)
 
     def test_notification_settings(self):
-        from odoo.addons.donialink_agent.models.agent_registry import ToolError
-        n = self._tool('owner_notifications')['notifications']
+        n = self._tool('notifications')['notifications']
         self.assertEqual(n, {'session_closed': True, 'reminder_expense': True, 'reminder_count_weekday': '4',
                              'reminder_hour': 21})
-        result = self._tool('owner_notifications_set', reminder_expense=False, reminder_count_weekday=None,
+        result = self._tool('notifications_set', reminder_expense=False, reminder_count_weekday=None,
                             reminder_hour=8)
         self.assertEqual(result['notifications'], {'session_closed': True, 'reminder_expense': False,
                                                    'reminder_count_weekday': None, 'reminder_hour': 8})
         self.assertFalse(self.ali.reminder_count_weekday)
         self.assertIn('notification settings changed', self.ali.message_ids[0].body)
         # only what is given changes
-        self._tool('owner_notifications_set', session_closed=False)
+        self._tool('notifications_set', session_closed=False)
         self.assertEqual((self.ali.notify_session_close, self.ali.reminder_hour), (False, 8))
-        with self.assertRaises(ToolError) as error:
-            self._tool('owner_notifications_set', reminder_hour=30)
-        self.assertEqual(error.exception.code, 'invalid_params')
-        with self.assertRaises(ToolError):
-            self._tool('owner_notifications_set', reminder_count_weekday='9')
+        with self.assertRaises(CallError) as error:
+            self._tool('notifications_set', reminder_hour=30)
+        self.assertEqual(error.exception.code, 'refused')
+        with self.assertRaises(CallError):
+            self._tool('notifications_set', reminder_count_weekday='9')

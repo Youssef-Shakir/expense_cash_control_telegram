@@ -1,0 +1,26 @@
+/* DoniaLink App: "Send receipt" */
+.dl-receipt-form { gap: 12px; }
+.dl-thumbs { display: flex; flex-wrap: wrap; gap: 8px; }
+.dl-thumb { position: relative; width: 84px; height: 84px; border-radius: 12px; overflow: hidden; background: var(--surface-2); display: block; }
+.dl-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.dl-thumb-x { position: absolute; top: 4px; inset-inline-end: 4px; width: 26px; height: 26px; border-radius: 50%; border: 0;
+              background: #000a; color: #fff; font-size: 18px; line-height: 1; cursor: pointer; }
+.dl-thumb-add { flex: 1 1 84px; min-height: 84px; border-radius: 12px; border: 2px dashed var(--line); background: var(--surface-2);
+                color: var(--brand); display: grid; place-items: center; align-content: center; gap: 4px; cursor: pointer; font-weight: 600; padding: 8px; }
+.dl-thumb-add .dl-icon { width: 28px; height: 28px; }
+.dl-field { display: grid; gap: 6px; }
+.dl-label { font-weight: 600; font-size: 14px; }
+.dl-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.dl-choices button { min-height: 46px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); cursor: pointer; }
+.dl-choices button[aria-checked="true"] { border: 2px solid var(--brand); background: var(--unread); font-weight: 600; }
+.dl-input { width: 100%; min-height: 46px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface);
+            color: var(--text); font: inherit; resize: vertical; }
+.dl-state { display: inline-block; font-size: 12px; font-weight: 600; padding: 1px 8px; border-radius: 999px; background: var(--surface-2); color: var(--muted); vertical-align: middle; }
+.dl-state-processed { background: var(--ok-soft); color: var(--green); }
+.dl-state-rejected, .dl-state-duplicate { background: var(--bad-soft); color: var(--bad); }
+.dl-ask { color: var(--bad); font-weight: 600; }
+.dl-question { display: grid; gap: 6px; padding: 12px 0; border-top: 1px solid var(--line); }
+.dl-question p { margin: 0; overflow-wrap: anywhere; }
+.dl-q-answer { color: var(--muted); }
+.dl-answer { display: grid; gap: 8px; }
+.dl-answer .dl-btn { justify-self: start; }

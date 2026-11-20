@@ -153,7 +153,7 @@ class OwnerCard(models.Model):
         """Notification to the owners of the card, except the one who made the movement."""
         self.ensure_one()
         for owner in (self.box_ids - move.box_id).filtered(
-                lambda b: b.app_user_id or b.telegram_user_id or b.platform_enabled):
+                lambda b: b.app_user_id):
             card = self.with_context(lang=owner._app_lang()).sudo()
             card.invalidate_recordset(['balance'])
             sign = '+' if move.amount > 0 else '−'

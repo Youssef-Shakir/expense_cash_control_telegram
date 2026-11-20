@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- the owner cash box in the DoniaLink App; only people linked to a box see it (donialink.app.screen._for_user) -->
+    <record id="dl_app_screen_cashbox" model="donialink.app.screen">
+        <field name="key">cashbox</field>
+        <field name="name">Cash box</field>
+        <field name="description">Your cash, sessions to collect, expenses</field>
+        <field name="icon">cash</field>
+        <field name="sequence">3</field>
+        <field name="badge_model">ecc.owner.box</field>
+        <field name="badge_method">dl_app_cashbox_badge</field>
+    </record>
+
+    <!-- receipts sent from the app (was donialink_app_receipts) -->
+    <record id="screen_receipt" model="donialink.app.screen">
+        <field name="key">receipt</field>
+        <field name="name">Send receipt</field>
+        <field name="description">Photo of a bill</field>
+        <field name="icon">camera</field>
+        <field name="sequence">5</field>
+        <field name="group_ids" eval="[(6, 0, [ref('group_receipt_sender')])]"/>
+        <field name="badge_model">ecc.receipt</field>
+        <field name="badge_method">dl_app_open_questions</field>
+    </record>
+
+    <record id="kind_receipt_new" model="donialink.app.kind">
+        <field name="code">receipt_new</field>
+        <field name="name">New receipts</field>
+        <field name="description">A bill photo sent from the app, to review</field>
+        <field name="icon">receipt</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="kind_receipt_staff" model="donialink.app.kind">
+        <field name="code">receipt_staff</field>
+        <field name="name">My receipts</field>
+        <field name="description">Questions from the accountant and the review of your receipts</field>
+        <field name="icon">receipt</field>
+        <field name="sequence">21</field>
+        <field name="user_can_mute">False</field>
+    </record>
+</odoo>

@@ -8,7 +8,6 @@
         <field name="arch" type="xml">
             <kanban>
                 <field name="currency_id"/>
-                <field name="is_linked"/>
                 <field name="app_user_id"/>
                 <field name="balance"/>
                 <templates>
@@ -17,8 +16,7 @@
                             <field name="name" class="fw-bold fs-5"/>
                             <span>
                                 <span t-if="record.app_user_id.raw_value" class="badge text-bg-primary me-1"><i class="fa fa-mobile" title="Owner App"/> App</span>
-                                <span t-if="record.is_linked.raw_value" class="badge text-bg-success"><i class="fa fa-telegram" title="Linked"/> Linked</span>
-                                <span t-elif="!record.app_user_id.raw_value" class="badge text-bg-secondary">Not linked</span>
+                                <span t-if="!record.app_user_id.raw_value" class="badge text-bg-secondary">No app login</span>
                             </span>
                         </div>
                         <div class="text-muted small"><field name="company_id"/></div>
@@ -50,7 +48,7 @@
                 <field name="uncollected_session_count" string="Not Collected"/>
                 <field name="receipt_to_review_count" string="To Review"/>
                 <field name="difference_pending_count" string="Differences"/>
-                <field name="is_linked" widget="boolean"/>
+                <field name="app_user_id" string="App Login" optional="show"/>
                 <field name="currency_id" column_invisible="True"/>
             </list>
         </field>
@@ -62,23 +60,13 @@
         <field name="arch" type="xml">
             <form string="Owner Cash Box">
                 <header>
-                    <button name="action_generate_link" type="object" string="Telegram Link" class="btn-primary"
-                            invisible="is_linked or not id" icon="fa-telegram"/>
                     <button name="action_send_statement" type="object" string="Send Statement Now"
-                            invisible="not is_linked"/>
+                            invisible="not app_user_id"/>
                     <button name="action_app_access" type="object" string="Owner App Access" icon="fa-mobile"
                             invisible="not id or app_user_id"/>
                     <button name="action_revoke_app" type="object" string="Remove App Access"
                             invisible="not app_user_id" confirm="The owner will no longer open this box in the app."/>
-                    <button name="action_unlink_telegram" type="object" string="Unlink Telegram"
-                            invisible="not is_linked and not link_code"
-                            confirm="The owner will no longer be able to use the bot for this box."/>
                 </header>
-                <div class="alert alert-info mb-0" role="status" invisible="is_linked or not link_code">
-                    Send this link to the owner; he opens it in Telegram once:
-                    <field name="link_url" widget="url" readonly="1" class="d-inline"/>
-                    (code <strong><field name="link_code" readonly="1" class="d-inline"/></strong>)
-                </div>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_moves" type="object" class="oe_stat_button" icon="fa-exchange">
@@ -127,11 +115,8 @@
                             <field name="app_user_id" readonly="1"/>
                             <field name="app_url" widget="url" invisible="not app_user_id"/>
                             <field name="app_push_count" invisible="not app_user_id"/>
-                            <field name="platform_enabled" readonly="1"/>
                         </group>
-                        <group string="Telegram">
-                            <field name="is_linked"/>
-                            <field name="telegram_name" invisible="not is_linked"/>
+                        <group string="Statements">
                             <field name="statement_frequency"/>
                             <field name="statement_weekday" invisible="statement_frequency != 'weekly'"/>
                         </group>
@@ -162,7 +147,6 @@
                             </field>
                         </page>
                     </notebook>
-                    <field name="link_code" invisible="1"/>
                     <field name="currency_id" invisible="1"/>
                 </sheet>
                 <chatter/>

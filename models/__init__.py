@@ -17,5 +17,6 @@ from . import purchase_order
 from . import account_move
 from . import account_payment
 from . import expense_dashboard
-from . import agent_tools
-from . import agent_tools_owner
+from . import dl_app_receipt
+from . import dl_app_alerts
+from . import dl_app_admin

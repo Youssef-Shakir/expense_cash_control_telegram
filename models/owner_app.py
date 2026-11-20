@@ -1,36 +1,55 @@
 # -*- coding: utf-8 -*-
-"""Owner App: the same owner cash box as the Telegram bot, in an installable web app (PWA) served by Odoo at
-/ecc/owner/app. The owner logs in with an Odoo login (a free portal user is enough) linked to his box.
+"""Owner App: the owner cash box on the phone: the "Cash box" screen of the DoniaLink App
+(/dl/app#cashbox, which replaced the owner app at /ecc/owner/app). The owner logs in with an Odoo login (a free
+portal user is enough) linked to his box.
 
-The bot tools (agent_tools_owner) and the app controller share the data builders below, so both channels show
-the same card, sessions, categories, moves and statements, and record through the same box methods.
+The app controller and the notifications use the data builders below (card, sessions, categories, moves and
+statements); writes go through the same box methods.
 """
 import json
 import logging
 
 from odoo import api, fields, models, _
-from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
+
+DL_APP_SCREEN = 'cashbox'
+# owner app routes (the ``route`` of the notifications) -> pages of the cash box screen of the DoniaLink App
+DL_APP_ROUTES = {
+    'home': [], 'collect': ['collect'], 'expense': ['expense'], 'took': ['took'], 'deposit': ['deposit'],
+    'count': ['count'], 'moves': ['moves'], 'statements': ['statements'], 'notifications': ['notifications'],
+    'bankcard': ['card'], 'cardwithdraw': ['card', 'withdraw'], 'cardexpense': ['card', 'expense'],
+    'cardcount': ['card', 'count'], 'carddeposit': ['card', 'deposit'],
+}
+
+
+def _record_id(value):
+    """A record or a number (from an address): its id, or 0."""
+    if isinstance(value, models.BaseModel):
+        return value.id if len(value) == 1 else 0
+    try:
+        return max(int(value or 0), 0)
+    except (TypeError, ValueError):
+        return 0
 
 
 class OwnerBoxApp(models.Model):
     _inherit = 'ecc.owner.box'
 
     app_user_id = fields.Many2one('res.users', string='Owner App Login', copy=False, tracking=True, index=True,
-                                  help='This login opens the owner app (/ecc/owner/app) on this cash box.')
+                                  help='This login opens the cash box in the DoniaLink App (/dl/app#cashbox).')
     app_url = fields.Char('Owner App', compute='_compute_app_url')
     platform_enabled = fields.Boolean(
-        'On DoniaLink App', copy=False, tracking=True,
-        help='Set by the DoniaLink Platform when a platform user may open this box. Its notifications are then '
-             'sent to the platform even without a Telegram link.')
+        'On the DoniaLink Platform', copy=False,
+        help='Set by the old DoniaLink Platform owner app. Not used any more: the owner uses the DoniaLink App '
+             '(/dl/app#cashbox).')
     app_push_count = fields.Integer('Phones with Notifications', compute='_compute_app_push_count',
-                                    help='Phones where the owner turned notifications on in the app (menu ☰).')
+                                    help='Phones where the owner turned notifications on in the app.')
 
     def _compute_app_url(self):
         base = self.env['ir.config_parameter'].sudo().get_param('web.base.url', '')
         for box in self:
-            box.app_url = '%s/ecc/owner/app' % base.rstrip('/')
+            box.app_url = '%s/dl/app' % base.rstrip('/')
 
     def _compute_app_push_count(self):
         for box in self:
@@ -56,24 +75,13 @@ class OwnerBoxApp(models.Model):
 
     def _owner_notify(self, kind, text, title, body=None, route='home', card=None, tag=None, data=None,
                       raise_errors=False):
-        """One notification to the owner on every channel he uses: Web Push of the Odoo owner app, and the
-        DoniaLink Platform (its app and/or Telegram) when the box is linked to Telegram or on the platform.
-        Returns (platform answer or {}, number of phones pushed). Errors are logged, except with
-        ``raise_errors`` (statements: the caller records that it was not sent)."""
+        """One notification to the owner: Web Push to the phones of their app login; the DoniaLink App inbox
+        adds the message (dl_app_alerts). Returns ({'delivered': …} once in an inbox, number of phones pushed).
+        ``data`` and ``raise_errors`` are kept for the callers (nothing here can fail)."""
         self.ensure_one()
         box = self.sudo()
         pushed = box._app_push(title, body or text, route=route, card=card, tag=tag) if box.app_user_id else 0
-        answer = {}
-        if box.telegram_user_id or box.platform_enabled:
-            payload = dict(data or {}, title=title, body=body or text, route=route,
-                           card_id=card.id if card else None, tag=tag)
-            try:
-                answer = box._platform_send(kind, text, payload) or {}
-            except Exception as e:  # noqa: BLE001 - a notification never stops the action that sent it
-                if raise_errors:
-                    raise
-                _logger.warning('Owner cash box %s: %s notification not sent: %s', box.name, kind, e)
-        return answer, pushed
+        return {}, pushed
 
     def _app_devices(self):
         self.ensure_one()
@@ -82,12 +90,41 @@ class OwnerBoxApp(models.Model):
             return self.env['mail.push.device']
         return self.env['mail.push.device'].sudo().search([('partner_id', '=', user.partner_id.id)])
 
+    @api.model
+    def _dl_app_hash(self, route='home', card=None, box=None):
+        """The cash box screen of the DoniaLink App for an owner app route: ``#cashbox/<box>/<page>``, the cards
+        as ``#cashbox/<box>/card/<card>[/withdraw|expense|count|deposit]``."""
+        box_id = _record_id(box) or (self.id if len(self) == 1 else 0)
+        card_id = _record_id(card)
+        parts = list(DL_APP_ROUTES.get(route or 'home', []))
+        if parts and parts[0] == 'card':
+            parts = ['card', str(card_id)] + parts[1:] if card_id else []
+        elif not parts and card_id:
+            parts = ['card', str(card_id)]
+        return '#' + '/'.join([DL_APP_SCREEN] + ([str(box_id)] if box_id else []) + parts)
+
+    def _app_url(self, route='home', card=None):
+        """Where a notification of this box opens: the cash box screen (``route``, the ``card``) of the
+        DoniaLink App, which replaced the owner app at /ecc/owner/app."""
+        self.ensure_one()
+        return '/dl/app' + self._dl_app_hash(route, card)
+
+    @api.model
+    def dl_app_cashbox_badge(self):
+        """The number on the cash box tile of the DoniaLink App: sessions to collect and statements to answer."""
+        count = 0
+        for box in self._app_boxes(self.env.user):
+            box = box.with_company(box.company_id)
+            count += box.uncollected_session_count
+            count += len(box.statement_ids.filtered(lambda s: s.state == 'sent'))
+        return count
+
     def _app_push(self, title, body, route='home', card=None, tag=None):
         """Queue a notification to the phones where the owner turned notifications on. Never raises: a
         notification must not stop the action that sent it. Tapping it opens the app on ``route`` (and the
         ``card``) of this box. Returns the number of phones."""
         self.ensure_one()
-        url = '/ecc/owner/app?box=%s%s#%s' % (self.id, '&card=%s' % card.id if card else '', route)
+        url = self._app_url(route, card)
         try:
             devices = self._app_devices()
             if not devices:
@@ -134,7 +171,7 @@ class OwnerBoxApp(models.Model):
         return True
 
     # ------------------------------------------------------------------
-    # Data shared by the bot tools and the app
+    # Data shown by the app
     # ------------------------------------------------------------------
 
     def _api_card(self):
@@ -249,21 +286,13 @@ class OwnerMoveApp(models.Model):
     ]
 
 
-class OwnerStatementApp(models.Model):
-    _inherit = 'ecc.owner.statement'
+class DonialinkAppScreen(models.Model):
+    _inherit = 'donialink.app.screen'
 
-    def _send(self):
-        """Owners with the app see their statement there; the bot gets it too when he is linked."""
-        app_only = self.filtered(lambda s: s.box_id.app_user_id and not s.box_id.telegram_user_id)
-        for statement in self - app_only:
-            if not statement.box_id.app_user_id:
-                super(OwnerStatementApp, statement)._send()
-                continue
-            try:
-                super(OwnerStatementApp, statement)._send()
-            except UserError as e:
-                statement.message_post(body=_('Not sent on Telegram: %s', e.args[0] if e.args else e))
-            if statement.state == 'draft':
-                statement.state = 'sent'   # waiting for him in the app
-        app_only.write({'state': 'sent'})
-        return True
+    @api.model
+    def _for_user(self, user=None):
+        """The cash box tile of the DoniaLink App only for people linked to a cash box (Owner App Login)."""
+        screens = super()._for_user(user)
+        if DL_APP_SCREEN in screens.mapped('key') and not self.env['ecc.owner.box']._app_boxes(user or self.env.user):
+            screens = screens.filtered(lambda s: s.key != DL_APP_SCREEN)
+        return screens

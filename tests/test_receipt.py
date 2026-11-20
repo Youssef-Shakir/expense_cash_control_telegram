@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 import base64
 from datetime import timedelta
-from unittest.mock import patch
 
 from odoo import fields
 from odoo.exceptions import UserError
 from odoo.tests import Form, tagged
 
-from odoo.addons.donialink_agent.models.agent_registry import ToolError
 from odoo.addons.expense_cash_control.tests.common import ExpenseCashCommon
 
 PNG_A = base64.b64encode(b'\x89PNG\r\n\x1a\n-ecc-test-receipt-A').decode()
@@ -40,97 +38,29 @@ class TestTelegramReceipt(ExpenseCashCommon):
         session.try_cash_in_out('out', amount, reason, {'translatedType': 'out', 'formattedAmount': str(amount)})
         return session.cash_move_ids.sorted('id')[-1:]
 
-    def _send(self, message_id, content=PNG_A, user='111', media_group_id=None, file_unique_id=None, **kw):
-        params = {
-            'company_id': self.company.id, 'chat_id': CHAT, 'chat_title': 'Cafe staff',
-            'message_id': message_id, 'media_group_id': media_group_id,
-            'sender': {'telegram_user_id': user, 'name': 'Ali', 'username': 'ali'},
-            'photo': {'content_b64': content, 'file_unique_id': file_unique_id and 'test-%s' % file_unique_id, 'mimetype': 'image/png'},
-        }
-        params.update(kw)
-        _meta, result = self.tools._run_tool('receipt_create', params)
-        return result
+    def _send(self, message_id, content=PNG_A, file_unique_id=None, caption=None, sent_at=None):
+        """A bill photo received in the Receipts inbox."""
+        sender = self.env['ecc.telegram.sender']._find_or_create(self.company, '111', 'Ali', 'ali')
+        receipt = self.env['ecc.receipt'].create({
+            'company_id': self.company.id, 'chat_id': CHAT, 'message_id': message_id, 'sender_id': sender.id,
+            'sent_at': sent_at or fields.Datetime.now(), 'note': caption or False,
+        })
+        receipt._guess_session()
+        receipt._add_photo(base64.b64decode(content), mimetype='image/png', message_id=message_id,
+                           file_unique_id=file_unique_id and 'test-%s' % file_unique_id)
+        return {'receipt_id': receipt.id}
 
     def _receipt(self, result):
         return self.env['ecc.receipt'].browse(result['receipt_id'])
 
-    # tools --------------------------------------------------------------
-
-    def test_create_album_idempotent(self):
-        first = self._send(10, media_group_id='alb1', file_unique_id='u1', caption='gas cylinder')
-        self.assertTrue(first['is_new_receipt'])
-        self.assertTrue(first['reference'].startswith('R-'))
-        receipt = self._receipt(first)
-        self.assertEqual(receipt.state, 'to_review')
-        self.assertEqual(receipt.paid_by, 'unspecified')
-        self.assertEqual(receipt.note, 'gas cylinder')
-        self.assertEqual(receipt.sender_id.name, 'Ali')
-
-        second = self._send(11, content=PNG_B, media_group_id='alb1', file_unique_id='u2')
-        self.assertFalse(second['is_new_receipt'])
-        self.assertEqual(second['receipt_id'], receipt.id)
-        self.assertEqual(receipt.photo_count, 2)
-        self.assertIsNone(second['duplicate_of'])
-
-        again = self._send(11, content=PNG_B, media_group_id='alb1')
-        self.assertFalse(again['is_new_receipt'])
-        self.assertEqual(receipt.photo_count, 2, 'A message sent twice is stored once')
+    # photos -----------------------------------------------------------
 
     def test_duplicate_by_file_unique_id_and_checksum(self):
         original = self._receipt(self._send(20, file_unique_id='same'))
-        forwarded = self._send(21, content=PNG_B, file_unique_id='same')
-        self.assertEqual(forwarded['duplicate_of']['id'], original.id)
-        same_bytes = self._send(22, file_unique_id='other')
-        self.assertEqual(same_bytes['duplicate_of']['id'], original.id)
-        self.assertNotIn('again', forwarded['summary_text'])
-
-    def test_archived_sender_ignored(self):
-        receipt = self._receipt(self._send(30))
-        receipt.sender_id.active = False
-        with self.assertRaises(ToolError) as error:
-            self._send(31, content=PNG_B)
-        self.assertEqual(error.exception.code, 'sender_ignored')
-
-    def test_update_only_by_sender(self):
-        receipt = self._receipt(self._send(40))
-        _meta, result = self.tools._run_tool('receipt_update', {
-            'receipt_id': receipt.id, 'telegram_user_id': '111', 'paid_by': 'cashier', 'note': 'ice'})
-        self.assertEqual(receipt.paid_by, 'cashier')
-        self.assertEqual(receipt.note, 'ice')
-        self.assertIn('Cashier', result['summary_text'])
-        self.assertIn(receipt.name, result['summary_text'])
-        with self.assertRaises(ToolError) as error:
-            self.tools._run_tool('receipt_update', {
-                'receipt_id': receipt.id, 'telegram_user_id': '999', 'paid_by': 'payable'})
-        self.assertEqual(error.exception.code, 'not_the_sender')
-        self.assertEqual(receipt.paid_by, 'cashier')
-
-    def test_question_and_reply(self):
-        receipt = self._receipt(self._send(50))
-        with patch.object(type(self.env['telegram.service']), 'send_reply', return_value=777) as send:
-            wizard = self.env['ecc.receipt.question.wizard'].create({'receipt_id': receipt.id, 'text': 'Amount?'})
-            wizard.action_send()
-        send.assert_called_once()
-        self.assertEqual(send.call_args.args[:2], (CHAT, 50))
-        self.assertEqual(receipt.question_state, 'waiting')
-
-        self.tools._run_tool('receipt_reply', {
-            'company_id': self.company.id, 'chat_id': CHAT, 'reply_to_message_id': 777, 'message_id': 778,
-            'sender': {'telegram_user_id': '111', 'name': 'Ali'}, 'text': '25000'})
-        self.assertEqual(receipt.question_state, 'answered')
-        self.assertEqual(receipt.question_ids.answer, '25000')
-        self.assertIn('25000', receipt.message_ids[0].body)
-
-        # a reply under the photo itself also lands on the receipt
-        _meta, result = self.tools._run_tool('receipt_reply', {
-            'company_id': self.company.id, 'chat_id': CHAT, 'reply_to_message_id': 50,
-            'sender': {'telegram_user_id': '222', 'name': 'Omar'}, 'text': 'from the market'})
-        self.assertEqual(result['receipt_id'], receipt.id)
-        with self.assertRaises(ToolError) as error:
-            self.tools._run_tool('receipt_reply', {
-                'company_id': self.company.id, 'chat_id': CHAT, 'reply_to_message_id': 9999,
-                'sender': {'telegram_user_id': '111'}, 'text': 'hello'})
-        self.assertEqual(error.exception.code, 'not_found')
+        forwarded = self._receipt(self._send(21, content=PNG_B, file_unique_id='same'))
+        self.assertEqual(forwarded.duplicate_of_id, original)
+        same_bytes = self._receipt(self._send(22, file_unique_id='other'))
+        self.assertEqual(same_bytes.duplicate_of_id, original)
 
     # accountant ---------------------------------------------------------
 
@@ -174,7 +104,7 @@ class TestTelegramReceipt(ExpenseCashCommon):
         move = self._cash_out(session, 50.0, 'flour')
         move.category_id = self.category
         move.action_classify()   # classified as an expense at the POS: reclassified as a vendor payment
-        sent_at = fields.Datetime.to_string(fields.Datetime.now() + timedelta(minutes=1)) + 'Z'
+        sent_at = fields.Datetime.now() + timedelta(minutes=1)
         receipt = self._receipt(self._send(90, sent_at=sent_at))
         receipt.write({'paid_by': 'payable', 'amount': 50.0})
         self.assertIn(move, receipt.suggested_cash_move_ids, 'payable receipts can be matched too')
@@ -208,7 +138,7 @@ class TestTelegramReceipt(ExpenseCashCommon):
     def test_rejected_receipt_frees_the_cash_out(self):
         session = self._open_session()
         move = self._cash_out(session, 20.0, 'bread')
-        sent_at = fields.Datetime.to_string(fields.Datetime.now() + timedelta(minutes=1)) + 'Z'
+        sent_at = fields.Datetime.now() + timedelta(minutes=1)
         wrong = self._receipt(self._send(80, sent_at=sent_at))
         wrong.write({'paid_by': 'cashier', 'amount': 20.0, 'cash_move_id': move.id})
         self.assertEqual(move.receipt_count, 1)
@@ -223,8 +153,7 @@ class TestTelegramReceipt(ExpenseCashCommon):
         move = self._cash_out(session, 30.0, 'gas')
         other = self._cash_out(session, 12.0, 'ice')
         self.assertEqual(move.state, 'to_classify')
-        receipt = self._receipt(self._send(70, sent_at=fields.Datetime.to_string(
-            fields.Datetime.now() + timedelta(minutes=1)) + 'Z'))
+        receipt = self._receipt(self._send(70, sent_at=fields.Datetime.now() + timedelta(minutes=1)))
         self.assertEqual(receipt.session_id, session, 'The only running session is guessed')
         receipt.write({'paid_by': 'cashier', 'amount': 30.0})
         self.assertEqual(receipt.suggested_cash_move_ids[:1], move, 'Closest amount first')

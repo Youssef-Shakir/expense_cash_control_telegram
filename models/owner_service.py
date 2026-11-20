@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Owner cash box actions shared by every channel: the Odoo owner app (/ecc/owner/app), the DoniaLink Platform
-app and the Telegram bot (connector tools). The caller checks who may open the box; the service checks the
+"""Owner cash box actions of the DoniaLink App "Cash box" screen (/dl/app#cashbox). The caller checks who may open the box; the service checks the
 values, records through the box / card methods and answers with the same data everywhere.
 
 The channel comes from the context: ``ecc_source`` ('app', 'platform', 'telegram') and ``ecc_actor`` (name of
@@ -201,7 +200,7 @@ class OwnerService(models.AbstractModel):
 
     @api.model
     def expense(self, box, amount, category_id, note=None, photos=None, request_uid=None, **telegram):
-        """``telegram``: chat_id, message_id, sender of the bot message."""
+        """``telegram``: ignored (kept for older callers)."""
         request_uid = self._request_uid(request_uid)
         replay = self._replay(box, request_uid)
         if replay:

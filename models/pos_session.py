@@ -98,8 +98,7 @@ class PosSession(models.Model):
         for session in self:
             session.sudo().owner_notified = True
             boxes = Box.search([('company_id', '=', session.company_id.id), ('notify_session_close', '=', True),
-                                '|', '|', ('is_linked', '=', True), ('app_user_id', '!=', False),
-                                ('platform_enabled', '=', True)]).filtered(
+                                ('app_user_id', '!=', False)]).filtered(
                 lambda b: not b.pos_config_ids or session.config_id in b.pos_config_ids)
             amount = session.owner_remaining_amount
             if not boxes or float_compare(amount, 0.0, precision_rounding=session.currency_id.rounding or 0.01) <= 0:

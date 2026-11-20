@@ -1,255 +1,1007 @@
-# Arabic translation of the owner app messages (expense_cash_control_telegram).
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* expense_cash_control_telegram
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0\n"
+"Project-Id-Version: Odoo Server 18.0-20251106\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-19 14:55+0000\n"
+"PO-Revision-Date: 2026-11-19 14:55+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
 "Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
 
 #. module: expense_cash_control_telegram
-msgid "Please log in."
-msgstr "يرجى تسجيل الدخول."
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_expense_review.py:0
+msgid "\"%s\" is not waiting for review."
+msgstr ""
 
 #. module: expense_cash_control_telegram
-msgid "Not allowed."
-msgstr "غير مسموح."
-
-#. module: expense_cash_control_telegram
-msgid "Already saved. Refresh to see it."
-msgstr "محفوظ مسبقاً. حدّث الصفحة لرؤيته."
-
-#. module: expense_cash_control_telegram
-msgid "Invalid request."
-msgstr "طلب غير صالح."
-
-#. module: expense_cash_control_telegram
-msgid "Choose a cash box."
-msgstr "اختر الصندوق."
-
-#. module: expense_cash_control_telegram
-msgid "This cash box is not yours."
-msgstr "هذا الصندوق ليس لك."
-
-#. module: expense_cash_control_telegram
-msgid "Enter a valid amount."
-msgstr "اكتب مبلغاً صحيحاً."
-
-#. module: expense_cash_control_telegram
-msgid "The amount must be positive."
-msgstr "يجب أن يكون المبلغ أكبر من صفر."
-
-#. module: expense_cash_control_telegram
-msgid "The amount cannot be negative."
-msgstr "لا يمكن أن يكون المبلغ سالباً."
-
-#. module: expense_cash_control_telegram
-msgid "Open the Odoo login page once to choose the database."
-msgstr "افتح صفحة دخول أودو مرة واحدة لاختيار قاعدة البيانات."
-
-#. module: expense_cash_control_telegram
-msgid "Wrong login or password."
-msgstr "اسم المستخدم أو كلمة المرور خاطئة."
-
-#. module: expense_cash_control_telegram
-msgid "Two-factor login is on for this user: log in from the Odoo page."
-msgstr "التحقق بخطوتين مفعّل لهذا المستخدم: سجّل الدخول من صفحة أودو."
-
-#. module: expense_cash_control_telegram
-msgid "No cash box is linked to this login. Ask the accountant."
-msgstr "لا يوجد صندوق مرتبط بهذا المستخدم. راجع المحاسب."
-
-#. module: expense_cash_control_telegram
-msgid "Session not found."
-msgstr "الجلسة غير موجودة."
-
-#. module: expense_cash_control_telegram
-msgid "Choose a category."
-msgstr "اختر الفئة."
-
-#. module: expense_cash_control_telegram
-msgid "A photo could not be read. Take it again."
-msgstr "تعذّر قراءة الصورة. التقطها مرة أخرى."
-
-#. module: expense_cash_control_telegram
-msgid "A photo is too large."
-msgstr "الصورة كبيرة جداً."
-
-#. module: expense_cash_control_telegram
-msgid "Only photos can be attached."
-msgstr "يمكن إرفاق الصور فقط."
-
-#. module: expense_cash_control_telegram
-msgid "Choose bank or till."
-msgstr "اختر البنك أو صندوق الكاشير."
-
-#. module: expense_cash_control_telegram
-msgid "Statement not found."
-msgstr "الكشف غير موجود."
-
-#. module: expense_cash_control_telegram
-msgid "This statement was already answered."
-msgstr "تم الرد على هذا الكشف مسبقاً."
-
-#. module: expense_cash_control_telegram
-#, python-format
-msgid "Session %s cannot be collected into this box."
-msgstr "لا يمكن استلام الجلسة %s في هذا الصندوق."
-
-#. module: expense_cash_control_telegram
-#, python-format
-msgid "Session %s was already collected."
-msgstr "تم استلام الجلسة %s مسبقاً."
-
-#. module: expense_cash_control_telegram
-#, python-format
-msgid "Session %(session)s has only %(left)s left to collect."
-msgstr "بقي في الجلسة %(session)s مبلغ %(left)s فقط للاستلام."
-
-#. module: expense_cash_control_telegram
-#, python-format
-msgid "The category \"%s\" has no account."
-msgstr "الفئة \"%s\" ليس لها حساب. راجع المحاسب."
-
-#. module: expense_cash_control_telegram
-#, python-format
-msgid "No till is set on the cash box of %s."
-msgstr "لا يوجد صندوق كاشير محدد لصندوق %s."
-
-#. module: expense_cash_control_telegram
-msgid "Set the internal transfer account of the company first (Accounting settings)."
-msgstr "يجب على المحاسب تحديد حساب التحويل الداخلي أولاً."
-
-#. module: expense_cash_control_telegram
-msgid "Owner Cash Box"
-msgstr "صندوق المالك"
-
-#. module: expense_cash_control_telegram
-msgid "Cash Box"
-msgstr "صندوقي"
-
-#. module: expense_cash_control_telegram
-msgid "Collect POS cash, record expenses and see your balance."
-msgstr "استلم نقد الكاشير، سجّل المصاريف، واطّلع على رصيدك."
-
-#. module: expense_cash_control_telegram
-msgid "This card is not shared with you."
-msgstr "هذه البطاقة غير مشتركة معك."
-
-#. module: expense_cash_control_telegram
-#, python-format
-msgid "The card %s is not shared with this owner."
-msgstr "البطاقة %s غير مشتركة مع هذا المالك."
-
-#. module: expense_cash_control_telegram
-msgid "Choose where the cash goes."
-msgstr "اختر أين يذهب النقد."
-
-#. module: expense_cash_control_telegram
-msgid "Choose bank, till or card."
-msgstr "اختر البنك أو صندوق الكاشير أو البطاقة."
-
-#. module: expense_cash_control_telegram
-#, python-format
-msgid "Deposited %(amount)s to %(card)s"
-msgstr "تم إيداع %(amount)s في %(card)s"
-
-#. module: expense_cash_control_telegram
-#, python-format
-msgid "Took %(amount)s for you from %(card)s"
-msgstr "تم سحب %(amount)s لك من %(card)s"
-
-#. module: expense_cash_control_telegram
-#, python-format
-msgid "%(amount)s from %(card)s added to your cash"
-msgstr "تمت إضافة %(amount)s من %(card)s إلى نقدك"
-
-#. module: expense_cash_control_telegram
-#, python-format
-msgid "Card expense %(amount)s (%(category)s) recorded · waiting for accountant review"
-msgstr "تم تسجيل مصروف بالبطاقة %(amount)s (%(category)s) · بانتظار مراجعة المحاسب"
-
-#. module: expense_cash_control_telegram
-#, python-format
-msgid "The bank shows %(counted)s, the books say %(expected)s (difference %(difference)s). The accountant will check it."
-msgstr "البنك يظهر %(counted)s والسجلات تقول %(expected)s (الفرق %(difference)s). سيتحقق المحاسب."
-
-#. module: expense_cash_control_telegram
-#, python-format
-msgid "From cards: +%s"
-msgstr "من البطاقات: +%s"
-
-#. module: expense_cash_control_telegram
-#, python-format
-msgid "Session closed: %s"
-msgstr "أُغلقت الجلسة: %s"
-
-#. module: expense_cash_control_telegram
-#, python-format
-msgid "%s cash to collect. Tap to collect."
-msgstr "%s نقداً للاستلام. اضغط للاستلام."
-
-#. module: expense_cash_control_telegram
-msgid "Your statement is ready"
-msgstr "كشفك جاهز"
-
-#. module: expense_cash_control_telegram
-#, python-format
-msgid "Difference explained: %s"
-msgstr "تم توضيح الفرق: %s"
-
-#. module: expense_cash_control_telegram
-msgid "Expense reviewed ✓"
-msgstr "تمت مراجعة المصروف ✓"
-
-#. module: expense_cash_control_telegram
-msgid "Expense rejected"
-msgstr "تم رفض المصروف"
-
-#. module: expense_cash_control_telegram
-msgid "Expense is a duplicate"
-msgstr "المصروف مكرر"
-
-#. module: expense_cash_control_telegram
-#, python-format
-msgid "The amount is back on the card %s."
-msgstr "أُعيد المبلغ إلى البطاقة %s."
-
-#. module: expense_cash_control_telegram
-msgid "The amount is back in your cash box."
-msgstr "أُعيد المبلغ إلى صندوقك النقدي."
-
-#. module: expense_cash_control_telegram
-msgid "The server key changed. Turn notifications on again."
-msgstr "تغيّر مفتاح الخادم. شغّل الإشعارات مرة أخرى."
-
-#. module: expense_cash_control_telegram
-msgid "Bank Entry"
-msgstr "قيد بنكي"
-
-#. module: expense_cash_control_telegram
-#, python-format
-msgid "%(card)s: %(balance)s"
-msgstr "%(card)s: %(balance)s"
-
-#. module: expense_cash_control_telegram
-#, python-format
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
 msgid "%(actor)s via DoniaLink app: %(text)s"
 msgstr "%(actor)s عبر تطبيق دونيا لينك: %(text)s"
 
 #. module: expense_cash_control_telegram
-msgid "DoniaLink App"
-msgstr "تطبيق دونيا لينك"
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid ""
+"%(amount)s collected by mistake (%(name)s) returned to %(journal)s by "
+"%(user)s: %(reason)s"
+msgstr ""
 
 #. module: expense_cash_control_telegram
-#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__reminder_expense
-msgid "Daily Expense Reminder"
-msgstr "تذكير يومي بالمصاريف"
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "%(amount)s from %(card)s added to your cash"
+msgstr "تمت إضافة %(amount)s من %(card)s إلى نقدك"
 
 #. module: expense_cash_control_telegram
-#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__reminder_hour
-msgid "Reminder Hour"
-msgstr "ساعة التذكير"
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_card.py:0
+msgid "%(card)s: %(balance)s"
+msgstr "%(card)s: %(balance)s"
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "%(count)s closed session(s) not collected (%(amount)s)"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/pos_session.py:0
+msgid "%(session)s closed with %(amount)s cash. Collect?"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/pos_session.py:0
+msgid "%s cash to collect. Tap to collect."
+msgstr "%s نقداً للاستلام. اضغط للاستلام."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_card.py:0
+msgid "%s session(s) added to the card."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "%s — it matches the books."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_question_wizard_form
+msgid ""
+".\n"
+"                    The answer appears in the receipt's discussion."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_app_access_form
+msgid "07xx xxx xxxx or name@mail.com"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_review_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_review_form
+msgid "<i class=\"fa fa-camera fa-2x d-block mb-2\" title=\"No photo\"/>No photo"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_pos_session_cash_review_form_receipts
+msgid "<i class=\"fa fa-camera\" title=\"Receipts\"/>"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid "<i class=\"fa fa-clock-o me-1\" title=\"Sent\"/>"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid ""
+"<i class=\"fa fa-clone\" title=\"Duplicate\"/>\n"
+"                    <span>The same picture was already received as</span>"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_kanban
+msgid "<i class=\"fa fa-clone\" title=\"Duplicate\"/> Possible duplicate"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid ""
+"<i class=\"fa fa-exclamation-triangle\" title=\"Amount\"/>\n"
+"                    <span>The amount of the receipt differs from the recorded cash-out / expense.</span>"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid ""
+"<i class=\"fa fa-hourglass-half\" title=\"Waiting\"/>\n"
+"                    <span>Question sent in Telegram, waiting for an answer.</span>"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form_app
+msgid "<i class=\"fa fa-mobile me-1\" title=\"DoniaLink App\"/>"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_kanban
+msgid "<i class=\"fa fa-mobile\" title=\"Owner App\"/> App"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid "<i class=\"fa fa-telegram me-1\" title=\"Group\"/>"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid "<i class=\"fa fa-user me-1\" title=\"Sender\"/>"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_pos_session_cash_review_form_owner
+msgid "<i class=\"fa fa-user-circle\" title=\"Owner collection\"/>"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_form
+msgid ""
+"<small class=\"text-danger ms-2\" invisible=\"balance &gt;= 0\">the business"
+" owes the owner</small>"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid "<span class=\"o_stat_text\">Expense / Bill</span>"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_form
+msgid "<span class=\"o_stat_text\">Movements</span>"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid "<span class=\"o_stat_text\">Purchase Order</span>"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_form
+msgid "<span class=\"o_stat_text\">Statements</span>"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__collection_category_id
+msgid ""
+"A POS Cash Out with this category (\"Owner collection – Ali\") moves the "
+"cash to this box."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.kind,description:expense_cash_control_telegram.kind_receipt_new
+msgid "A bill photo sent from the app, to review"
+msgstr "صورة فاتورة مرسلة من التطبيق للمراجعة"
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.actions.act_window,help:expense_cash_control_telegram.action_ecc_owner_card
+msgid ""
+"A card box follows the bank account the card terminal pays into: the card sales of every closed\n"
+"               session are added to it. The owners you choose see it in the owner app, withdraw cash from it,\n"
+"               pay expenses with it and deposit cash on it."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.kind,description:expense_cash_control_telegram.kind_owner_difference_explained
+msgid "A cash box or card difference was explained"
+msgstr "تم توضيح فرق في الصندوق أو البطاقة"
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.kind,description:expense_cash_control_telegram.kind_owner_card_move
+msgid "A co-owner used a shared bank card"
+msgstr "أحد الشركاء استخدم بطاقة مصرفية مشتركة"
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_review_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_review_form
+msgid "A cost of the business, booked on the category."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/dl_app_receipt.py:0
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "A photo could not be read. Take it again."
+msgstr "تعذّر قراءة الصورة. التقطها مرة أخرى."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/dl_app_receipt.py:0
+msgid "A photo is empty. Take it again."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/dl_app_receipt.py:0
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "A photo is too large."
+msgstr "الصورة كبيرة جداً."
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.actions.act_window,help:expense_cash_control_telegram.action_ecc_telegram_sender
+msgid ""
+"A sender is added the first time someone posts a bill photo in the client's Telegram group.\n"
+"               Rename it to the employee's name, or switch \"Accepted\" off to make the bot ignore that person."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.kind,description:expense_cash_control_telegram.kind_owner_session_closed
+msgid "A session closed with cash for the owner to collect"
+msgstr "أُغلقت جلسة وفيها نقد ينتظر استلام المالك"
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_telegram_sender_list
+msgid "Accepted"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__account_id
+msgid "Account"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__account_balance
+msgid "Account Balance"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_difference__category_id
+msgid "Account of the loss (or gain)."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_form
+msgid "Accounting"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__message_needaction
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__message_needaction
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__message_needaction
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__message_needaction
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__active
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__active
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_telegram_sender__active
+msgid "Active"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__activity_ids
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__activity_ids
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__activity_exception_decoration
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__activity_exception_decoration
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__activity_state
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__activity_state
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__activity_type_icon
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__activity_type_icon
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_form
+msgid "Add Card Sales"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/dl_app_receipt.py:0
+msgid "Add a photo of the bill."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_form
+msgid ""
+"Add the card sales of closed sessions not added yet (done automatically at "
+"closing)"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_card_move__kind__adjust
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_move__kind__adjust
+msgid "Adjustment"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__adjusted
+msgid "Adjustments"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Adjustments: %s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__age_days
+msgid "Age (days)"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_form
+msgid "All POS of the company"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/controllers/owner_app.py:0
+msgid "Already saved. Refresh to see it."
+msgstr "محفوظ مسبقاً. حدّث الصفحة لرؤيته."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "Already saved: %(name)s · %(amount)s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__amount
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_collection_return__amount
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__amount
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__amount
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid "Amount"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__amount_mismatch
+msgid "Amount Mismatch"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_receipt__amount
+msgid "Amount on the bill. Compared with the matched POS cash-out."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_question__answer
+msgid "Answer"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_receipt__paid_by
+msgid ""
+"Answer of the sender in Telegram.\n"
+"Cashier: paid from the POS cash drawer, match it to the POS cash-out.\n"
+"Payable: not paid yet, record it as a bill to pay."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/dl_app_receipt.py:0
+msgid "Answer on %s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_receipt__question_state__answered
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_receipt_question__state__answered
+msgid "Answered"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_question__answered_by_id
+msgid "Answered By"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__answered_at
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_question__answer_date
+msgid "Answered On"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_app_access__lang
+msgid "App Language"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_list
+msgid "App Login"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__app_request_uid
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__app_request_uid
+msgid "App Request"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_form
+msgid "Archived"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_telegram_sender__active
+msgid "Archived senders are ignored by the bot."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid "Ask Question"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/dl_app_receipt.py:0
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_question_wizard_form
+msgid "Ask a Question"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model,name:expense_cash_control_telegram.model_ecc_receipt_question_wizard
+msgid "Ask a Question About a Receipt"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_question__user_id
+msgid "Asked By"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid "Asked On"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/dl_app_receipt.py:0
+msgid "At most %s photos per receipt."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__reminder_expense
+msgid ""
+"At the reminder hour, when the owner recorded no expense and took nothing "
+"that day, he is reminded to record his cash expenses."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_photo__attachment_id
+msgid "Attachment"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__message_attachment_count
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__message_attachment_count
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__message_attachment_count
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__message_attachment_count
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__balance
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__balance
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_form
+msgid "Balance"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_card__balance
+msgid "Balance of the account in the books (posted journal items)."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__account_balance
+msgid "Balance of the cash account in the books, for checking."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-javascript
+#: code:addons/expense_cash_control_telegram/static/src/dashboard/dashboard.xml:0
+msgid "Balances"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_move__deposit_target__bank
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_form
+msgid "Bank"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_card.py:0
+msgid "Bank Entry"
+msgstr "قيد بنكي"
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__journal_id
+msgid "Bank Journal"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__bank_journal_id
+msgid ""
+"Bank where \"Deposit to bank\" goes (through the internal transfer account)."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "Bill from %s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_app_access__box_id
+msgid "Box"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:res.groups,name:expense_cash_control_telegram.group_receipt_sender
+msgid "Can Send Receipts"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_app_access_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_collection_return_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_question_wizard_form
+msgid "Cancel"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_card_move__state__cancelled
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_difference__state__cancelled
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_move__state__cancelled
+msgid "Cancelled"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__name
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__card_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__card_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__card_id
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_move__deposit_target__card
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_search
+msgid "Card"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_difference__kind__card_count
+msgid "Card Balance Check"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_form
+msgid "Card Box"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.actions.act_window,name:expense_cash_control_telegram.action_ecc_owner_card
+#: model:ir.ui.menu,name:expense_cash_control_telegram.menu_ecc_owner_card
+msgid "Card Boxes"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.actions.act_window,name:expense_cash_control_telegram.action_ecc_owner_card_move_review
+#: model:ir.ui.menu,name:expense_cash_control_telegram.menu_ecc_owner_card_move_review
+msgid "Card Expenses to Review"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__card_move_ids
+msgid "Card Move"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.actions.act_window,name:expense_cash_control_telegram.action_ecc_owner_card_move
+#: model:ir.ui.menu,name:expense_cash_control_telegram.menu_ecc_owner_card_move
+msgid "Card Movements"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_card.py:0
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_card_move__kind__sales
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_search
+msgid "Card Sales"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__feed_from
+msgid "Card Sales From"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_difference__card_id
+msgid "Card balance check: checked by the owner (Cash Box) in the bank app."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__card_ids
+msgid "Card boxes shared with this owner."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_form
+msgid "Card boxes this owner can use"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Card difference – %s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid ""
+"Card expense %(amount)s (%(category)s) recorded · waiting for accountant "
+"review"
+msgstr "تم تسجيل مصروف بالبطاقة %(amount)s (%(category)s) · بانتظار مراجعة المحاسب"
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_card.py:0
+msgid "Card sales %(session)s – %(card)s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.kind,description:expense_cash_control_telegram.kind_owner_card_sales
+msgid "Card sales of a closed session added to the card"
+msgstr "أُضيفت مبيعات البطاقة لجلسة مغلقة إلى البطاقة"
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_card__feed_from
+msgid "Card sales of the sessions closed from this day are added to the card."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__card_ids
+msgid "Cards"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-javascript
+#: code:addons/expense_cash_control_telegram/static/src/dashboard/dashboard.xml:0
+msgid "Cash"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__account_id
+msgid "Cash Account"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/controllers/owner_app.py:0
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_collection_return__box_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__box_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__box_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__box_id
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_difference_search
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_review_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_review_list
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_search
+msgid "Cash Box"
+msgstr "صندوقي"
+
+#. module: expense_cash_control_telegram
+#: model:ir.ui.menu,name:expense_cash_control_telegram.menu_ecc_owner_box
+msgid "Cash Boxes"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_difference__kind__count
+msgid "Cash Count"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__journal_id
+msgid "Cash Journal"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__uncollected_amount
+msgid "Cash Not Collected"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_card_move__kind__withdraw
+msgid "Cash Withdrawal"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.screen,name:expense_cash_control_telegram.dl_app_screen_cashbox
+msgid "Cash box"
+msgstr "الصندوق"
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Cash difference – %s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_card.py:0
+msgid "Cash from %(card)s – %(owner)s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_pos_config__cash_out_receipt_required
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_pos_session__cash_out_receipt_required
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_res_config_settings__pos_cash_out_receipt_required
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.res_config_settings_view_form_receipts
+msgid "Cash-Outs Need a Receipt"
+msgstr "السحب النقدي يحتاج فاتورة"
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_pos_session__cash_out_without_receipt_count
+msgid "Cash-Outs Without Receipt"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_receipt__paid_by__cashier
+msgid "Cashier"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__category_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__category_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__category_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__category_id
+msgid "Category"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_photo__chat_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_question__chat_id
+msgid "Chat"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_photo__checksum
+msgid "Checksum"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/controllers/owner_app.py:0
+msgid "Choose a cash box."
+msgstr "اختر الصندوق."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Choose a category with an account for the loss."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "Choose a category."
+msgstr "اختر الفئة."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "Choose a day of the week."
+msgstr "اختر يوماً من أيام الأسبوع."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "Choose bank, till or card."
+msgstr "اختر البنك أو صندوق الكاشير أو البطاقة."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Choose how the difference is explained."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "Choose the POS cash-out that paid the vendor."
+msgstr "اختر السحب النقدي من نقطة البيع الذي دُفع منه للمورّد."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "Choose the POS cash-out this receipt proves."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid ""
+"Choose the category of the receipt first: the cash-out \"%s\" is not "
+"classified yet and is classified with it."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/wizard/owner_app_access.py:0
+msgid "Choose the user."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_expense_review.py:0
+msgid "Choose the vendor first."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "Choose the vendor of the receipt first."
+msgstr "اختر مورّد الإيصال أولاً."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "Choose where the cash goes."
+msgstr "اختر أين يذهب النقد."
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__closing
+msgid "Closing Balance"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Closing balance: %s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/controllers/owner_app.py:0
+msgid "Collect POS cash, record expenses and see your balance."
+msgstr "استلم نقد الكاشير، سجّل المصاريف، واطّلع على رصيدك."
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__collect_from
+msgid "Collect Sessions From"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__collected
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_move__kind__collect
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__pos_session__owner_collection_state__collected
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_search
+msgid "Collected"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "Collected %(amount)s from %(session)s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Collected %(amount)s of %(total)s."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/pos_session.py:0
+msgid "Collected by %(owners)s on %(date)s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_pos_session__owner_collected_amount
+msgid "Collected by Owner"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__balance
+msgid ""
+"Collected − expenses − took for me − deposits ± adjustments. Negative: the "
+"business owes the owner."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Collected: +%s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_collection_return__move_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_pos_session__owner_collection_text
+msgid "Collection"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_pos_session__owner_difference_ids
+msgid "Collection Differences"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_expense_category__owner_box_id
+msgid ""
+"Collection category of an owner cash box: a POS Cash Out with it moves the "
+"cash to that box."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__company_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__company_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__company_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__company_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__company_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__company_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__company_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_photo__company_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_question__company_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_telegram_sender__company_id
+msgid "Company"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model,name:expense_cash_control_telegram.model_res_config_settings
+msgid "Config Settings"
+msgstr "تهيئة الإعدادات "
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_review_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_review_list
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_review_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_review_list
+msgid "Confirm"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_box__last_statement_state__confirmed
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_statement__state__confirmed
+msgid "Confirmed"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid "Convert to Purchase Order"
+msgstr ""
 
 #. module: expense_cash_control_telegram
 #: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__reminder_count_weekday
@@ -257,25 +1009,9 @@ msgid "Count Reminder Day"
 msgstr "يوم تذكير العدّ"
 
 #. module: expense_cash_control_telegram
-#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_form
-msgid "Reminders"
-msgstr "التذكيرات"
-
-#. module: expense_cash_control_telegram
-#. odoo-python
-#: code:addons/expense_cash_control_telegram/models/owner_reminder.py:0
-msgid ""
-"You haven't recorded any cash expense today. Balance: %(balance)s. Spent "
-"cash? Record it now."
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__reminder_count_on
+msgid "Count Reminder Sent"
 msgstr ""
-"لم تسجّل أي مصروف نقدي اليوم. الرصيد: %(balance)s. هل صرفت نقداً؟ سجّله "
-"الآن."
-
-#. module: expense_cash_control_telegram
-#. odoo-python
-#: code:addons/expense_cash_control_telegram/models/owner_reminder.py:0
-msgid "Record your cash expenses"
-msgstr "سجّل مصاريفك النقدية"
 
 #. module: expense_cash_control_telegram
 #. odoo-python
@@ -290,28 +1026,2937 @@ msgid "Count your cash"
 msgstr "عُدّ نقدك"
 
 #. module: expense_cash_control_telegram
-#. odoo-python
-#: code:addons/expense_cash_control_telegram/models/owner_reminder.py:0
-msgid "The reminder hour must be between 0 and 23."
-msgstr "ساعة التذكير يجب أن تكون بين 0 و 23."
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__counted
+msgid "Counted"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_pos_session__owner_remaining_amount
+msgid "Counted cash of the session not collected by an owner yet."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_difference__resolution__error
+msgid "Counting Error"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid "Create Expense"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid "Create Purchase Order"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.actions.act_window,help:expense_cash_control_telegram.action_ecc_owner_card
+msgid "Create a card box"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_app_access__mode__new
+msgid "Create a new login"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.actions.act_window,help:expense_cash_control_telegram.action_ecc_owner_box
+msgid "Create the cash box of an owner"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_app_access__create_uid
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__create_uid
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__create_uid
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__create_uid
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_collection_return__create_uid
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__create_uid
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__create_uid
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__create_uid
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__create_uid
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_photo__create_uid
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_question__create_uid
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_question_wizard__create_uid
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_telegram_sender__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_app_access__create_date
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__create_date
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__create_date
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__create_date
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_collection_return__create_date
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__create_date
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__create_date
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__create_date
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__create_date
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_photo__create_date
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_question__create_date
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_question_wizard__create_date
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_telegram_sender__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__currency_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__currency_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__currency_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_collection_return__currency_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__currency_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__currency_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__currency_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__currency_id
+msgid "Currency"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__reminder_expense
+msgid "Daily Expense Reminder"
+msgstr "تذكير يومي بالمصاريف"
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.kind,description:expense_cash_control_telegram.kind_owner_reminder_expense
+msgid "Daily reminder when nothing was recorded"
+msgstr "تذكير يومي إذا لم يُسجَّل شيء"
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__date
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__date
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__date
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_search
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_search
+msgid "Date"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_search
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_search
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_search
+msgid "Day"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__journal_id
+msgid ""
+"Dedicated cash journal of the box, e.g. \"Owner Cash – Ali\". Created with "
+"the box."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_card_move__kind__deposit
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_move__kind__deposit
+msgid "Deposit"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__bank_journal_id
+msgid "Deposit Bank"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__deposit_target
+msgid "Deposit Target"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__till_journal_id
+msgid "Deposit Till"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__deposited
+msgid "Deposited"
+msgstr ""
 
 #. module: expense_cash_control_telegram
 #. odoo-python
 #: code:addons/expense_cash_control_telegram/models/owner_service.py:0
-msgid "Choose a day of the week."
-msgstr "اختر يوماً من أيام الأسبوع."
+msgid "Deposited %(amount)s to %(card)s"
+msgstr "تم إيداع %(amount)s في %(card)s"
 
 #. module: expense_cash_control_telegram
 #. odoo-python
 #: code:addons/expense_cash_control_telegram/models/owner_service.py:0
-msgid "notification settings changed"
-msgstr "تم تغيير إعدادات الإشعارات"
+msgid "Deposited %s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Deposited: −%s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_search
+msgid "Deposits"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__name
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__name
+msgid "Description"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__difference_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__amount
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__difference_id
+msgid "Difference"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Difference explained: %s"
+msgstr "تم توضيح الفرق: %s"
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__difference_ids
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__difference_ids
+#: model:ir.ui.menu,name:expense_cash_control_telegram.menu_ecc_owner_difference
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_list
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_form
+msgid "Differences"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+#: code:addons/expense_cash_control_telegram/models/owner_card.py:0
+msgid "Differences of %s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__difference_pending_count
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__difference_pending_count
+msgid "Differences to Explain"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-javascript
+#: code:addons/expense_cash_control_telegram/static/src/dashboard/dashboard.xml:0
+msgid "Differences to explain"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_app_access__display_name
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__display_name
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__display_name
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__display_name
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_collection_return__display_name
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__display_name
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__display_name
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__display_name
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__display_name
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_photo__display_name
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_question__display_name
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_question_wizard__display_name
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_telegram_sender__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_box__last_statement_state__disputed
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_statement__state__disputed
+msgid "Disputed"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_difference__kind__statement
+msgid "Disputed Statement"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.actions.act_window,name:expense_cash_control_telegram.action_ecc_owner_statement_disputed
+msgid "Disputed Statements"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-javascript
+#: code:addons/expense_cash_control_telegram/static/src/dashboard/dashboard.xml:0
+msgid "Disputed statements"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_card_move__source__platform
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_move__source__platform
+msgid "DoniaLink App"
+msgstr "تطبيق دونيا لينك"
+
+#. module: expense_cash_control_telegram
+#: model:ir.model,name:expense_cash_control_telegram.model_donialink_app_screen
+msgid "DoniaLink App: Screen"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_receipt__state__duplicate
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid "Duplicate"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.actions.act_window,help:expense_cash_control_telegram.action_ecc_owner_box
+msgid ""
+"Each owner (or partner) gets a cash journal, a POS collection category and a Telegram link.\n"
+"               He collects closed sessions, records expenses, withdrawals and deposits from the DoniaLink bot;\n"
+"               his balance is computed here."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_collection_return__amount
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_move__amount
+msgid "Effect on the balance: + in, − out."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_card_move__amount
+msgid "Effect on the card balance: + in, − out."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "Enter a valid amount."
+msgstr "اكتب مبلغاً صحيحاً."
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__drawings_account_id
+msgid ""
+"Equity account receiving \"Took for me\" (personal withdrawals). Never an "
+"expense."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__expected
+msgid "Expected"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model,name:expense_cash_control_telegram.model_expense_express
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__expense_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__expense_id
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_card_move__kind__expense
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_card_move__review_as__expense
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_expense_mixin__review_as__expense
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_move__kind__expense
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_move__review_as__expense
+msgid "Expense"
+msgstr "مصروف"
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid ""
+"Expense %(amount)s (%(category)s) recorded · waiting for accountant review"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__expense_id
+msgid "Expense / Bill"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model,name:expense_cash_control_telegram.model_expense_category
+msgid "Expense Category"
+msgstr "تصنيف المصروفات"
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__receipt_ids
+msgid "Expense Receipts"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__reminder_expense_on
+msgid "Expense Reminder Checked"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "Expense is a duplicate"
+msgstr "المصروف مكرر"
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_receipt__owner_box_id
+msgid "Expense paid by the owner from his cash."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_receipt__card_id
+msgid "Expense paid by the owner with this card box."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_expense_review.py:0
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "Expense rejected"
+msgstr "تم رفض المصروف"
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_expense_review.py:0
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "Expense reviewed ✓"
+msgstr "تمت مراجعة المصروف ✓"
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_card_move__review_as
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_expense_mixin__review_as
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_move__review_as
+msgid ""
+"Expense: a cost of the business, on the category.\n"
+"Payment to a vendor: the owner paid a supplier (goods, a bill); it goes on the vendor's account and is applied to his bills."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_search
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_search
+msgid "Expenses"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model,name:expense_cash_control_telegram.model_expense_cash_dashboard
+msgid "Expenses & Cash Control Dashboard"
+msgstr "لوحة المصروفات ومراقبة النقد"
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__receipt_to_review_count
+#: model:ir.ui.menu,name:expense_cash_control_telegram.menu_ecc_owner_move_review
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_search
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_search
+msgid "Expenses to Review"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_difference_list
+msgid "Explain"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_difference__resolution__explained
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_difference__state__done
+msgid "Explained"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__message_follower_ids
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__message_follower_ids
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__message_follower_ids
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__message_follower_ids
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__message_partner_ids
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__message_partner_ids
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__message_partner_ids
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__message_partner_ids
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__activity_type_icon
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_card__activity_type_icon
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_receipt__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid ""
+"For costs that are not stock purchases (repairs, rent...): an expense with a"
+" category."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_box__reminder_count_weekday__4
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_box__statement_weekday__4
+msgid "Friday"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__date_from
+msgid "From"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_move__kind__from_card
+msgid "From Card"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__from_card
+msgid "From Cards"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid "From Telegram"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "From cards: +%s"
+msgstr "من البطاقات: +%s"
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_search_app
+msgid "From the App"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_app_access_form
+msgid "Give Access"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_search
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_difference_search
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_search
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_search
+msgid "Group By"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__has_message
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__has_message
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__has_message
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__has_message
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__reminder_hour
+msgid "Hour of the day (0-23), owner's time zone."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_app_access__id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_collection_return__id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_photo__id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_question__id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_question_wizard__id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_telegram_sender__id
+msgid "ID"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__activity_exception_icon
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__activity_exception_icon
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__activity_exception_icon
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_card__activity_exception_icon
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_receipt__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__message_needaction
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_card__message_needaction
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_difference__message_needaction
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_statement__message_needaction
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_receipt__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__message_has_error
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__message_has_sms_error
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_card__message_has_error
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_card__message_has_sms_error
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_difference__message_has_error
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_difference__message_has_sms_error
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_statement__message_has_error
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_statement__message_has_sms_error
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_receipt__message_has_error
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_receipt__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_telegram_sender_search
+msgid "Ignored"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/controllers/owner_app.py:0
+msgid "Invalid request."
+msgstr "طلب غير صالح."
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__message_is_follower
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__message_is_follower
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__message_is_follower
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__message_is_follower
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__review_as
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_expense_mixin__review_as
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__review_as
+msgid "It was"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model,name:expense_cash_control_telegram.model_account_move
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__account_move_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__account_move_id
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_list
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_list
+msgid "Journal Entry"
+msgstr "قيد اليومية"
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_form
+msgid "Last Movements"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__last_statement_id
+msgid "Last Statement"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__last_statement_state
+msgid "Last Statement Status"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_app_access__write_uid
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__write_uid
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__write_uid
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__write_uid
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_collection_return__write_uid
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__write_uid
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__write_uid
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__write_uid
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__write_uid
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_photo__write_uid
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_question__write_uid
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_question_wizard__write_uid
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_telegram_sender__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_app_access__write_date
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__write_date
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__write_date
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__write_date
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_collection_return__write_date
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__write_date
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__write_date
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__write_date
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__write_date
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_photo__write_date
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_question__write_date
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_question_wizard__write_date
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_telegram_sender__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_kanban
+msgid "Last statement:"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_difference__resolution__left_in_till
+msgid "Left in Till"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_pos_session__owner_remaining_amount
+msgid "Left to Collect"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__link_url
+msgid "Link"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__link_code
+msgid "Link Code"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__is_linked
+msgid "Linked"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_app_access__login
+msgid "Login"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/wizard/owner_app_access.py:0
+msgid "Login and password are required."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_difference__resolution__loss
+msgid "Loss / Gain"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Loss on collection of %s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Loss recorded: %s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid "Mark Duplicate"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid "Mark Reviewed"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid "Match"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid "Match Cash-Out"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid "Match to POS Cash-Out"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "Matched to POS cash-out %(move)s (%(session)s)."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_photo__message_id
+msgid "Message"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__message_has_error
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__message_has_error
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__message_has_error
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__message_has_error
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_receipt__message_id
+msgid "Message of the first photo: questions are posted as replies to it."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__message_ids
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__message_ids
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__message_ids
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__message_ids
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_app_access__mode
+msgid "Mode"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_box__reminder_count_weekday__0
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_box__statement_weekday__0
+msgid "Monday"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_box__statement_frequency__monthly
+msgid "Monthly"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__move_ids
+msgid "Move"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__move_ids
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__move_ids
+#: model:ir.ui.menu,name:expense_cash_control_telegram.menu_ecc_owner_move
+msgid "Movements"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+#: code:addons/expense_cash_control_telegram/models/owner_card.py:0
+msgid "Movements of %s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__my_activity_date_deadline
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__my_activity_date_deadline
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.kind,name:expense_cash_control_telegram.kind_receipt_staff
+msgid "My receipts"
+msgstr "فواتيري"
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_app_access__name
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_telegram_sender__name
+msgid "Name"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_telegram_sender__telegram_name
+msgid "Name in Telegram"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_box__statement_frequency__none
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_form
+msgid "Never"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid ""
+"New RFQ with the vendor and the photo: add the products and confirm it. When"
+" a POS cash-out paid the vendor, the bill of the order is paid by it."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/dl_app_receipt.py:0
+msgid "New receipt %(ref)s from %(name)s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.kind,name:expense_cash_control_telegram.kind_receipt_new
+msgid "New receipts"
+msgstr "فواتير جديدة"
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__activity_date_deadline
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__activity_date_deadline
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__activity_summary
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__activity_summary
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__activity_type_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__activity_type_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_pos_session_cash_review_list_receipts
+msgid "No Receipt"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_kanban
+msgid "No app login"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/controllers/owner_app.py:0
+msgid "No cash box is linked to this login. Ask the accountant."
+msgstr "لا يوجد صندوق مرتبط بهذا المستخدم. راجع المحاسب."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_card.py:0
+msgid "No new card sales."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid "No note"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.actions.act_window,help:expense_cash_control_telegram.action_ecc_telegram_sender
+msgid "No one sent a receipt yet"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.actions.act_window,help:expense_cash_control_telegram.action_ecc_receipt
+msgid "No receipt to review"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "No till is set on the cash box of %s."
+msgstr "لا يوجد صندوق كاشير محدد لصندوق %s."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "No till to return the cash of %s to."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__pos_session__owner_collection_state__none
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_list
+msgid "Not Collected"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_box__last_statement_state__draft
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_statement__state__draft
+msgid "Not Sent"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_search
+msgid "Not Specified"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_review_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_review_list
+msgid ""
+"Not a business expense: it is removed and the amount goes back in his cash "
+"box."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_review_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_review_list
+msgid ""
+"Not a business expense: it is removed and the amount goes back on the card."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/controllers/owner_app.py:0
+msgid "Not allowed."
+msgstr "غير مسموح."
+
+#. module: expense_cash_control_telegram
+#. odoo-javascript
+#: code:addons/expense_cash_control_telegram/static/src/dashboard/dashboard.xml:0
+msgid "Not collected:"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Not sent: %s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_receipt__paid_by__unspecified
+msgid "Not specified"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__note
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__note
+msgid "Note"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "Noted. The accountant will check the statement with you."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.actions.act_window,help:expense_cash_control_telegram.action_ecc_owner_difference
+msgid "Nothing to explain"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.actions.act_window,help:expense_cash_control_telegram.action_ecc_owner_card_move_review
+#: model_terms:ir.actions.act_window,help:expense_cash_control_telegram.action_ecc_owner_move_review
+msgid "Nothing to review"
+msgstr ""
 
 #. module: expense_cash_control_telegram
 #. odoo-python
 #: code:addons/expense_cash_control_telegram/models/owner_service.py:0
 msgid "Notification settings saved."
 msgstr "تم حفظ إعدادات الإشعارات."
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__notify_session_close
+msgid "Notify on Session Close"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__message_needaction_counter
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__message_needaction_counter
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__message_needaction_counter
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__message_needaction_counter
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__message_has_error_counter
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__message_has_error_counter
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__message_has_error_counter
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__message_has_error_counter
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__message_needaction_counter
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_card__message_needaction_counter
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_difference__message_needaction_counter
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_statement__message_needaction_counter
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_receipt__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__message_has_error_counter
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_card__message_has_error_counter
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_difference__message_has_error_counter
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_statement__message_has_error_counter
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_receipt__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_card_move__source__odoo
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_move__source__odoo
+msgid "Odoo"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_expense_category__owner_expense
+msgid ""
+"Offered to the owners in Telegram when they record an expense from their "
+"cash."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-javascript
+#: code:addons/expense_cash_control_telegram/static/src/dashboard/dashboard.xml:0
+msgid "Oldest"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__platform_enabled
+msgid "On the DoniaLink Platform"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__reminder_count_weekday
+msgid ""
+"On this day, at the reminder hour, the owner is asked to count his cash. "
+"Empty: never."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "Only a Cash Out can be proved by a receipt."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Only a posted collection can be returned (%s)."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_receipt__cash_move_id
+msgid "Only cash-outs without a receipt are offered."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "Only photos can be attached."
+msgstr "يمكن إرفاق الصور فقط."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/dl_app_receipt.py:0
+msgid "Only photos can be sent."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Only the accountant (Expenses manager) can return collected cash."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_review_list
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_review_list
+msgid "Open"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/controllers/owner_app.py:0
+msgid "Open the Odoo login page once to choose the database."
+msgstr "افتح صفحة دخول أودو مرة واحدة لاختيار قاعدة البيانات."
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__opening
+msgid "Opening Balance"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Opening balance: %s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__name
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__box_id
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_receipt__paid_by__owner
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_review_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_review_list
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_search
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_search
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_pos_session_cash_review_list_owner
+msgid "Owner"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_app_access__app_url
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__app_url
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_card_move__source__app
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_move__source__app
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_form
+msgid "Owner App"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_app.py:0
+#: model:ir.model,name:expense_cash_control_telegram.model_ecc_owner_app_access
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_app_access_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_form
+msgid "Owner App Access"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__app_user_id
+msgid "Owner App Login"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__owner_move_id
+msgid "Owner Box Movement"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model,name:expense_cash_control_telegram.model_ecc_owner_card
+msgid "Owner Card Box"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model,name:expense_cash_control_telegram.model_ecc_owner_card_move
+msgid "Owner Card Movement"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.actions.server,name:expense_cash_control_telegram.cron_owner_card_sales_ir_actions_server
+msgid "Owner Cards: add card sales of closed sessions"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.ui.menu,name:expense_cash_control_telegram.menu_ecc_owner_root
+msgid "Owner Cash"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/controllers/owner_app.py:0
+#: model:ir.model,name:expense_cash_control_telegram.model_ecc_owner_box
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__owner_box_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_expense_category__owner_box_id
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_form
+msgid "Owner Cash Box"
+msgstr "صندوق المالك"
+
+#. module: expense_cash_control_telegram
+#: model:ir.model,name:expense_cash_control_telegram.model_ecc_owner_service
+msgid "Owner Cash Box Actions"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-javascript
+#: code:addons/expense_cash_control_telegram/static/src/dashboard/dashboard.xml:0
+#: model:ir.actions.act_window,name:expense_cash_control_telegram.action_ecc_owner_box
+msgid "Owner Cash Boxes"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model,name:expense_cash_control_telegram.model_ecc_owner_difference
+msgid "Owner Cash Difference"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model,name:expense_cash_control_telegram.model_ecc_owner_move
+msgid "Owner Cash Movement"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model,name:expense_cash_control_telegram.model_ecc_owner_statement
+msgid "Owner Cash Statement"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Owner Cash – %s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.actions.server,name:expense_cash_control_telegram.cron_owner_reminders_ir_actions_server
+msgid "Owner Cash: reminders (record expenses, count cash)"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.actions.server,name:expense_cash_control_telegram.cron_owner_statements_ir_actions_server
+msgid "Owner Cash: send due statements"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_pos_cash_move__owner_move_ids
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_pos_session__owner_collection_state
+msgid "Owner Collection"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_pos_session__owner_move_ids
+msgid "Owner Collections"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.actions.act_window,name:expense_cash_control_telegram.action_ecc_owner_difference
+msgid "Owner Differences"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__drawings_account_id
+msgid "Owner Drawings Account"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_expense_category__owner_expense
+msgid "Owner Expense Button"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.actions.act_window,name:expense_cash_control_telegram.action_ecc_owner_move_review
+msgid "Owner Expenses to Review"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.actions.act_window,name:expense_cash_control_telegram.action_ecc_owner_move
+msgid "Owner Movements"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__answer_note
+msgid "Owner Note"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_pos_session__owner_notified
+msgid "Owner Notified"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.actions.act_window,name:expense_cash_control_telegram.action_ecc_owner_statement
+msgid "Owner Statements"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/wizard/owner_app_access.py:0
+msgid "Owner app access given to %(user)s (login %(login)s). App: %(url)s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_app.py:0
+msgid "Owner app access removed for %s."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-javascript
+#: code:addons/expense_cash_control_telegram/static/src/dashboard/dashboard.xml:0
+msgid "Owner cash"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+#: code:addons/expense_cash_control_telegram/models/pos_cash_move.py:0
+msgid "Owner collection %(session)s – %(owner)s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Owner collection – %s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Owner deposit to %(bank)s – %(owner)s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_card.py:0
+msgid "Owner deposit to %(card)s – %(owner)s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Owner deposit to %(journal)s – %(owner)s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid ""
+"Owner expense %(expense)s removed: the amount is back on the card %(card)s."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "Owner expense %s removed: the amount is back in the cash box."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid ""
+"Owner expense replaced by a purchase order: register the payment of its bill"
+" from the journal %s."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model,name:expense_cash_control_telegram.model_ecc_owner_expense_mixin
+msgid "Owner expense to review"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-javascript
+#: code:addons/expense_cash_control_telegram/static/src/dashboard/dashboard.xml:0
+msgid "Owner expenses to review"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__name
+msgid "Owner or partner holding this cash."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.kind,name:expense_cash_control_telegram.kind_owner_card_move
+msgid "Owner: card movement"
+msgstr "المالك: حركة على البطاقة"
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.kind,name:expense_cash_control_telegram.kind_owner_card_sales
+msgid "Owner: card sales"
+msgstr "المالك: مبيعات البطاقة"
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.kind,name:expense_cash_control_telegram.kind_owner_reminder_count
+msgid "Owner: count your cash"
+msgstr "المالك: عُدّ نقدك"
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.kind,name:expense_cash_control_telegram.kind_owner_difference_explained
+msgid "Owner: difference explained"
+msgstr "المالك: تم توضيح الفرق"
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.kind,name:expense_cash_control_telegram.kind_owner_expense_duplicate
+msgid "Owner: expense is a duplicate"
+msgstr "المالك: المصروف مكرر"
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.kind,name:expense_cash_control_telegram.kind_owner_expense_rejected
+msgid "Owner: expense rejected"
+msgstr "المالك: رُفض المصروف"
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.kind,name:expense_cash_control_telegram.kind_owner_expense_reviewed
+msgid "Owner: expense reviewed"
+msgstr "المالك: تمت مراجعة المصروف"
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.kind,name:expense_cash_control_telegram.kind_owner_reminder_expense
+msgid "Owner: record your expenses"
+msgstr "المالك: سجّل مصاريفك"
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.kind,name:expense_cash_control_telegram.kind_owner_session_closed
+msgid "Owner: session closed, cash to collect"
+msgstr "المالك: أُغلقت الجلسة، نقد للاستلام"
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.kind,name:expense_cash_control_telegram.kind_owner_statement
+msgid "Owner: statement ready"
+msgstr "المالك: الكشف جاهز"
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__box_ids
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_form
+msgid "Owners"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_form
+msgid "Owners who can use this card in the app"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_card_move__source__pos
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_move__source__pos
+msgid "POS"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__payment_method_ids
+msgid "POS Card Methods"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_form
+msgid "POS Card Sales"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model,name:expense_cash_control_telegram.model_pos_cash_move
+msgid "POS Cash In/Out"
+msgstr "إيداع/سحب نقطة البيع"
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__cash_move_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__cash_move_id
+msgid "POS Cash-Out"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_form
+msgid "POS Collection"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__collection_category_id
+msgid "POS Collection Category"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__session_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_collection_return__session_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__session_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__session_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__session_id
+msgid "POS Session"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__till_journal_id
+msgid "POS cash journal where \"Deposit back to the till\" goes."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__review_amount
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__review_amount
+msgid "Paid"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__paid_by
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_search
+msgid "Paid By"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Paid by %(owner)s from his cash (%(channel)s)."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Paid by %(owner)s with the card %(card)s (%(channel)s)."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__card_id
+msgid "Paid by Card"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_search
+msgid "Paid by Cashier"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid ""
+"Paid by the cashier: the photo is the proof of a POS Cash Out, never a second expense.\n"
+"                                Cash-outs of the session open when the photo was sent that have no receipt yet.\n"
+"                                Choose the category above when the cash-out is not classified yet.\n"
+"                                When the cash-out paid a vendor for goods, choose the vendor above and use\n"
+"                                \"Vendor Payment\": the cash-out goes on the vendor account and a purchase order opens\n"
+"                                to enter the products; its bill is paid by the cash-out when it is posted."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_review_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_review_form
+msgid "Paid by the owner"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_difference__kind__collection
+msgid "Partial Collection"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_difference__amount
+msgid ""
+"Partial collection: cash left in the session.\n"
+"Cash count: counted − expected (negative = missing)."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.actions.act_window,help:expense_cash_control_telegram.action_ecc_owner_difference
+msgid ""
+"Partial collections (\"Other amount\"), cash counts or card balances that do"
+" not match and disputed statements appear here."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__pos_session__owner_collection_state__partial
+msgid "Partially Collected"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/pos_session.py:0
+msgid "Partially collected by %(owners)s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_app_access__password
+msgid "Password"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_receipt__paid_by__payable
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_search
+msgid "Payable"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__payment_id
+msgid "Payment"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "Payment %(move)s reconciled with the bill %(bill)s."
+msgstr "تمت تسوية الدفعة %(move)s مع الفاتورة %(bill)s."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/account_payment.py:0
+msgid "Payment %(payment)s – %(partner)s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_expense_review.py:0
+msgid "Payment to %(vendor)s – %(owner)s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__vendor_entry_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_expense_mixin__vendor_entry_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__vendor_entry_id
+msgid "Payment to Vendor"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_card_move__review_as__vendor
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_expense_mixin__review_as__vendor
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_move__review_as__vendor
+msgid "Payment to a vendor"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model,name:expense_cash_control_telegram.model_account_payment
+msgid "Payments"
+msgstr "الدفعات"
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_app_access__login
+msgid "Phone number or e-mail the owner types to log in."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__app_push_count
+msgid "Phones where the owner turned notifications on in the app."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__app_push_count
+msgid "Phones with Notifications"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__photo
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_expense_mixin__photo
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__photo
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__image
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_photo__image
+msgid "Photo"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__photo_count
+msgid "Photo Count"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.screen,description:expense_cash_control_telegram.screen_receipt
+msgid "Photo of a bill"
+msgstr "صورة فاتورة"
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__attachment_ids
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__photo_count
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_expense_mixin__attachment_ids
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_expense_mixin__photo_count
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__attachment_ids
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__photo_count
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__photo_ids
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_review_list
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_review_list
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_list
+msgid "Photos"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid "Pick from the suggestions below"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/controllers/owner_app.py:0
+msgid "Please log in."
+msgstr "يرجى تسجيل الدخول."
+
+#. module: expense_cash_control_telegram
+#: model:ir.model,name:expense_cash_control_telegram.model_pos_config
+msgid "Point of Sale Configuration"
+msgstr "تهيئة نقطة البيع "
+
+#. module: expense_cash_control_telegram
+#: model:ir.model,name:expense_cash_control_telegram.model_pos_session
+msgid "Point of Sale Session"
+msgstr "جلسة نقطة البيع"
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__pos_config_ids
+msgid "Points of Sale"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__duplicate_of_id
+msgid "Possible Duplicate Of"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_search
+msgid "Possible Duplicates"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_card_move__state__posted
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_move__state__posted
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_search
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_search
+msgid "Posted"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_receipt__state__processed
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_search
+msgid "Processed"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__processed_by_id
+msgid "Processed By"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__processed_date
+msgid "Processed On"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model,name:expense_cash_control_telegram.model_purchase_order
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__purchase_order_id
+msgid "Purchase Order"
+msgstr "أمر شراء"
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "Purchase Order from %s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__question_state
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_question__text
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_question_wizard__text
+msgid "Question"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/wizard/dl_app_receipt_question.py:0
+msgid "Question about %s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__question_ids
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid "Questions"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.kind,description:expense_cash_control_telegram.kind_receipt_staff
+msgid "Questions from the accountant and the review of your receipts"
+msgstr "أسئلة المحاسب ونتيجة مراجعة فواتيرك"
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_collection_return__reason
+msgid "Reason"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__receipt_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__receipt_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_photo__receipt_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_question__receipt_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_question_wizard__receipt_id
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_kanban
+msgid "Receipt"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "Receipt %s attached as proof."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "Receipt %s has no expense or purchase order yet."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/dl_app_receipt.py:0
+msgid "Receipt %s is a duplicate"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "Receipt %s is already closed. Reset it to \"To Review\" first."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/dl_app_receipt.py:0
+msgid "Receipt %s rejected"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/dl_app_receipt.py:0
+msgid "Receipt %s reviewed ✓"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_telegram_sender__receipt_count
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_pos_cash_move__receipt_count
+msgid "Receipt Count"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.actions.act_window,name:expense_cash_control_telegram.action_ecc_receipt
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_telegram_sender__receipt_ids
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_pos_cash_move__receipt_ids
+#: model:ir.ui.menu,name:expense_cash_control_telegram.menu_ecc_receipt
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_list
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_telegram_sender_list
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_pos_cash_move_form_receipts
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_pos_cash_move_list_receipts
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_pos_session_cash_review_form_receipts
+msgid "Receipts"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_pos_session__receipt_unmatched_count
+msgid "Receipts Not Matched"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-javascript
+#: code:addons/expense_cash_control_telegram/static/src/dashboard/dashboard.xml:0
+msgid "Receipts to review"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_reminder.py:0
+msgid "Record your cash expenses"
+msgstr "سجّل مصاريفك النقدية"
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "Recorded as expense %s."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "Recorded as purchase order %s."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__name
+msgid "Reference"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_review_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_review_list
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_review_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_review_list
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid "Reject"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_card_move__review_state__rejected
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_expense_mixin__review_state__rejected
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_move__review_state__rejected
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_receipt__state__rejected
+msgid "Rejected"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_search
+msgid "Rejected / Duplicate"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__reminder_hour
+msgid "Reminder Hour"
+msgstr "ساعة التذكير"
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_form
+msgid "Reminders"
+msgstr "التذكيرات"
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_form
+msgid "Remove App Access"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_difference_list
+msgid "Reopen"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid "Reset to Review"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__resolution
+msgid "Resolution"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__activity_user_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__activity_user_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_collection_return_form
+msgid "Return Collected Cash"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model,name:expense_cash_control_telegram.model_ecc_owner_collection_return
+msgid "Return Collected Cash to the Till"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__return_move_id
+msgid "Return Entry"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__return_statement_line_id
+msgid "Return Line"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__return_reason
+msgid "Return Reason"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_collection_return__journal_id
+msgid "Return To"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Return of %(name)s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_collection_return_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_list
+msgid "Return to Till"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__return_user_id
+msgid "Returned By"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__return_date
+msgid "Returned On"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__return_journal_id
+msgid "Returned To"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_move__state__returned
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_search
+msgid "Returned to Till"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__review_state
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_expense_mixin__review_state
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__review_state
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid "Review"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_card_move__review_state__reviewed
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_expense_mixin__review_state__reviewed
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_move__review_state__reviewed
+msgid "Reviewed"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__message_has_sms_error
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__message_has_sms_error
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__message_has_sms_error
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__message_has_sms_error
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_box__reminder_count_weekday__5
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_box__statement_weekday__5
+msgid "Saturday"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:res.groups,comment:expense_cash_control_telegram.group_receipt_sender
+msgid ""
+"Sees \"Send receipt\" in the DoniaLink App. Add cashiers and staff (portal users work).\n"
+"        "
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_question_wizard_form
+msgid "Send"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_statement_form
+msgid "Send Again"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_form
+msgid "Send Statement Now"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.screen,name:expense_cash_control_telegram.screen_receipt
+msgid "Send receipt"
+msgstr "إرسال فاتورة"
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_search
+msgid "Sender"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__sender_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_question_wizard__sender_id
+msgid "Sent By"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__sent_at
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_search
+msgid "Sent On"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_move__app_request_uid
+msgid ""
+"Sent by the owner app with each action: a retry on a bad connection returns "
+"the movement already saved instead of a second one."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__app_user_id
+msgid "Sent from the App by"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Session %(session)s has only %(left)s left to collect."
+msgstr "بقي في الجلسة %(session)s مبلغ %(left)s فقط للاستلام."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/pos_session.py:0
+msgid ""
+"Session %(session)s needs a receipt for every cash-out: %(moves)s cash-"
+"out(s) without receipt and %(receipts)s receipt(s) not matched."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Session %s cannot be collected into this box."
+msgstr "لا يمكن استلام الجلسة %s في هذا الصندوق."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Session %s was already collected."
+msgstr "تم استلام الجلسة %s مسبقاً."
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.res_config_settings_view_form_receipts
+msgid ""
+"Session Review cannot be marked as reviewed while a cash-out has no Telegram"
+" receipt or a receipt paid by the cashier is not matched."
+msgstr "لا يمكن إكمال مراجعة الجلسة ما دام هناك سحب نقدي بلا فاتورة، أو فاتورة دفعها الكاشير غير مطابقة."
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_pos_config__cash_out_receipt_required
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_pos_session__cash_out_receipt_required
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_res_config_settings__pos_cash_out_receipt_required
+msgid ""
+"Session Review refuses \"Mark as Reviewed\" while a cash-out of the session "
+"has no Telegram receipt or a receipt paid by the cashier is not matched."
+msgstr "ترفض مراجعة الجلسة «تمت المراجعة» ما دام في الجلسة سحب نقدي بلا فاتورة، أو فاتورة دفعها الكاشير غير مطابقة."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/pos_session.py:0
+msgid "Session closed: %s"
+msgstr "أُغلقت الجلسة: %s"
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "Session not found."
+msgstr "الجلسة غير موجودة."
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_receipt__session_id
+msgid "Session open when the photo was sent (or of the matched cash-out)."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__uncollected_session_count
+msgid "Sessions Not Collected"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__collect_from
+msgid "Sessions closed before this day are not offered for collection."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Sessions not collected"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__pos_config_ids
+msgid ""
+"Sessions of these POS can be collected. Empty: every POS of the company."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__platform_enabled
+msgid ""
+"Set by the old DoniaLink Platform owner app. Not used any more: the owner "
+"uses the DoniaLink App (/dl/app#cashbox)."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid ""
+"Set the internal transfer account of the company first (Accounting "
+"settings)."
+msgstr "يجب على المحاسب تحديد حساب التحويل الداخلي أولاً."
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_telegram_sender__name
+msgid "Shown on the receipts. Rename it to the employee name."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__source
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__source
+msgid "Source"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__spent
+msgid "Spent"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Spent: −%s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.actions.act_window,help:expense_cash_control_telegram.action_ecc_receipt
+msgid ""
+"Staff post bill photos in their Telegram group; the DoniaLink bot asks who paid and sends them here.\n"
+"               Payable: create the purchase order. Cashier: match it to the POS cash-out it proves."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__state
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__state
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__state
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__state
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_question__state
+msgid "State"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__statement_frequency
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__statement_id
+msgid "Statement"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Statement %(start)s → %(end)s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__statement_weekday
+msgid "Statement Day"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__statement_line_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__statement_line_id
+msgid "Statement Line"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "Statement not found."
+msgstr "الكشف غير موجود."
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__statement_ids
+#: model:ir.ui.menu,name:expense_cash_control_telegram.menu_ecc_owner_statement
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_form
+msgid "Statements"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Statements of %s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__state
+msgid "Status"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__activity_state
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_card__activity_state
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_receipt__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__suggested_cash_move_ids
+msgid "Suggested Cash-Outs"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_box__reminder_count_weekday__6
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_box__statement_weekday__6
+msgid "Sunday"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_card_move__source__telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_move__source__telegram
+msgid "Telegram"
+msgstr "تيليجرام"
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__media_group_id
+msgid "Telegram Album"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__chat_id
+msgid "Telegram Chat"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_photo__file_unique_id
+msgid "Telegram File ID"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__chat_title
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_question_wizard__chat_title
+msgid "Telegram Group"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__message_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt_question__telegram_message_id
+msgid "Telegram Message"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__telegram_name
+msgid "Telegram Name"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model,name:expense_cash_control_telegram.model_ecc_receipt
+msgid "Telegram Receipt"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model,name:expense_cash_control_telegram.model_ecc_receipt_photo
+msgid "Telegram Receipt Photo"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model,name:expense_cash_control_telegram.model_ecc_receipt_question
+msgid "Telegram Receipt Question"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_pos_session__receipt_ids
+msgid "Telegram Receipts"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model,name:expense_cash_control_telegram.model_ecc_telegram_sender
+msgid "Telegram Sender"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.actions.act_window,name:expense_cash_control_telegram.action_ecc_telegram_sender
+#: model:ir.ui.menu,name:expense_cash_control_telegram.menu_ecc_telegram_sender
+msgid "Telegram Senders"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__telegram_user_id
+msgid "Telegram User"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_telegram_sender__telegram_user_id
+msgid "Telegram User ID"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_telegram_sender__telegram_username
+msgid "Telegram Username"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-javascript
+#: code:addons/expense_cash_control_telegram/static/src/dashboard/dashboard.xml:0
+msgid "Telegram bill photos"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_receipt_photo__file_unique_id
+msgid "Telegram keeps the same value when the photo is forwarded."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "Telegram receipt %(ref)s sent by %(sender)s."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "Telegram receipt %(ref)s: %(note)s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "Telegram receipt %s."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Telegram unlinked."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "Thank you, statement confirmed."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_question_wizard_form
+msgid "The DoniaLink bot posts the question in"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_card__account_id
+msgid ""
+"The account of the card in the chart of accounts. Its balance in the books "
+"is the card balance shown to the owners."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.kind,description:expense_cash_control_telegram.kind_owner_expense_duplicate
+msgid "The accountant marked an owner expense as a duplicate"
+msgstr "المحاسب علّم مصروفاً للمالك كمكرر"
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.kind,description:expense_cash_control_telegram.kind_owner_expense_rejected
+msgid "The accountant rejected an owner expense"
+msgstr "المحاسب رفض مصروفاً للمالك"
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.kind,description:expense_cash_control_telegram.kind_owner_expense_reviewed
+msgid "The accountant reviewed an owner expense"
+msgstr "المحاسب راجع مصروفاً للمالك"
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "The amount cannot be negative."
+msgstr "لا يمكن أن يكون المبلغ سالباً."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_expense_review.py:0
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "The amount is back in your cash box."
+msgstr "أُعيد المبلغ إلى صندوقك النقدي."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_expense_review.py:0
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "The amount is back on the card %s."
+msgstr "أُعيد المبلغ إلى البطاقة %s."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+#: code:addons/expense_cash_control_telegram/models/owner_card.py:0
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "The amount must be positive."
+msgstr "يجب أن يكون المبلغ أكبر من صفر."
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_card__journal_id
+msgid ""
+"The bank journal of the account. Card sales, withdrawals, card expenses and "
+"deposits are entered in it."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid ""
+"The bank shows %(counted)s, the books say %(expected)s (difference "
+"%(difference)s). The accountant will check it."
+msgstr "البنك يظهر %(counted)s والسجلات تقول %(expected)s (الفرق %(difference)s). سيتحقق المحاسب."
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__notify_session_close
+msgid "The bot asks \"POS/00412 closed with 1,250,000 cash. Collect?\""
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_kanban
+msgid "The business owes the owner"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "The business owes you %s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_card.py:0
+msgid ""
+"The card %(card)s: the bank journal %(journal)s must use the account "
+"%(account)s, else the card movements would not change the card balance."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_card.py:0
+msgid "The card %s is not shared with this owner."
+msgstr "البطاقة %s غير مشتركة مع هذا المالك."
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_form
+msgid ""
+"The card balance is the balance of its account in the books: everything posted on it shows\n"
+"                        in the owner app, also bank fees or entries made in Odoo. The card sales of every closed session are entered in the bank journal and matched with\n"
+"                        the POS payment. Don't import them again from the bank statement: match the bank\n"
+"                        statement with these lines instead."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_card__payment_method_ids
+msgid ""
+"The card sales of these POS payment methods are added to the card when a "
+"session closes."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_collection_return_form
+msgid ""
+"The cash goes back from the owner box to the till, the owner's balance drops by this amount\n"
+"                    and the session can be collected again. The collection stays in the history as \"Returned to Till\"."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "The cash-out belongs to another company."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "The cash-out could not be reconciled with the bill: %s"
+msgstr "تعذّرت تسوية السحب النقدي مع الفاتورة: %s"
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid ""
+"The cash-out paid the vendor: it goes on the vendor account, then enter the "
+"products in a purchase order. Its bill is paid by the cash-out."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "The category \"%s\" has no account."
+msgstr "الفئة \"%s\" ليس لها حساب. راجع المحاسب."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "The journal %s has no cash account."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/wizard/owner_app_access.py:0
+msgid "The login \"%s\" is already used: choose \"Use an existing user\"."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_receipt__vendor_payment
+msgid ""
+"The matched POS cash-out paid the vendor: it is on the vendor account and "
+"pays the bill of the purchase order."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.kind,description:expense_cash_control_telegram.kind_owner_statement
+msgid "The owner cash box statement to confirm"
+msgstr "كشف صندوق المالك بانتظار التأكيد"
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_app_access_form
+msgid "The owner opens"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_review_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_review_form
+msgid ""
+"The owner paid a supplier: the amount goes on the vendor's account and is applied\n"
+"                                    to his bills (\"Add\" under outstanding payments of the bill). His balance does not change."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-javascript
+#: code:addons/expense_cash_control_telegram/static/src/dashboard/dashboard.xml:0
+msgid "The owner said the statement is wrong"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "The owner says the statement is not correct."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_card_move__box_id
+msgid "The owner who made the movement."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_form
+msgid "The owner will no longer open this box in the app."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid ""
+"The owner's expense is checked (fix amount, category or vendor on the "
+"expense first)."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_form
+msgid ""
+"The owner's expense is removed and replaced by a purchase order. Register "
+"the payment of its bill from the owner's cash journal so his balance goes "
+"down again."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_reminder.py:0
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "The reminder hour must be between 0 and 23."
+msgstr "ساعة التذكير يجب أن تكون بين 0 و 23."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/controllers/owner_app.py:0
+msgid "The server key changed. Turn notifications on again."
+msgstr "تغيّر مفتاح الخادم. شغّل الإشعارات مرة أخرى."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid ""
+"The statement was not sent: the owner has no DoniaLink App login (Owner App "
+"Access), or switched these notifications off."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_expense_review.py:0
+msgid "The vendor \"%s\" has no payable account."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "There is no amount to record."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_card__box_ids
+msgid ""
+"These owners see the card in the owner app and can withdraw, spend and "
+"deposit with it."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.constraint,message:expense_cash_control_telegram.constraint_ecc_receipt_photo_chat_message_unique
+msgid "This Telegram message is already a receipt."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.constraint,message:expense_cash_control_telegram.constraint_ecc_telegram_sender_telegram_user_company_unique
+msgid "This Telegram user is already known for this company."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.constraint,message:expense_cash_control_telegram.constraint_ecc_owner_card_account_unique
+msgid "This account is already used by another card."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.constraint,message:expense_cash_control_telegram.constraint_ecc_owner_card_move_app_request_uid_unique
+#: model:ir.model.constraint,message:expense_cash_control_telegram.constraint_ecc_owner_move_app_request_uid_unique
+msgid "This app action was already recorded."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "This card is not shared with you."
+msgstr "هذه البطاقة غير مشتركة معك."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/controllers/owner_app.py:0
+msgid "This cash box is not yours."
+msgstr "هذا الصندوق ليس لك."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/pos_cash_move.py:0
+msgid ""
+"This cash-out was returned to the till from the owner box; it cannot be "
+"classified again."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "This difference already changed the balance; it cannot be reopened."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.constraint,message:expense_cash_control_telegram.constraint_ecc_owner_box_link_code_unique
+msgid "This link code is already used."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__app_user_id
+msgid "This login opens the cash box in the DoniaLink App (/dl/app#cashbox)."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_expense_review.py:0
+msgid "This movement has no expense to turn into a payment."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/dl_app_receipt.py:0
+msgid "This question is no longer here."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/receipt.py:0
+msgid "This receipt did not come from Telegram."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/controllers/dl_app_receipts.py:0
+msgid "This receipt is no longer here."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "This statement was already answered."
+msgstr "تم الرد على هذا الكشف مسبقاً."
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_box__reminder_count_weekday__3
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_box__statement_weekday__3
+msgid "Thursday"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_move__deposit_target__till
+msgid "Till"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__date_to
+msgid "To"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_difference__state__pending
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_list
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_difference_search
+msgid "To Explain"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_card_move__review_state__to_review
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_expense_mixin__review_state__to_review
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_move__review_state__to_review
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_receipt__state__to_review
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_list
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_search
+msgid "To Review"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-javascript
+#: code:addons/expense_cash_control_telegram/static/src/dashboard/dashboard.xml:0
+msgid "To collect"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "Took %(amount)s for you from %(card)s"
+msgstr "تم سحب %(amount)s لك من %(card)s"
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "Took %s for you"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__took
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_card_move__kind__drawing
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_move__kind__drawing
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_search
+msgid "Took for Me"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_card.py:0
+msgid "Took for me from %(card)s – %(owner)s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Took for me – %s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Took for me: −%s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_list
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_list
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_list
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_review_list
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_list
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_review_list
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_list
+msgid "Total"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_box__reminder_count_weekday__1
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_box__statement_weekday__1
+msgid "Tuesday"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/controllers/owner_app.py:0
+msgid "Two-factor login is on for this user: log in from the Odoo page."
+msgstr "التحقق بخطوتين مفعّل لهذا المستخدم: سجّل الدخول من صفحة أودو."
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__kind
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__kind
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__kind
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_search
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_difference_search
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_search
+msgid "Type"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__activity_exception_decoration
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_card__activity_exception_decoration
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_receipt__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/controllers/dl_app_receipts.py:0
+#: code:addons/expense_cash_control_telegram/controllers/owner_app.py:0
+msgid "Unknown action."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_pos_session_cash_review_list_receipts
+msgid "Unmatched Receipts"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_app_access__mode__existing
+msgid "Use an existing user"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_app_access__user_id
+msgid "User"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card_move__vendor_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_expense_mixin__vendor_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_move__vendor_id
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__partner_id
+msgid "Vendor"
+msgstr ""
 
 #. module: expense_cash_control_telegram
 #: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__vendor_payment
@@ -325,30 +3970,337 @@ msgid "Vendor Payment + Purchase Order"
 msgstr "دفعة للمورّد + أمر شراء"
 
 #. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_receipt_question__state__sent
+msgid "Waiting"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_receipt__question_state__waiting
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_search
+msgid "Waiting for Answer"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_box__last_statement_state__sent
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_statement__state__sent
+msgid "Waiting for Owner"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_box__website_message_ids
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_card__website_message_ids
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_difference__website_message_ids
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_owner_statement__website_message_ids
+#: model:ir.model.fields,field_description:expense_cash_control_telegram.field_ecc_receipt__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__website_message_ids
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_card__website_message_ids
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_difference__website_message_ids
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_statement__website_message_ids
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_receipt__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_box__reminder_count_weekday__2
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_box__statement_weekday__2
+msgid "Wednesday"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields.selection,name:expense_cash_control_telegram.selection__ecc_owner_box__statement_frequency__weekly
+msgid "Weekly"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.kind,description:expense_cash_control_telegram.kind_owner_reminder_count
+msgid "Weekly reminder to count the cash and confirm the balance"
+msgstr "تذكير أسبوعي لعدّ النقد وتأكيد الرصيد"
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_box__statement_weekday
+msgid "Weekly statement: sent on this day for the 7 days before."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_review_list
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_review_list
+msgid "What"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.actions.act_window,help:expense_cash_control_telegram.action_ecc_owner_card_move_review
+#: model_terms:ir.actions.act_window,help:expense_cash_control_telegram.action_ecc_owner_move_review
+msgid ""
+"What the owners paid. On each line: an expense (category) or a payment to a vendor, then Confirm.\n"
+"               Reject what is not a business expense."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_review_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_review_form
+msgid "What was it?"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_review_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_review_list
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_review_form
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_move_review_list
+msgid "Which vendor?"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_card_move__vendor_id
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_expense_mixin__vendor_id
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_move__vendor_id
+msgid ""
+"Who was paid: choose it, then \"Vendor Payment\" when it was not an expense."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_move_search
+msgid "Withdrawals"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_move__card_id
+msgid "Withdrawn from / deposited to this card box."
+msgstr ""
+
+#. module: expense_cash_control_telegram
 #. odoo-python
-#: code:addons/expense_cash_control_telegram/models/receipt.py:0
-msgid "Choose the vendor of the receipt first."
-msgstr "اختر مورّد الإيصال أولاً."
+#: code:addons/expense_cash_control_telegram/models/dl_app_receipt.py:0
+msgid "Write the answer first."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/wizard/dl_app_receipt_question.py:0
+#: code:addons/expense_cash_control_telegram/wizard/receipt_question_wizard.py:0
+msgid "Write the question first."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Write why the cash is returned."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/controllers/owner_app.py:0
+msgid "Wrong login or password."
+msgstr "اسم المستخدم أو كلمة المرور خاطئة."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid ""
+"You counted %(counted)s, the books say %(expected)s (difference "
+"%(difference)s). The accountant will check it."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_reminder.py:0
+msgid ""
+"You haven't recorded any cash expense today. Balance: %(balance)s. Spent "
+"cash? Record it now."
+msgstr "لم تسجّل أي مصروف نقدي اليوم. الرصيد: %(balance)s. هل صرفت نقداً؟ سجّله الآن."
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/controllers/dl_app_receipts.py:0
+msgid "You may not send receipts."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Your cash box: %(balance)s · The business owes you %(owed)s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Your cash box: %s"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:donialink.app.screen,description:expense_cash_control_telegram.dl_app_screen_cashbox
+msgid "Your cash, sessions to collect, expenses"
+msgstr "نقدك، الجلسات للاستلام، المصاريف"
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "Your statement is ready"
+msgstr "كشفك جاهز"
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_question_wizard_form
+msgid "as a reply under the photo of"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_box.py:0
+msgid "bank"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_pos_session_cash_review_form_receipts
+msgid "cash-out(s) without receipt ·"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_kanban
+msgid "closed session(s) not collected ·"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-javascript
+#: code:addons/expense_cash_control_telegram/static/src/dashboard/dashboard.xml:0
+msgid "day(s)"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_kanban
+msgid "difference(s) to explain"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model:ir.model.fields,help:expense_cash_control_telegram.field_ecc_owner_card__name
+msgid "e.g. \"Rafidain card\" or \"Card terminal\"."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_form
+msgid "e.g. Ali"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_collection_return_form
+msgid "e.g. Collected into the wrong partner's box"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_card_form
+msgid "e.g. Rafidain card"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_receipt_question_wizard_form
+msgid "e.g. What is the amount? Which supplier?"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_box_kanban
+msgid "expense(s) waiting for review"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/owner_service.py:0
+msgid "notification settings changed"
+msgstr "تم تغيير إعدادات الإشعارات"
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_ecc_owner_app_access_form
+msgid ""
+"on\n"
+"                    his phone, logs in, then \"Add to Home screen\" / \"Install app\". Telegram keeps working too."
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#: model_terms:ir.ui.view,arch_db:expense_cash_control_telegram.view_pos_session_cash_review_form_receipts
+msgid ""
+"receipt(s) paid by the cashier not matched.\n"
+"                        <span invisible=\"not cash_out_receipt_required\">This POS requires both to be zero before review.</span>"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-javascript
+#: code:addons/expense_cash_control_telegram/static/src/dashboard/dashboard.xml:0
+msgid "session(s))"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-javascript
+#: code:addons/expense_cash_control_telegram/static/src/dashboard/dashboard.xml:0
+msgid "statement(s) waiting for the owner"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-javascript
+#: code:addons/expense_cash_control_telegram/static/src/dashboard/dashboard.xml:0
+msgid "to review"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-javascript
+#: code:addons/expense_cash_control_telegram/static/src/dashboard/dashboard.xml:0
+msgid "waiting for an answer"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-javascript
+#: code:addons/expense_cash_control_telegram/static/src/dashboard/dashboard.xml:0
+msgid "· Card"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-javascript
+#: code:addons/expense_cash_control_telegram/static/src/dashboard/dashboard.xml:0
+msgid "· counts and partial collections"
+msgstr ""
+
+#. module: expense_cash_control_telegram
+#. odoo-javascript
+#: code:addons/expense_cash_control_telegram/static/src/dashboard/dashboard.xml:0
+msgid "· expense or vendor payment"
+msgstr ""
 
 #. module: expense_cash_control_telegram
 #. odoo-python
 #: code:addons/expense_cash_control_telegram/models/receipt.py:0
-msgid "Choose the POS cash-out that paid the vendor."
-msgstr "اختر السحب النقدي من نقطة البيع الذي دُفع منه للمورّد."
+msgid "⚠️ Amount on the receipt %(receipt)s, on the cash-out %(move)s."
+msgstr ""
 
 #. module: expense_cash_control_telegram
 #. odoo-python
-#: code:addons/expense_cash_control_telegram/models/receipt.py:0
-msgid "Payment %(move)s reconciled with the bill %(bill)s."
-msgstr "تمت تسوية الدفعة %(move)s مع الفاتورة %(bill)s."
+#: code:addons/expense_cash_control_telegram/wizard/receipt_question_wizard.py:0
+msgid "❓ %(ref)s: %(text)s"
+msgstr ""
 
 #. module: expense_cash_control_telegram
 #. odoo-python
-#: code:addons/expense_cash_control_telegram/models/receipt.py:0
-msgid "The cash-out could not be reconciled with the bill: %s"
-msgstr "تعذّرت تسوية السحب النقدي مع الفاتورة: %s"
+#: code:addons/expense_cash_control_telegram/wizard/receipt_question_wizard.py:0
+msgid "❓ Question sent to Telegram: %s"
+msgstr ""
 
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/wizard/dl_app_receipt_question.py:0
+msgid "❓ Question sent to the DoniaLink App: %s"
+msgstr ""
 
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/dl_app_receipt.py:0
+msgid "💬 %(name)s (DoniaLink App): %(text)s"
+msgstr ""
 
+#. module: expense_cash_control_telegram
+#. odoo-python
+#: code:addons/expense_cash_control_telegram/models/dl_app_receipt.py:0
+msgid "📱 Sent from the DoniaLink App by %s."
+msgstr ""
 
-
+#. module: expense_cash_control_telegram
+msgid "Choose bank or till."
+msgstr "اختر البنك أو صندوق الكاشير."

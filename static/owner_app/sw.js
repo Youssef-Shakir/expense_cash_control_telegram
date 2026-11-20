@@ -1,19 +1,10 @@
-/* Owner App service worker: keeps the app shell for a fast, installable start.
-   Money actions (/ecc/owner/api/) always go to the server and are never cached. */
+/* Owner App service worker. The owner app moved into the DoniaLink App (/dl/app#cashbox): /ecc/owner/app now
+   redirects there. This worker stays for the phones that turned notifications on in the old app: it still shows
+   them, and a tap opens the DoniaLink App. */
 const VERSION = 'owner-app-{{VERSION}}';
 const SHELL = [
-    '/ecc/owner/app',
-    '{{ASSET}}/app.css?v={{VERSION}}',
-    '{{ASSET}}/app.js?v={{VERSION}}',
     '{{ASSET}}/icon-192.png',
-    '{{ASSET}}/icon-180.png',
     '{{ASSET}}/favicon-32.png',
-    '{{ASSET}}/donialink-logo-white.png',
-    '{{ASSET}}/fonts/IBMPlexSansArabic-400.woff2',
-    '{{ASSET}}/fonts/IBMPlexSansArabic-500.woff2',
-    '{{ASSET}}/fonts/IBMPlexSansArabic-600.woff2',
-    '{{ASSET}}/fonts/ReadexPro-500.woff2',
-    '{{ASSET}}/fonts/ReadexPro-600.woff2',
 ];
 
 self.addEventListener('install', (event) => {
@@ -25,39 +16,6 @@ self.addEventListener('activate', (event) => {
         .then((keys) => Promise.all(keys.filter((k) => k.startsWith('owner-app-') && k !== VERSION)
             .map((k) => caches.delete(k))))
         .then(() => self.clients.claim()));
-});
-
-self.addEventListener('fetch', (event) => {
-    const request = event.request;
-    if (request.method !== 'GET') {
-        return;
-    }
-    const url = new URL(request.url);
-    if (url.origin !== self.location.origin || url.pathname.startsWith('/ecc/owner/api/')) {
-        return;
-    }
-    if (request.mode === 'navigate') {
-        // network first: a new version shows at once; the cached page opens without internet
-        event.respondWith(fetch(request)
-            .then((response) => {
-                const copy = response.clone();
-                if (response.ok) {
-                    caches.open(VERSION).then((cache) => cache.put('/ecc/owner/app', copy));
-                }
-                return response;
-            })
-            .catch(() => caches.match('/ecc/owner/app')));
-        return;
-    }
-    if (url.pathname.startsWith('{{ASSET}}/')) {
-        event.respondWith(caches.match(request).then((hit) => hit || fetch(request).then((response) => {
-            const copy = response.clone();
-            if (response.ok) {
-                caches.open(VERSION).then((cache) => cache.put(request, copy));
-            }
-            return response;
-        })));
-    }
 });
 
 // Push notifications (Web Push sent by Odoo's mail.push queue): session closed, card movements, reviewed
@@ -77,23 +35,17 @@ self.addEventListener('push', (event) => {
     if (!options.tag) {
         delete options.tag;
     }
-    options.data = Object.assign({ url: '/ecc/owner/app' }, options.data || {});
+    options.data = Object.assign({ url: '/dl/app#cashbox' }, options.data || {});
     event.waitUntil(self.registration.showNotification(data.title || 'DoniaLink', options));
 });
 
 self.addEventListener('notificationclick', (event) => {
     event.notification.close();
-    const url = (event.notification.data && event.notification.data.url) || '/ecc/owner/app';
+    // old links (/ecc/owner/app?box=…) redirect to the DoniaLink App too
+    const url = (event.notification.data && event.notification.data.url) || '/dl/app#cashbox';
     const target = new URL(url, self.location.origin);
-    if (target.origin !== self.location.origin || !target.pathname.startsWith('/ecc/owner/')) {
+    if (target.origin !== self.location.origin) {
         return;
     }
-    event.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windows) => {
-        const open = windows.find((w) => new URL(w.url).pathname.startsWith('/ecc/owner/'));
-        if (open) {
-            open.postMessage({ type: 'open', url: target.href });
-            return open.focus();
-        }
-        return self.clients.openWindow(target.href);
-    }));
+    event.waitUntil(self.clients.openWindow(target.href));
 });

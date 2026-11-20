@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 """Owner cash box: the cash a café owner (or each partner) holds after collecting closed POS sessions.
 
-The owner talks to the DoniaLink bot in a private chat (run by the DoniaLink Platform, which calls the
-``owner_*`` agent tools). Every change of his cash is an ``ecc.owner.move``; his balance is their sum,
+The owner uses the "Cash box" screen of the DoniaLink App (/dl/app#cashbox). Every change of his cash is an ``ecc.owner.move``; his balance is their sum,
 so it is computed by Odoo, never typed:
 
-    collect   POS cash -> owner box (a POS Cash Out with his collection category, or later from the bot)  +
+    collect   POS cash -> owner box (a POS Cash Out with his collection category, or later from the app)  +
     expense   a "Paid Now" expense from his box (photo reviewed in the Receipts inbox)                     -
     drawing   "Took for me": owner box -> Owner Drawings (equity)                                           -
     deposit   owner box -> bank (internal transfer account), a card box or back to the till (POS cash journal) -
@@ -14,7 +13,6 @@ so it is computed by Odoo, never typed:
 
 A negative balance means the business owes him the money.
 """
-import secrets
 from datetime import datetime, time, timedelta
 
 import pytz
@@ -26,11 +24,6 @@ from odoo.tools import clean_context, float_compare, float_is_zero
 
 WEEKDAYS = [('0', 'Monday'), ('1', 'Tuesday'), ('2', 'Wednesday'), ('3', 'Thursday'),
             ('4', 'Friday'), ('5', 'Saturday'), ('6', 'Sunday')]
-LINK_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
-
-
-class OwnerNotLinked(Exception):
-    """The Telegram user is not the owner linked to this box."""
 
 
 class OwnerBox(models.Model):
@@ -67,7 +60,7 @@ class OwnerBox(models.Model):
     collect_from = fields.Date('Collect Sessions From', required=True, default=fields.Date.context_today,
                                help='Sessions closed before this day are not offered for collection.')
 
-    # Telegram
+    # Balance text
     telegram_user_id = fields.Char('Telegram User', readonly=True, copy=False, index=True, tracking=True)
     telegram_name = fields.Char('Telegram Name', readonly=True, copy=False)
     link_code = fields.Char('Link Code', readonly=True, copy=False, index=True)
@@ -215,7 +208,7 @@ class OwnerBox(models.Model):
         return sessions.filtered(lambda s: s.owner_collection_state != 'collected')
 
     # ------------------------------------------------------------------
-    # Movements (called by the agent tools and the Odoo screens)
+    # Movements (called by the app and the Odoo screens)
     # ------------------------------------------------------------------
 
     def _check_amount(self, amount):
@@ -429,7 +422,7 @@ class OwnerBox(models.Model):
 
     @api.model
     def _cron_owner_statements(self):
-        for box in self.search(['|', ('is_linked', '=', True), ('app_user_id', '!=', False),
+        for box in self.search([('app_user_id', '!=', False),
                                 ('statement_frequency', '!=', 'none')]):
             period = box._statement_due(fields.Date.context_today(box))
             if not period:
@@ -445,27 +438,8 @@ class OwnerBox(models.Model):
                 self.env.cr.commit()   # each box's statement is kept even if a later one fails
 
     # ------------------------------------------------------------------
-    # Telegram
+    # Balance text
     # ------------------------------------------------------------------
-
-    def _check_telegram_user(self, telegram_user_id):
-        self.ensure_one()
-        if not self.active or not self.telegram_user_id or str(telegram_user_id) != self.telegram_user_id:
-            raise OwnerNotLinked()
-
-    def _platform_send(self, kind, text, data=None):
-        """Message to the owner's private chat through the DoniaLink Platform (buttons drawn from ``kind``)."""
-        self.ensure_one()
-        if not self.telegram_user_id and not self.platform_enabled:
-            return False
-        return self.env['telegram.service'].with_company(self.company_id).donialink_post('telegram/owner', {
-            'company_id': self.company_id.id,
-            'box_id': self.id,
-            'telegram_user_id': self.telegram_user_id or None,
-            'kind': kind,
-            'text': text,
-            'data': data or {},
-        })
 
     def _card_text(self):
         self.ensure_one()
@@ -479,28 +453,6 @@ class OwnerBox(models.Model):
             text += ' · ' + _('%(count)s closed session(s) not collected (%(amount)s)',
                               count=self.uncollected_session_count, amount=currency.format(self.uncollected_amount))
         return text
-
-    def action_generate_link(self):
-        """A new one-time code registered on the platform; it answers the deep link the owner opens
-        (t.me/<bot>?start=<code>)."""
-        for box in self:
-            code = ''.join(secrets.choice(LINK_ALPHABET) for _i in range(10))
-            try:
-                answer = self.env['telegram.service'].with_company(box.company_id).donialink_post(
-                    'telegram/owner-link',
-                    {'company_id': box.company_id.id, 'box_id': box.id, 'code': code, 'owner': box.name})
-            except UserError as e:
-                answer = {}
-                box.message_post(body=_('The DoniaLink Platform did not register the code (%s): the link will '
-                                        'work once it does.', e.args[0] if e.args else e))
-            box.write({'link_code': code, 'link_url': answer.get('url') or False})
-            box.message_post(body=_('New Telegram link code created.'))
-        return True
-
-    def _telegram_link(self, telegram_user_id, name=None):
-        self.ensure_one()
-        self.write({'telegram_user_id': str(telegram_user_id), 'telegram_name': name or False, 'link_code': False})
-        self.message_post(body=_('Linked to Telegram user %s.', name or telegram_user_id))
 
     def action_unlink_telegram(self):
         self.write({'telegram_user_id': False, 'telegram_name': False, 'link_code': False, 'link_url': False})
@@ -729,7 +681,7 @@ class OwnerDifference(models.Model):
         """Tell the owner how the accountant explained his difference."""
         self.ensure_one()
         box = self.box_id
-        if not (box.app_user_id or box.telegram_user_id or box.platform_enabled):
+        if not box.app_user_id:
             return
         diff = self.with_context(lang=box._app_lang()).sudo()
         labels = dict(diff._fields['resolution']._description_selection(diff.env))
@@ -848,8 +800,8 @@ class OwnerStatement(models.Model):
             if answer.get('delivered') or pushed:
                 statement.state = 'sent'
             else:
-                statement.message_post(body=_('The DoniaLink bot could not deliver the statement: %s',
-                                              answer.get('message') or _('owner not reachable')))
+                statement.message_post(body=_('The statement was not sent: the owner has no DoniaLink App login '
+                                              '(Owner App Access), or switched these notifications off.'))
 
     def action_send(self):
         self._send()

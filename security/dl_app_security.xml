@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_receipt_sender" model="res.groups">
+        <field name="name">Can Send Receipts</field>
+        <field name="category_id" ref="donialink_app.module_category_donialink_app"/>
+        <field name="comment">Sees "Send receipt" in the DoniaLink App. Add cashiers and staff (portal users work).
+        </field>
+    </record>
+</odoo>

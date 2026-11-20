@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- DoniaLink App: one kind per owner cash box notification; choose who receives each one in DoniaLink App > Kinds -->
+    <record id="kind_owner_session_closed" model="donialink.app.kind">
+        <field name="code">owner_session_closed</field>
+        <field name="name">Owner: session closed, cash to collect</field>
+        <field name="description">A session closed with cash for the owner to collect</field>
+        <field name="icon">cash</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="kind_owner_statement" model="donialink.app.kind">
+        <field name="code">owner_statement</field>
+        <field name="name">Owner: statement ready</field>
+        <field name="description">The owner cash box statement to confirm</field>
+        <field name="icon">report</field>
+        <field name="sequence">31</field>
+    </record>
+    <record id="kind_owner_card_move" model="donialink.app.kind">
+        <field name="code">owner_card_move</field>
+        <field name="name">Owner: card movement</field>
+        <field name="description">A co-owner used a shared bank card</field>
+        <field name="icon">card</field>
+        <field name="sequence">32</field>
+    </record>
+    <record id="kind_owner_card_sales" model="donialink.app.kind">
+        <field name="code">owner_card_sales</field>
+        <field name="name">Owner: card sales</field>
+        <field name="description">Card sales of a closed session added to the card</field>
+        <field name="icon">card</field>
+        <field name="sequence">33</field>
+    </record>
+    <record id="kind_owner_expense_reviewed" model="donialink.app.kind">
+        <field name="code">owner_expense_reviewed</field>
+        <field name="name">Owner: expense reviewed</field>
+        <field name="description">The accountant reviewed an owner expense</field>
+        <field name="icon">receipt</field>
+        <field name="sequence">34</field>
+    </record>
+    <record id="kind_owner_expense_rejected" model="donialink.app.kind">
+        <field name="code">owner_expense_rejected</field>
+        <field name="name">Owner: expense rejected</field>
+        <field name="description">The accountant rejected an owner expense</field>
+        <field name="icon">receipt</field>
+        <field name="sequence">35</field>
+    </record>
+    <record id="kind_owner_expense_duplicate" model="donialink.app.kind">
+        <field name="code">owner_expense_duplicate</field>
+        <field name="name">Owner: expense is a duplicate</field>
+        <field name="description">The accountant marked an owner expense as a duplicate</field>
+        <field name="icon">receipt</field>
+        <field name="sequence">35</field>
+    </record>
+    <record id="kind_owner_difference_explained" model="donialink.app.kind">
+        <field name="code">owner_difference_explained</field>
+        <field name="name">Owner: difference explained</field>
+        <field name="description">A cash box or card difference was explained</field>
+        <field name="icon">info</field>
+        <field name="sequence">36</field>
+    </record>
+    <record id="kind_owner_reminder_expense" model="donialink.app.kind">
+        <field name="code">owner_reminder_expense</field>
+        <field name="name">Owner: record your expenses</field>
+        <field name="description">Daily reminder when nothing was recorded</field>
+        <field name="icon">bell</field>
+        <field name="sequence">37</field>
+    </record>
+    <record id="kind_owner_reminder_count" model="donialink.app.kind">
+        <field name="code">owner_reminder_count</field>
+        <field name="name">Owner: count your cash</field>
+        <field name="description">Weekly reminder to count the cash and confirm the balance</field>
+        <field name="icon">bell</field>
+        <field name="sequence">38</field>
+    </record>
+</odoo>

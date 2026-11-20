@@ -43,13 +43,6 @@ class TestOwnerApp(HttpCase):
         wizard.action_confirm()
         cls.owner_user = cls.box.app_user_id
 
-    def setUp(self):
-        super().setUp()
-        patcher = patch.object(type(self.env['telegram.service']), 'donialink_post',
-                               return_value={'ok': True, 'delivered': True})
-        self.platform = patcher.start()
-        self.addCleanup(patcher.stop)
-
     def _api(self, action, **params):
         response = self.url_open('/ecc/owner/api/%s' % action, data=json.dumps(
             {'jsonrpc': '2.0', 'method': 'call', 'params': params, 'id': 1}),
@@ -82,8 +75,8 @@ class TestOwnerApp(HttpCase):
         info = self._login()
         self.assertEqual([b['box_id'] for b in info['boxes']], [self.box.id])
         self.assertEqual(self._api('home', box_id=self.other_box.id)['code'], 'forbidden')
-        page = self.url_open('/ecc/owner/app')
-        self.assertIn('manifest.webmanifest', page.text)
+        page = self.url_open('/ecc/owner/app', allow_redirects=False)
+        self.assertTrue(page.headers['Location'].endswith('/dl/app#cashbox'), 'the owner app moved to the DoniaLink App')
         manifest = self.url_open('/ecc/owner/manifest.webmanifest').json()
         self.assertEqual(manifest['scope'], '/ecc/owner/')
         sw = self.url_open('/ecc/owner/sw.js')
@@ -134,7 +127,6 @@ class TestOwnerApp(HttpCase):
         statement = self.box._create_statement(fields.Date.today() - timedelta(days=7), fields.Date.today())
         statement._send()
         self.assertEqual(statement.state, 'sent', 'Without Telegram the statement waits in the app')
-        self.platform.assert_not_called()
         self._login()
         self.assertEqual(self._api('home', box_id=self.box.id)['pending_statements'], 1)
         listed = self._api('statements', box_id=self.box.id)['statements']

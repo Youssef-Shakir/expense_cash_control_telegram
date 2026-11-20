@@ -101,8 +101,7 @@ class OwnerBox(models.Model):
     def _cron_owner_reminders(self):
         boxes = self.sudo().search([
             '|', ('reminder_expense', '=', True), ('reminder_count_weekday', '!=', False),
-            '|', '|', ('telegram_user_id', '!=', False), ('app_user_id', '!=', False),
-            ('platform_enabled', '=', True)])
+            ('app_user_id', '!=', False)])
         for box in boxes:
             box.with_company(box.company_id)._run_reminders()
             if not modules.module.current_test:

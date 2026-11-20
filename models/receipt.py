@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import base64
-import binascii
 import logging
 from datetime import timedelta
 
@@ -21,14 +19,6 @@ PAID_BY = [
 # may come late (end of the day). Sessions overlapping this window are suggested for matching.
 MATCH_WINDOW_BEFORE = timedelta(hours=18)
 MATCH_WINDOW_AFTER = timedelta(hours=2)
-
-
-class SenderIgnored(Exception):
-    """The Telegram sender is archived: the bot stays silent."""
-
-
-class NotTheSender(Exception):
-    """Only the sender of the photo may answer about it."""
 
 
 class Receipt(models.Model):
@@ -246,93 +236,9 @@ class Receipt(models.Model):
                 self.sudo().duplicate_of_id = original
         return photo
 
-    # ------------------------------------------------------------------
-    # Telegram (called by the agent tools)
-    # ------------------------------------------------------------------
-
-    @api.model
-    def _telegram_create(self, company, chat_id, message_id, sender, photo, chat_title=None,
-                         media_group_id=None, sent_at=None, caption=None):
-        """One photo message from a client group. Idempotent on (chat, message): the platform may
-        send a message again. Returns (receipt, is_new_receipt); raises SenderIgnored for an
-        archived sender."""
-        chat_id = str(chat_id)
-        Photo = self.env['ecc.receipt.photo'].sudo()
-        existing = Photo.search([('chat_id', '=', chat_id), ('message_id', '=', message_id)], limit=1)
-        if existing:
-            return existing.receipt_id, False
-
-        person = self.env['ecc.telegram.sender'].sudo()._find_or_create(
-            company, sender['telegram_user_id'], sender.get('name'), sender.get('username'))
-        if not person.active:
-            raise SenderIgnored()
-
-        try:
-            content = base64.b64decode(photo['content_b64'], validate=True)
-        except (binascii.Error, ValueError) as e:
-            raise UserError(_('The photo is not valid base64.')) from e
-        if not content:
-            raise UserError(_('The photo is empty.'))
-
-        receipt = self.browse()
-        if media_group_id:
-            receipt = self.sudo().search([
-                ('company_id', '=', company.id), ('chat_id', '=', chat_id),
-                ('media_group_id', '=', str(media_group_id)),
-            ], limit=1)
-        is_new = not receipt
-        if is_new:
-            receipt = self.sudo().with_company(company).create({
-                'company_id': company.id,
-                'chat_id': chat_id,
-                'chat_title': chat_title or False,
-                'message_id': message_id,
-                'media_group_id': str(media_group_id) if media_group_id else False,
-                'sender_id': person.id,
-                'sent_at': sent_at or fields.Datetime.now(),
-                'note': (caption or '').strip() or False,
-            })
-            receipt._guess_session()
-        elif caption and caption.strip() and not receipt.note:
-            receipt.note = caption.strip()
-        receipt._add_photo(content, photo.get('filename'), photo.get('mimetype'), message_id,
-                           photo.get('file_unique_id'))
-        return receipt, is_new
-
-    def _telegram_update(self, telegram_user_id, paid_by=None, note=None):
-        """Answers of the sender to the bot's questions. Ignored once the receipt is reviewed."""
-        self.ensure_one()
-        if str(telegram_user_id) != self.sender_id.telegram_user_id:
-            raise NotTheSender()
-        if self.state == 'to_review':
-            vals = {}
-            if paid_by:
-                vals['paid_by'] = paid_by
-            if note and note.strip():
-                vals['note'] = note.strip()
-            if vals:
-                self.sudo().write(vals)
-        return self
-
     def _paid_by_label(self):
         self.ensure_one()
         return dict(self._fields['paid_by']._description_selection(self.env))[self.paid_by]
-
-    def _telegram_summary(self):
-        """The bot's confirmation: "✅ Received R-0153 — Cashier · gas cylinder"."""
-        self.ensure_one()
-        text = _('✅ Received %(ref)s — %(paid_by)s', ref=self.name, paid_by=self._paid_by_label())
-        if self.note:
-            text += ' · %s' % self.note.splitlines()[0][:100]
-        return text
-
-    def _telegram_post_reply(self, sender, text):
-        """A message from the Telegram group about this receipt: kept in the chatter."""
-        self.ensure_one()
-        name = sender.name if sender else _('Telegram')
-        self.sudo().message_post(
-            body=_('💬 %(name)s (Telegram): %(text)s', name=name, text=text),
-            message_type='comment', subtype_xmlid='mail.mt_comment')
 
     # ------------------------------------------------------------------
     # Actions
