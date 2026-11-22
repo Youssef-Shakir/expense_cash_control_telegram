@@ -96,3 +96,22 @@ class TestAppReceipts(HttpCase):
         keys = [s['key'] for s in self.url_open('/dl/app/api/session', data=json.dumps({'params': {}}),
                 headers={'Content-Type': 'application/json'}).json()['result']['screens']]
         self.assertNotIn('receipt', keys)
+
+    def test_send_to_the_company_chosen_in_the_app(self):
+        """The company chosen at the top of the app is the one the receipt goes to, not the default one."""
+        branch = self.env['res.company'].create({'name': 'DL Receipt Branch'})
+        self.cashier.company_ids |= branch
+        self.authenticate('dl_rc_cashier', 'dl_rc_cashier1')
+        session = self.url_open('/dl/app/api/session', data=json.dumps({'params': {}}),
+                                headers={'Content-Type': 'application/json'}).json()['result']
+        self.assertIn(branch.id, [c['id'] for c in session['companies']])
+        switched = self.url_open('/dl/app/api/company_set', data=json.dumps({'params': {'company_id': branch.id}}),
+                                 headers={'Content-Type': 'application/json'}).json()['result']
+        self.assertEqual(switched['company_id'], branch.id)
+        result = self.api('send', photos=[self.photo()], paid_by='cashier')
+        self.assertEqual(self.env['ecc.receipt'].browse(result['id']).company_id, branch)
+        foreign = self.env['res.company'].create({'name': 'DL Receipt Not Mine'})
+        refused = self.url_open('/dl/app/api/company_set', data=json.dumps({'params': {'company_id': foreign.id}}),
+                                headers={'Content-Type': 'application/json'}).json()['result']
+        self.assertEqual(refused['error'], 'refused')
+        self.assertEqual(self.cashier.company_id, branch)
