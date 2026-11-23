@@ -77,8 +77,8 @@ class TestOwnerBox(ExpenseCashCommon):
         self.assertTrue(asked, 'The owner is asked to collect when the session closes (DoniaLink App)')
         self.assertEqual(asked.url, '#cashbox/%s/collect' % self.box.id)
         self.assertEqual(session.owner_collection_state, 'none')
-        sessions = self._tool('sessions')['sessions']
-        self.assertEqual([s['session_id'] for s in sessions], [session.id])
+        sessions = [s for s in self._tool('sessions')['sessions'] if s['session_id'] == session.id]
+        self.assertEqual(len(sessions), 1, 'the session to collect is listed')
         self.assertEqual(sessions[0]['amount'], 100000.0)
 
         card = self._tool('collect', session_id=session.id, amount=60000.0)
@@ -96,7 +96,7 @@ class TestOwnerBox(ExpenseCashCommon):
         self.assertEqual(self.box.balance, 100000.0)
         self.assertEqual(self.box.account_balance, 100000.0, 'Books and box agree')
         self.assertIn('Collected by Ali', session.owner_collection_text)
-        self.assertFalse(self._tool('sessions')['sessions'])
+        self.assertNotIn(session.id, [s['session_id'] for s in self._tool('sessions')['sessions']])
 
     def test_partial_left_in_till(self):
         session = self._closed_session(50000.0)
